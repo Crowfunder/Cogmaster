@@ -9,13 +9,13 @@ public class ConfigReference implements Exportable {
     private final String derivedPath;
 
     // Overridden parameters
-    private HashMap<String, Parameter> parameters;
+    private ParameterArray parameters;
 
     public String getPath() {
         return this.derivedPath;
     }
 
-    public HashMap<String, Parameter> getParameters() {
+    public ParameterArray getParameters() {
         return this.parameters;
     }
 
@@ -27,7 +27,7 @@ public class ConfigReference implements Exportable {
         this.derivedPath = derivedPath;
     }
 
-    public ConfigReference(String derivedPath, HashMap<String, Parameter> parameters) {
+    public ConfigReference(String derivedPath, ParameterArray parameters) {
         this.derivedPath = derivedPath;
         this.parameters = parameters;
     }
