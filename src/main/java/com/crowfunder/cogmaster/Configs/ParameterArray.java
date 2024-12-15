@@ -3,16 +3,16 @@ package com.crowfunder.cogmaster.Configs;
 import java.util.HashMap;
 
 public class ParameterArray implements Exportable {
-    private HashMap<String, Parameter> hashmap;
+    private final HashMap<String, ParameterValue> hashmap;
 
-    public HashMap<String, Parameter> getHashMap() {
+    public HashMap<String, ParameterValue> getHashMap() {
         return hashmap;
     }
 
     public String toJSONString() {
         StringBuilder out = new StringBuilder();
         for (String key : hashmap.keySet()) {
-            out.append(key).append(": ").append(hashmap.get(key).toJSONString()).append("\n");
+            out.append("\"").append(key).append("\"").append(": ").append("\"").append(hashmap.get(key).toJSONString()).append("\",\n");
 
         }
         return out.toString();
@@ -32,7 +32,7 @@ public class ParameterArray implements Exportable {
         return effectiveParameterArray;
     }
 
-    public ParameterArray(HashMap<String, Parameter> hashmap) {
+    public ParameterArray(HashMap<String, ParameterValue> hashmap) {
         this.hashmap = hashmap;
     }
 

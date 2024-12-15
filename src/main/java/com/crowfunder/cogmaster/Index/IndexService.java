@@ -9,10 +9,10 @@ import java.util.List;
 class IndexService {
 
     // The base PathIndex that maps config paths to their respective ConfigEntry objects.
-    private HashMap<String, ConfigEntry> pathIndex;
+    private final HashMap<String, ConfigEntry> pathIndex;
 
     // Index mapping specific parameter values to ConfigEntry paths from pathIndex
-    private HashMap<String, HashMap<String, List<String>>> parameterIndex;
+    private final HashMap<String, HashMap<String, List<String>>> parameterIndex;
 
     // Get ConfigEntry object by its config path
     public ConfigEntry resolveConfig(String path) {
@@ -24,7 +24,7 @@ class IndexService {
         return this.pathIndex.get(configReference.getPath());
     }
 
-    // Reverse search by specific parameter names
+    // Reverse search by specific parameter names and values,
     public List<String> getConfigsByParameter(String paramName, String paramValue) {
         return this.parameterIndex.get(paramName).get(paramValue);
     }

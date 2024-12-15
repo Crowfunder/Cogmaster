@@ -1,6 +1,7 @@
 package com.crowfunder.cogmaster.Configs;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ConfigReference implements Exportable {
 
@@ -9,7 +10,7 @@ public class ConfigReference implements Exportable {
     private final String derivedPath;
 
     // Overridden parameters
-    private ParameterArray parameters;
+    private final ParameterArray parameters;
 
     public String getPath() {
         return this.derivedPath;
@@ -20,11 +21,17 @@ public class ConfigReference implements Exportable {
     }
 
     public String toJSONString() {
-        return "";
+        StringBuilder out = new StringBuilder();
+        out.append("{");
+        out.append("\"type\": \"").append("BaseConfig").append("\",");
+        out.append("\"parameters\": ");
+        out.append(getParameters().toJSONString());
+        return out.append("}").toString();
     }
 
     public ConfigReference(String derivedPath) {
         this.derivedPath = derivedPath;
+        this.parameters = new ParameterArray();
     }
 
     public ConfigReference(String derivedPath, ParameterArray parameters) {

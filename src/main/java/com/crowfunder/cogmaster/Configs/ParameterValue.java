@@ -1,7 +1,7 @@
 package com.crowfunder.cogmaster.Configs;
 
 
-public class Parameter implements Exportable {
+public class ParameterValue implements Exportable {
 
     private Object value;
 

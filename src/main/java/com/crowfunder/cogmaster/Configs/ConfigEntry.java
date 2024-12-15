@@ -1,6 +1,5 @@
 package com.crowfunder.cogmaster.Configs;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public class ConfigEntry implements Exportable {
@@ -9,13 +8,13 @@ public class ConfigEntry implements Exportable {
     private final String path;
 
     // Overriden/Own parameters
-    private ParameterArray parameters;
+    private final ParameterArray parameters;
 
     // If the config is a derived config, this path points to derivative (parent) config
     private final String derivedPath;
 
     // Non-overriden parameters pulled from all derivative (parent) configs
-    private ParameterArray derivedParameters;
+    private final ParameterArray derivedParameters;
 
     public String getPath() {
         return this.path;
@@ -37,7 +36,11 @@ public class ConfigEntry implements Exportable {
         out.append("{");
         out.append("\"path\": \"").append(this.path).append("\",");
         if (!Objects.equals(derivedPath, "")) {
+            out.append("\"type\": \"").append("DerivedConfig").append("\",");
             out.append("\"derivedPath\": \"").append(this.derivedPath).append("\",");
+        }
+        else {
+            out.append("\"type\": \"").append("BaseConfig").append("\",");
         }
         out.append("\"parameters\": ");
         out.append(getParameters().toJSONString());
@@ -48,7 +51,7 @@ public class ConfigEntry implements Exportable {
     public ConfigEntry(String path, ParameterArray parameters) {
         this.path = path;
         this.parameters = parameters;
-        this.derivedPath = "";   // Empty string for no derivation 
+        this.derivedPath = "";   // Empty string for no derivation
         this.derivedParameters = new ParameterArray();
     }
 
