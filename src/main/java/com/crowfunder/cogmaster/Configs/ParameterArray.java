@@ -40,12 +40,13 @@ public class ParameterArray implements Exportable {
         this.hashmap = new HashMap<>();
     }
 
-    public ParameterValue resolveParameterPath(String path) {
-        String[] pathElems = path.split("/");
+    public ParameterValue resolveParameterPath(Path path) {
 
-        ParameterValue val = hashmap.get(pathElems[0]);
+        ParameterValue val = hashmap.get(path.getNextPath());
+
+        // If value is yet another ParameterArray, recurse into it until it's not
         if (val.isNested()) {
-            return ((ParameterArray) val.getValue()).resolveParameterPath(path);
+            return ((ParameterArray) val.getValue()).resolveParameterPath(path.rotatePath());
         }
 
         return val;
