@@ -7,12 +7,12 @@ public class ConfigReference implements Exportable {
 
     // Path to derived config
     // References don't have their own path identifiers!
-    private final String derivedPath;
+    private final Path derivedPath;
 
     // Overridden parameters
     private final ParameterArray parameters;
 
-    public String getPath() {
+    public Path getPath() {
         return this.derivedPath;
     }
 
@@ -23,18 +23,19 @@ public class ConfigReference implements Exportable {
     public String toJSONString() {
         StringBuilder out = new StringBuilder();
         out.append("{");
-        out.append("\"type\": \"").append("BaseConfig").append("\",");
+        out.append("\"type\": \"").append("ConfigReference").append("\",");
+        out.append("\"path\": \"").append(derivedPath).append("\",");
         out.append("\"parameters\": ");
         out.append(getParameters().toJSONString());
         return out.append("}").toString();
     }
 
-    public ConfigReference(String derivedPath) {
+    public ConfigReference(Path derivedPath) {
         this.derivedPath = derivedPath;
         this.parameters = new ParameterArray();
     }
 
-    public ConfigReference(String derivedPath, ParameterArray parameters) {
+    public ConfigReference(Path derivedPath, ParameterArray parameters) {
         this.derivedPath = derivedPath;
         this.parameters = parameters;
     }

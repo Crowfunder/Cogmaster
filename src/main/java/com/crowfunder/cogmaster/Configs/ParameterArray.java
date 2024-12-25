@@ -39,4 +39,15 @@ public class ParameterArray implements Exportable {
     public ParameterArray() {
         this.hashmap = new HashMap<>();
     }
+
+    public ParameterValue resolveParameterPath(String path) {
+        String[] pathElems = path.split("/");
+
+        ParameterValue val = hashmap.get(pathElems[0]);
+        if (val.isNested()) {
+            return ((ParameterArray) val.getValue()).resolveParameterPath(path);
+        }
+
+        return val;
+    }
 }

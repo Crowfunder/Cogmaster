@@ -5,22 +5,22 @@ import java.util.Objects;
 public class ConfigEntry implements Exportable {
 
     // Own identifier config path
-    private final String path;
+    private final Path path;
 
     // Overriden/Own parameters
     private final ParameterArray parameters;
 
     // If the config is a derived config, this path points to derivative (parent) config
-    private final String derivedPath;
+    private final Path derivedPath;
 
     // Non-overriden parameters pulled from all derivative (parent) configs
     private final ParameterArray derivedParameters;
 
-    public String getPath() {
+    public Path getPath() {
         return this.path;
     }
 
-    public String getDerivedPath() {
+    public Path getDerivedPath() {
         return this.derivedPath;
     }
 
@@ -48,14 +48,14 @@ public class ConfigEntry implements Exportable {
     }
 
     // Base (Non-derived) class constructor
-    public ConfigEntry(String path, ParameterArray parameters) {
+    public ConfigEntry(Path path, ParameterArray parameters) {
         this.path = path;
         this.parameters = parameters;
-        this.derivedPath = "";   // Empty string for no derivation
+        this.derivedPath = new Path("");   // Empty string for no derivation
         this.derivedParameters = new ParameterArray();
     }
 
-    public ConfigEntry(String path, String derivedPath, ParameterArray parameters, ParameterArray derivedParameters) {
+    public ConfigEntry(Path path, Path derivedPath, ParameterArray parameters, ParameterArray derivedParameters) {
         this.path = path;
         this.parameters = parameters;
         this.derivedPath = derivedPath;

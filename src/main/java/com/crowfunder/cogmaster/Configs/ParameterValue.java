@@ -5,6 +5,14 @@ public class ParameterValue implements Exportable {
 
     private Object value;
 
+    public boolean isNested() {
+        return value instanceof ParameterArray;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
     public String toJSONString() {
 
         if (value instanceof String) {
