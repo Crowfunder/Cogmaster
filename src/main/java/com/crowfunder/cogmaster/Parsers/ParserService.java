@@ -14,7 +14,7 @@ public class ParserService {
 
         // Initialize existing parsers, probably not the best idea to do it like that but oh well
         parsers = new ArrayList<>();
-        parsers.add(new Parser("parseable/item.xml"));   // for now no reverse search
+        parsers.add(new Parser("item", "parseable/item.xml"));   // for now no reverse search
 
         parse();
     }

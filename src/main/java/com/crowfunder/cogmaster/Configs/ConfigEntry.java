@@ -30,6 +30,9 @@ public class ConfigEntry implements Exportable {
         return this.parameters.derive(derivedParameters);
     }
 
+    public boolean isDerived() {
+        return this.derivedPath.getPath() != null;
+    }
 
     public String toJSONString() {
         StringBuilder out = new StringBuilder();
@@ -47,6 +50,14 @@ public class ConfigEntry implements Exportable {
         return out.append("}").toString();
     }
 
+    // Parameterless
+    public ConfigEntry() {
+        this.path = new Path("");
+        this.parameters = new ParameterArray();
+        this.derivedPath = new Path("");   // Empty string for no derivation
+        this.derivedParameters = new ParameterArray();
+    }
+
     // Base (Non-derived) class constructor
     public ConfigEntry(Path path, ParameterArray parameters) {
         this.path = path;
@@ -61,5 +72,6 @@ public class ConfigEntry implements Exportable {
         this.derivedPath = derivedPath;
         this.derivedParameters = derivedParameters;
     }
+
 
 }

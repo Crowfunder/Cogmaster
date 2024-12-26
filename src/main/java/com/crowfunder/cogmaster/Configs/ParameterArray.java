@@ -44,6 +44,10 @@ public class ParameterArray implements Exportable {
 
         ParameterValue val = hashmap.get(path.getNextPath());
 
+        if (val == null) {
+            return null;
+        }
+
         // If value is yet another ParameterArray, recurse into it until it's not
         if (val.isNested()) {
             return ((ParameterArray) val.getValue()).resolveParameterPath(path.rotatePath());

@@ -26,4 +26,10 @@ public class Index {
         parameterIndex.putAll(newIndex.getParameterIndex());
     }
 
+    public void addPathIndexEntry(Path path, ConfigEntry entry) {
+        pathIndex.put(path, entry);
+    }
+    public void addParameterIndexEntry(Path path, HashMap<String, List<Path>> parameterIndexEntry) {
+        parameterIndex.put(path, parameterIndexEntry);
+    }
 }

@@ -13,7 +13,7 @@ public class ParameterValue implements Exportable {
         return value;
     }
 
-    public String toJSONString() {
+    public String toString() {
 
         if (value instanceof String) {
             return (String) value;
