@@ -1,8 +1,5 @@
 package com.crowfunder.cogmaster.Configs;
 
-import java.util.HashMap;
-import java.util.Objects;
-
 public class ConfigReference implements Exportable {
 
     // Path to derived config

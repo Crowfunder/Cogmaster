@@ -16,14 +16,22 @@ public class ParserService {
         parsers = new ArrayList<>();
         parsers.add(new Parser("item", "parseable/item.xml"));   // for now no reverse search
 
-        parse();
     }
 
-    public Index parse() {
+    public Index populatePathIndex() {
         Index index = new Index();
         for (Parser parser : parsers) {
-            index.update(parser.parse());
+            index.update(parser.populatePathIndex());
         }
         return index;
     }
+
+//    public Index populateParameterIndex(Index index) {
+//        Index index = new Index();
+//        for (Parser parser : parsers) {
+//            index.update(parser.populateParameterIndex(index));
+//        }
+//        return index;
+//    }
+
 }

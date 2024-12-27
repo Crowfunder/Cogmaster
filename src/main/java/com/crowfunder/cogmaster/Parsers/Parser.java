@@ -1,9 +1,6 @@
 package com.crowfunder.cogmaster.Parsers;
 
-import com.crowfunder.cogmaster.Configs.ConfigEntry;
-import com.crowfunder.cogmaster.Configs.ParameterArray;
-import com.crowfunder.cogmaster.Configs.ParameterValue;
-import com.crowfunder.cogmaster.Configs.Path;
+import com.crowfunder.cogmaster.Configs.*;
 import com.crowfunder.cogmaster.Index.Index;
 
 import org.w3c.dom.Document;
@@ -58,7 +55,7 @@ public class Parser {
     }
 
 
-    public Index parse() {
+    public Index populatePathIndex() {
 
         // Restart the index for parsing
         index = new Index();
@@ -87,41 +84,9 @@ public class Parser {
                 }
 
                 ConfigEntry configEntry = parseEntry(entry);
-
                 index.addPathIndexEntry(configEntry.getPath(), configEntry);
 
-                // Todo Add derivedParameter resolving
-                // We want it done when parsing, not on runtime since it may be a heavy operation
-                // Theoretically speaking IndexRepository can resolve them on-read and they will be cached
-                // until the next restart, but we want to reduce runtime overhead as much as possible
-                // or we can resolve derivations not in the Parser, but in the IndexRepository, once
-                // parsing is complete
-                // though that collides with populating the parameterindex
-                // It probably has to go before parameterindex parsing,
-                // honestly, whether this parser is O(2n) or O(10n) doesn't matter much,
-                // startup can be as long as it's needed
-                // it should just be as responsive as possible
-
-                // About derivedParameter resolving:
-                // create empty hashmap
-                // while deriverPath != ""
-                // get parent parameters
-                // add all parameters to the hashmap
-                // when done, update configEntry derivedParameters with new parameters
-
-                // HERE GOES THE CODE THAT READS THROUGH THE CONFIGENTRY
-                // TO ADD ENTRIES INTO PARAMETERINDEX
-                // unfinished, Todo when I decide to take care of reverse search
-//                for (Path path : indexableParameterPaths) {
-//                    ParameterValue val = configEntry.getParameters().resolveParameterPath(path);
-//                    index.addParameterIndexEntry(path, );
-//                }
-
-
-
             }
-
-
         }
         catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
@@ -131,12 +96,12 @@ public class Parser {
         return index;
     }
 
+    // Parses <entry> node into a ConfigEntry object
     private ConfigEntry parseEntry(Node entry) {
-        ConfigEntry configEntry = new ConfigEntry();
+        ConfigEntry configEntry = new ConfigEntry(configName);
 
         NodeList implementationNodes = entry.getChildNodes();
-
-        Node parametersRoot;
+        Node parametersRoot = null;
 
         for (int i = 0; i < implementationNodes.getLength(); i++) {
             Node implementationNode = implementationNodes.item(i);
@@ -147,15 +112,12 @@ public class Parser {
             switch (implementationNode.getNodeName()) {
                 case "name" -> configEntry.getPath().setPath(implementationNode.getTextContent());
                 case "implementation" -> {
-                    // jeśli derived, parameterroot to subnode tego o nazwie configname
-                    // + name w parameterroot to derivedPath
-                    // jeśli nie, parameterroot to ten node
                     if (implementationNode.getAttributes().getNamedItem("class").getNodeValue().contains("Derived")) {
                         parametersRoot = implementationNode.getFirstChild();
                         if (!parametersRoot.getNodeName().equals(configName)) {
                             System.out.printf(parametersRoot.getNodeName());
                             System.out.printf(configName);
-                            throw new RuntimeException("A fine punishment for laziness, somehow parameterroot wasn't the first subnode of implementation.")
+                            throw new RuntimeException("A fine punishment for laziness, somehow parameterroot wasn't the first subnode of implementation.");
                         }
                     } else {
                         parametersRoot = implementationNode;
@@ -169,10 +131,36 @@ public class Parser {
                 }
             }
         }
+        if (parametersRoot == null) {
+            throw new RuntimeException("Failed to locate parameters node");
+        }
 
-        configEntry.getParameters().update(parseParameters(parametersRoot));
-
+        configEntry.updateOwnParameters(parseParameters(parametersRoot));
         return configEntry;
+    }
+
+    private ConfigReference parseReference(Node referenceRoot) {
+        ConfigReference reference = new ConfigReference();
+        NodeList implementationNodes = referenceRoot.getChildNodes();
+        Node parameterRoot = null;
+        for (int i = 0; i < implementationNodes.getLength(); i++) {
+            Node implementationNode = implementationNodes.item(i);
+            if (implementationNode.getNodeType() != Node.ELEMENT_NODE) { continue; }
+
+            switch (implementationNode.getNodeName()) {
+                case "name" -> reference.getPath().setPath(implementationNode.getTextContent());
+                case "arguments" -> {
+                    parameterRoot = implementationNode;
+                }
+                default -> {continue;}
+            }
+        }
+
+        assert parameterRoot != null;   // Generally not possible but better safe than sorry
+        ParameterArray parameterArray = parseParameters(parameterRoot);
+
+        reference.getParameters().update(parameterArray);
+        return reference;
     }
 
 
@@ -185,7 +173,82 @@ public class Parser {
     private ParameterArray parseParameters(Node parametersRoot) {
         ParameterArray parameterArray = new ParameterArray();
 
+        NodeList parameterNodes = parametersRoot.getChildNodes();
+        for (int i = 0; i < parameterNodes.getLength(); i++) {
+            Node parameterNode = parameterNodes.item(i);
+            if (parameterNode.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+
+            // Make sure we actually get an element node
+            Node nextNode = parameterNode.getNextSibling();
+            while (nextNode.getNodeType() != Node.ELEMENT_NODE) {
+                nextNode = nextNode.getNextSibling();
+            }
+
+            // Apply heuristics
+            String key;
+            ParameterValue value;
+
+            // Heuristic 1 - Repeated nodes of the same name (concealed list)
+            if (parameterNode.getNodeName().equals(nextNode.getNodeName())) {
+                List<String> listValue = new ArrayList<>();
+                while (parameterNode.getNodeName().equals(nextNode.getNodeName())) {
+                    i++;
+                    if (nextNode.getNodeType() == Node.ELEMENT_NODE) {
+                        listValue.add(nextNode.getTextContent());
+                    }
+                    nextNode = nextNode.getNextSibling();
+                    while (nextNode.getNodeType() != Node.ELEMENT_NODE) {
+                        nextNode = nextNode.getNextSibling();
+                        i++;
+                    }
+                }
+                key = parameterNode.getNodeName();
+                value = new ParameterValue(listValue);
+                parameterArray.addParameter(key, value);
+                continue;
+            }
+
+            switch (parameterNode.getNodeName()) {
+
+                // Heuristic 2 - key/value pair
+                case "key" -> {
+                    key = parameterNode.getTextContent();
+                    Node valueNode = nextNode;
+
+                    // In case it somehow isn't the next node
+                    while (!valueNode.getNodeName().equals("value")) {
+                        valueNode = valueNode.getNextSibling();
+                    }
+
+                    // Heuristic 3 - ConfigReference value
+                    if (valueNode.getAttributes().getNamedItem("class").getNodeValue().contains("ConfigReference")) {
+                        value = new ParameterValue(parseReference(valueNode));
+                    } else {
+                        value = new ParameterValue(valueNode.getTextContent());
+                    }
+
+                }
+                case "value" -> {
+                    // skip, we already took care of it. If it's orphaned - shame.
+                    continue;
+                }
+                default -> {
+                    key = parameterNode.getNodeName();
+                    value = new ParameterValue(parameterNode.getTextContent());
+                }
+            }
+            parameterArray.addParameter(key, value);
+        }
         return parameterArray;
     }
+
+
+
+    // Populates parameter index
+//    public Index populateParameterIndex(Index index) {
+//
+//    }
 
 }
