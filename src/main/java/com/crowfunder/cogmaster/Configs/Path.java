@@ -9,6 +9,10 @@ public class Path {
     private String path;
     private final String delimiter = "/";
 
+    public Path() {
+        this.path = "";
+    }
+
     public Path(String path) {
         this.path = path;
     }

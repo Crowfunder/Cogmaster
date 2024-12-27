@@ -73,9 +73,9 @@ public class ConfigEntry implements Exportable {
     // Parameterless
     public ConfigEntry(String sourceConfig) {
         this.sourceConfig = sourceConfig;
-        this.path = new Path("");
+        this.path = new Path();
         this.parameters = new ParameterArray();
-        this.derivedPath = new Path("");   // Empty string for no derivation
+        this.derivedPath = new Path();   // Empty string for no derivation
         this.derivedParameters = new ParameterArray();
     }
 
@@ -84,7 +84,7 @@ public class ConfigEntry implements Exportable {
         this.sourceConfig = sourceConfig;
         this.path = path;
         this.parameters = parameters;
-        this.derivedPath = new Path("");   // Empty string for no derivation
+        this.derivedPath = new Path();   // Empty string for no derivation
         this.derivedParameters = new ParameterArray();
     }
 

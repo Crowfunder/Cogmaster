@@ -30,6 +30,11 @@ public class ConfigReference implements Exportable {
         return out.append("}").toString();
     }
 
+    public ConfigReference() {
+        this.derivedPath = new Path();
+        this.parameters = new ParameterArray();
+    }
+
     public ConfigReference(Path derivedPath) {
         this.derivedPath = derivedPath;
         this.parameters = new ParameterArray();

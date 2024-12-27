@@ -59,4 +59,8 @@ public class ParameterArray implements Exportable {
     public boolean isEmpty() {
         return hashmap.isEmpty();
     }
+
+    public void addParameter(String key, ParameterValue value) {
+        hashmap.put(key, value);
+    }
 }

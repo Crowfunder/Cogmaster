@@ -3,7 +3,11 @@ package com.crowfunder.cogmaster.Configs;
 
 public class ParameterValue {
 
-    private Object value;
+    private final Object value;
+
+    public ParameterValue(Object value) {
+        this.value = value;
+    }
 
     public boolean isNested() {
         return value instanceof ParameterArray;
