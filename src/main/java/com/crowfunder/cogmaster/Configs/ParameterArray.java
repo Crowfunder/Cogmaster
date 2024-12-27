@@ -12,7 +12,7 @@ public class ParameterArray implements Exportable {
     public String toJSONString() {
         StringBuilder out = new StringBuilder();
         for (String key : hashmap.keySet()) {
-            out.append("\"").append(key).append("\"").append(": ").append("\"").append(hashmap.get(key).toJSONString()).append("\",\n");
+            out.append("\"").append(key).append("\"").append(": ").append("\"").append(hashmap.get(key)).append("\",\n");
 
         }
         return out.toString();
@@ -54,5 +54,9 @@ public class ParameterArray implements Exportable {
         }
 
         return val;
+    }
+
+    public boolean isEmpty() {
+        return hashmap.isEmpty();
     }
 }

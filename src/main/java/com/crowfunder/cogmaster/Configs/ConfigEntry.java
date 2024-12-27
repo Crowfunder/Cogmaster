@@ -16,6 +16,9 @@ public class ConfigEntry implements Exportable {
     // Non-overriden parameters pulled from all derivative (parent) configs
     private final ParameterArray derivedParameters;
 
+    // Source config name
+    private final String sourceConfig;
+
     public Path getPath() {
         return this.path;
     }
@@ -30,6 +33,22 @@ public class ConfigEntry implements Exportable {
         return this.parameters.derive(derivedParameters);
     }
 
+    public ParameterArray getOwnParameters() {
+        return this.parameters;
+    }
+
+    public ParameterArray getDerivedParameters() {
+        return this.derivedParameters;
+    }
+
+    public void updateOwnParameters(ParameterArray newParameters) {
+        parameters.update(newParameters);
+    }
+
+    public void updateDerivedParameters(ParameterArray newParameters) {
+        derivedParameters.update(newParameters);
+    }
+
     public boolean isDerived() {
         return this.derivedPath.getPath() != null;
     }
@@ -38,7 +57,8 @@ public class ConfigEntry implements Exportable {
         StringBuilder out = new StringBuilder();
         out.append("{");
         out.append("\"path\": \"").append(this.path).append("\",");
-        if (!Objects.equals(derivedPath, "")) {
+        out.append("\"sourceConfig\": \"").append(this.sourceConfig).append("\",");
+        if (isDerived()) {
             out.append("\"type\": \"").append("DerivedConfig").append("\",");
             out.append("\"derivedPath\": \"").append(this.derivedPath).append("\",");
         }
@@ -51,7 +71,8 @@ public class ConfigEntry implements Exportable {
     }
 
     // Parameterless
-    public ConfigEntry() {
+    public ConfigEntry(String sourceConfig) {
+        this.sourceConfig = sourceConfig;
         this.path = new Path("");
         this.parameters = new ParameterArray();
         this.derivedPath = new Path("");   // Empty string for no derivation
@@ -59,14 +80,16 @@ public class ConfigEntry implements Exportable {
     }
 
     // Base (Non-derived) class constructor
-    public ConfigEntry(Path path, ParameterArray parameters) {
+    public ConfigEntry(String sourceConfig, Path path, ParameterArray parameters) {
+        this.sourceConfig = sourceConfig;
         this.path = path;
         this.parameters = parameters;
         this.derivedPath = new Path("");   // Empty string for no derivation
         this.derivedParameters = new ParameterArray();
     }
 
-    public ConfigEntry(Path path, Path derivedPath, ParameterArray parameters, ParameterArray derivedParameters) {
+    public ConfigEntry(String sourceConfig, Path path, Path derivedPath, ParameterArray parameters, ParameterArray derivedParameters) {
+        this.sourceConfig = sourceConfig;
         this.path = path;
         this.parameters = parameters;
         this.derivedPath = derivedPath;
