@@ -1,7 +1,5 @@
 package com.crowfunder.cogmaster.Configs;
 
-import java.util.Objects;
-
 public class ConfigEntry implements Exportable {
 
     // Own identifier config path
@@ -96,5 +94,8 @@ public class ConfigEntry implements Exportable {
         this.derivedParameters = derivedParameters;
     }
 
-
+    public void loadReference(ConfigReference reference) {
+        this.derivedPath.setPath(reference.getPath());
+        this.parameters.update(reference.getParameters());
+    }
 }

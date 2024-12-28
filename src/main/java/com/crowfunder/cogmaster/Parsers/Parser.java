@@ -54,6 +54,30 @@ public class Parser {
         return indexableParameterPaths;
     }
 
+    private Node getNextNode(Node node) {
+        Node nextNode = node.getNextSibling();
+        if (nextNode == null) {
+            return null;
+        }
+        while (nextNode.getNodeType() != Node.ELEMENT_NODE) {
+            nextNode = nextNode.getNextSibling();
+            if (nextNode == null) {
+                return null;
+            }
+        }
+        return nextNode;
+    }
+
+    private Node getFirstChild(Node node) {
+        Node childNode = node.getFirstChild();
+        if (childNode == null) {
+            return null;
+        }
+        while (childNode.getNodeType() != Node.ELEMENT_NODE) {
+            childNode = childNode.getNextSibling();
+        }
+        return childNode;
+    }
 
     public Index populatePathIndex() {
 
@@ -112,15 +136,21 @@ public class Parser {
             switch (implementationNode.getNodeName()) {
                 case "name" -> configEntry.getPath().setPath(implementationNode.getTextContent());
                 case "implementation" -> {
-                    if (implementationNode.getAttributes().getNamedItem("class").getNodeValue().contains("Derived")) {
-                        parametersRoot = implementationNode.getFirstChild();
-                        if (!parametersRoot.getNodeName().equals(configName)) {
-                            System.out.printf(parametersRoot.getNodeName());
+
+                    // Handle derived ConfigEntries
+                    if (implementationNode.getAttributes().getNamedItem("class").getNodeValue().contains("$Derived")) {
+
+                        // <item> bierzesz jako rootnode do parseReference
+                        // potem robisz loadReference na configEntry i zostawiasz
+                        Node derivedRoot = getFirstChild(implementationNode);
+                        if (!derivedRoot.getNodeName().equals(configName)) {
+                            System.out.printf(derivedRoot.getNodeName());
                             System.out.printf(configName);
                             throw new RuntimeException("A fine punishment for laziness, somehow parameterroot wasn't the first subnode of implementation.");
                         }
+                        configEntry.loadReference(parseReference(derivedRoot));
                     } else {
-                        parametersRoot = implementationNode;
+                        configEntry.updateOwnParameters(parseParameters(implementationNode));
                     }
                 } case "parameters" -> {
                     // Parameters are unnecessary for now.
@@ -130,12 +160,8 @@ public class Parser {
                     continue;
                 }
             }
-        }
-        if (parametersRoot == null) {
-            throw new RuntimeException("Failed to locate parameters node");
-        }
 
-        configEntry.updateOwnParameters(parseParameters(parametersRoot));
+        }
         return configEntry;
     }
 
@@ -151,15 +177,13 @@ public class Parser {
                 case "name" -> reference.getPath().setPath(implementationNode.getTextContent());
                 case "arguments" -> {
                     parameterRoot = implementationNode;
+                    ParameterArray parameterArray = parseParameters(parameterRoot);
+                    reference.getParameters().update(parameterArray);
                 }
                 default -> {continue;}
             }
         }
 
-        assert parameterRoot != null;   // Generally not possible but better safe than sorry
-        ParameterArray parameterArray = parseParameters(parameterRoot);
-
-        reference.getParameters().update(parameterArray);
         return reference;
     }
 
@@ -180,34 +204,31 @@ public class Parser {
                 continue;
             }
 
-            // Make sure we actually get an element node
-            Node nextNode = parameterNode.getNextSibling();
-            while (nextNode.getNodeType() != Node.ELEMENT_NODE) {
-                nextNode = nextNode.getNextSibling();
-            }
-
             // Apply heuristics
             String key;
             ParameterValue value;
 
             // Heuristic 1 - Repeated nodes of the same name (concealed list)
-            if (parameterNode.getNodeName().equals(nextNode.getNodeName())) {
-                List<String> listValue = new ArrayList<>();
-                while (parameterNode.getNodeName().equals(nextNode.getNodeName())) {
-                    i++;
-                    if (nextNode.getNodeType() == Node.ELEMENT_NODE) {
-                        listValue.add(nextNode.getTextContent());
-                    }
-                    nextNode = nextNode.getNextSibling();
-                    while (nextNode.getNodeType() != Node.ELEMENT_NODE) {
-                        nextNode = nextNode.getNextSibling();
+            Node nextNode = getNextNode(parameterNode);
+            if (nextNode != null) {
+                if (parameterNode.getNodeName().equals(nextNode.getNodeName())) {
+                    List<String> listValue = new ArrayList<>();
+                    while (parameterNode.getNodeName().equals(nextNode.getNodeName())) {
                         i++;
+                        if (nextNode.getNodeType() == Node.ELEMENT_NODE) {
+                            listValue.add(nextNode.getTextContent());
+                        }
+                        nextNode = nextNode.getNextSibling();
+                        while (nextNode.getNodeType() != Node.ELEMENT_NODE) {
+                            nextNode = nextNode.getNextSibling();
+                            i++;
+                        }
                     }
+                    key = parameterNode.getNodeName();
+                    value = new ParameterValue(listValue);
+                    parameterArray.addParameter(key, value);
+                    continue;
                 }
-                key = parameterNode.getNodeName();
-                value = new ParameterValue(listValue);
-                parameterArray.addParameter(key, value);
-                continue;
             }
 
             switch (parameterNode.getNodeName()) {
@@ -219,11 +240,11 @@ public class Parser {
 
                     // In case it somehow isn't the next node
                     while (!valueNode.getNodeName().equals("value")) {
-                        valueNode = valueNode.getNextSibling();
+                        valueNode = getNextNode(valueNode);
                     }
 
                     // Heuristic 3 - ConfigReference value
-                    if (valueNode.getAttributes().getNamedItem("class").getNodeValue().contains("ConfigReference")) {
+                    if (valueNode.getAttributes().getNamedItem("class") != null && valueNode.getAttributes().getNamedItem("class").getNodeValue().contains("ConfigReference")) {
                         value = new ParameterValue(parseReference(valueNode));
                     } else {
                         value = new ParameterValue(valueNode.getTextContent());
@@ -235,6 +256,7 @@ public class Parser {
                     continue;
                 }
                 default -> {
+                    // TODO: Handle nested node values on default
                     key = parameterNode.getNodeName();
                     value = new ParameterValue(parameterNode.getTextContent());
                 }

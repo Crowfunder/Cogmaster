@@ -47,4 +47,6 @@ public class Path {
         this.path = newPath;
     }
 
+    public void setPath(Path newPath) { this.path = newPath.getPath(); }
+
 }
