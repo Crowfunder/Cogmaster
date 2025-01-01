@@ -236,18 +236,20 @@ public class Parser {
                 // Heuristic 2 - key/value pair
                 case "key" -> {
                     key = parameterNode.getTextContent();
-                    Node valueNode = nextNode;
 
-                    // In case it somehow isn't the next node
-                    while (!valueNode.getNodeName().equals("value")) {
-                        valueNode = getNextNode(valueNode);
+                    // Seldom does it happen, but sometimes key exists without a value node
+                    // We can't jump to default so here we go redundancy!
+                    if (nextNode == null || !nextNode.getNodeName().equals("value")) {
+                        key = parameterNode.getNodeName();
+                        value = new ParameterValue(parameterNode.getTextContent());
+                        break;
                     }
 
                     // Heuristic 3 - ConfigReference value
-                    if (valueNode.getAttributes().getNamedItem("class") != null && valueNode.getAttributes().getNamedItem("class").getNodeValue().contains("ConfigReference")) {
-                        value = new ParameterValue(parseReference(valueNode));
+                    if (nextNode.getAttributes().getNamedItem("class") != null && nextNode.getAttributes().getNamedItem("class").getNodeValue().contains("ConfigReference")) {
+                        value = new ParameterValue(parseReference(nextNode));
                     } else {
-                        value = new ParameterValue(valueNode.getTextContent());
+                        value = new ParameterValue(nextNode.getTextContent());
                     }
 
                 }
