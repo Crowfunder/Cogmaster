@@ -150,7 +150,7 @@ public class Parser {
                         }
                         configEntry.loadReference(parseReference(derivedRoot));
                     } else {
-                        configEntry.updateOwnParameters(parseParameters(implementationNode));
+                        configEntry.updateOwnParameters(parseParameterArray(implementationNode));
                     }
                 } case "parameters" -> {
                     // Parameters are unnecessary for now.
@@ -168,7 +168,7 @@ public class Parser {
     private ConfigReference parseReference(Node referenceRoot) {
         ConfigReference reference = new ConfigReference();
         NodeList implementationNodes = referenceRoot.getChildNodes();
-        Node parameterRoot = null;
+        Node parameterRoot;
         for (int i = 0; i < implementationNodes.getLength(); i++) {
             Node implementationNode = implementationNodes.item(i);
             if (implementationNode.getNodeType() != Node.ELEMENT_NODE) { continue; }
@@ -177,7 +177,7 @@ public class Parser {
                 case "name" -> reference.getPath().setPath(implementationNode.getTextContent());
                 case "arguments" -> {
                     parameterRoot = implementationNode;
-                    ParameterArray parameterArray = parseParameters(parameterRoot);
+                    ParameterArray parameterArray = parseParameterArray(parameterRoot);
                     reference.getParameters().update(parameterArray);
                 }
                 default -> {continue;}
@@ -194,7 +194,7 @@ public class Parser {
     // - key/value node pairs
     // - repeated nodes of the same name (concealed lists)
     // - values as config references
-    private ParameterArray parseParameters(Node parametersRoot) {
+    private ParameterArray parseParameterArray(Node parametersRoot) {
         ParameterArray parameterArray = new ParameterArray();
 
         NodeList parameterNodes = parametersRoot.getChildNodes();
@@ -219,6 +219,9 @@ public class Parser {
                             listValue.add(nextNode.getTextContent());
                         }
                         nextNode = nextNode.getNextSibling();
+                        if (nextNode == null) {
+                            break;
+                        }
                         while (nextNode.getNodeType() != Node.ELEMENT_NODE) {
                             nextNode = nextNode.getNextSibling();
                             i++;
@@ -241,7 +244,7 @@ public class Parser {
                     // We can't jump to default so here we go redundancy!
                     if (nextNode == null || !nextNode.getNodeName().equals("value")) {
                         key = parameterNode.getNodeName();
-                        value = new ParameterValue(parameterNode.getTextContent());
+                        value = parseParameterValue(parameterNode);
                         break;
                     }
 
@@ -249,7 +252,7 @@ public class Parser {
                     if (nextNode.getAttributes().getNamedItem("class") != null && nextNode.getAttributes().getNamedItem("class").getNodeValue().contains("ConfigReference")) {
                         value = new ParameterValue(parseReference(nextNode));
                     } else {
-                        value = new ParameterValue(nextNode.getTextContent());
+                        value = parseParameterValue(nextNode);
                     }
 
                 }
@@ -258,9 +261,8 @@ public class Parser {
                     continue;
                 }
                 default -> {
-                    // TODO: Handle nested node values on default
                     key = parameterNode.getNodeName();
-                    value = new ParameterValue(parameterNode.getTextContent());
+                    value = parseParameterValue(parameterNode);
                 }
             }
             parameterArray.addParameter(key, value);
@@ -268,6 +270,17 @@ public class Parser {
         return parameterArray;
     }
 
+
+    private ParameterValue parseParameterValue(Node parameterNode) {
+
+        ParameterValue parameterValue;
+        if (parameterNode.getChildNodes().getLength() != 0) {
+            parameterValue = new ParameterValue(parseParameterArray(parameterNode));
+        } else {
+            parameterValue = new ParameterValue(parameterNode.getTextContent());
+        }
+        return parameterValue;
+    }
 
 
     // Populates parameter index
