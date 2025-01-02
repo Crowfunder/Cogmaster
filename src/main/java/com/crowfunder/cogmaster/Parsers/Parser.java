@@ -204,31 +204,28 @@ public class Parser {
                 continue;
             }
 
-            // Apply heuristics
             String key;
             ParameterValue value;
 
             // Heuristic 1 - Repeated nodes of the same name (concealed list)
             Node nextNode = getNextNode(parameterNode);
-            if (nextNode != null) {
-                if (parameterNode.getNodeName().equals(nextNode.getNodeName())) {
-                    List<String> listValue = new ArrayList<>();
-                    while (nextNode != null && parameterNode.getNodeName().equals(nextNode.getNodeName())) {
-                        i++;
-                        if (nextNode.getNodeType() == Node.ELEMENT_NODE) {
-                            listValue.add(nextNode.getTextContent());
-                        }
-                        nextNode = nextNode.getNextSibling();
-                        while (nextNode != null && nextNode.getNodeType() != Node.ELEMENT_NODE) {
-                            nextNode = nextNode.getNextSibling();
-                            i++;
-                        }
+            if (nextNode != null && parameterNode.getNodeName().equals(nextNode.getNodeName())) {
+                List<String> listValue = new ArrayList<>();
+                while (nextNode != null && parameterNode.getNodeName().equals(nextNode.getNodeName())) {
+                    i++;
+                    if (nextNode.getNodeType() == Node.ELEMENT_NODE) {
+                        listValue.add(nextNode.getTextContent());
                     }
-                    key = parameterNode.getNodeName();
-                    value = new ParameterValue(listValue);
-                    parameterArray.addParameter(key, value);
-                    continue;
+                    nextNode = nextNode.getNextSibling();
+                    while (nextNode != null && nextNode.getNodeType() != Node.ELEMENT_NODE) {
+                        nextNode = nextNode.getNextSibling();
+                        i++;
+                    }
                 }
+                key = parameterNode.getNodeName();
+                value = new ParameterValue(listValue);
+                parameterArray.addParameter(key, value);
+                continue;
             }
 
             switch (parameterNode.getNodeName()) {

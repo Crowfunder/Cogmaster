@@ -47,6 +47,16 @@ public class Path {
         return path.hashCode();
     }
 
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof Path other) {
+            return Objects.equals(path, other.path);
+        }
+        return false;
+    }
+
     public void setPath(String newPath) {
         this.path = newPath;
     }
