@@ -210,11 +210,12 @@ public class Parser {
             // Heuristic 1 - Repeated nodes of the same name (concealed list)
             Node nextNode = getNextNode(parameterNode);
             if (nextNode != null && parameterNode.getNodeName().equals(nextNode.getNodeName())) {
-                List<String> listValue = new ArrayList<>();
+                List<ParameterValue> listValue = new ArrayList<>();
+                listValue.add(parseParameterValue(parameterNode));
                 while (nextNode != null && parameterNode.getNodeName().equals(nextNode.getNodeName())) {
                     i++;
                     if (nextNode.getNodeType() == Node.ELEMENT_NODE) {
-                        listValue.add(nextNode.getTextContent());
+                        listValue.add(parseParameterValue(nextNode));
                     }
                     nextNode = nextNode.getNextSibling();
                     while (nextNode != null && nextNode.getNodeType() != Node.ELEMENT_NODE) {

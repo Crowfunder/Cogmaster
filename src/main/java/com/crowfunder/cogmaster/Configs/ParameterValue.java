@@ -1,6 +1,8 @@
 package com.crowfunder.cogmaster.Configs;
 
 
+import java.util.List;
+
 public class ParameterValue {
 
     private final Object value;
@@ -37,6 +39,10 @@ public class ParameterValue {
 
         else if (value instanceof Boolean) {
             return ((Boolean) value).toString();
+        }
+
+        else if (value instanceof List) {
+            return value.toString();
         }
 
         else if (value instanceof ParameterArray) {
