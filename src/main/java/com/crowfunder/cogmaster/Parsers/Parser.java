@@ -76,6 +76,9 @@ public class Parser {
         }
         while (childNode.getNodeType() != Node.ELEMENT_NODE) {
             childNode = childNode.getNextSibling();
+            if (childNode == null) {
+                break;
+            }
         }
         return childNode;
     }
@@ -139,10 +142,10 @@ public class Parser {
 
                     // Handle derived ConfigEntries
                     if (implementationNode.getAttributes().getNamedItem("class").getNodeValue().contains("$Derived")) {
-
-                        // <item> bierzesz jako rootnode do parseReference
-                        // potem robisz loadReference na configEntry i zostawiasz
                         Node derivedRoot = getFirstChild(implementationNode);
+                        if (derivedRoot == null) {
+                            continue;
+                        }
                         if (!derivedRoot.getNodeName().equals(configName)) {
                             System.out.printf(derivedRoot.getNodeName());
                             System.out.printf(configName);
