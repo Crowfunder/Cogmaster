@@ -4,6 +4,7 @@ import com.crowfunder.cogmaster.Configs.*;
 import com.crowfunder.cogmaster.Index.Index;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -102,7 +103,6 @@ public class Parser {
             for (int i = 0; i < entries.getLength(); i++) {
                 Node entry = entries.item(i);
 
-                // Typechecking may take eons, please don't take eons
                 if (entry.getNodeType() != Node.ELEMENT_NODE) {
                     continue;
                 }
@@ -213,16 +213,13 @@ public class Parser {
             if (nextNode != null) {
                 if (parameterNode.getNodeName().equals(nextNode.getNodeName())) {
                     List<String> listValue = new ArrayList<>();
-                    while (parameterNode.getNodeName().equals(nextNode.getNodeName())) {
+                    while (nextNode != null && parameterNode.getNodeName().equals(nextNode.getNodeName())) {
                         i++;
                         if (nextNode.getNodeType() == Node.ELEMENT_NODE) {
                             listValue.add(nextNode.getTextContent());
                         }
                         nextNode = nextNode.getNextSibling();
-                        if (nextNode == null) {
-                            break;
-                        }
-                        while (nextNode.getNodeType() != Node.ELEMENT_NODE) {
+                        while (nextNode != null && nextNode.getNodeType() != Node.ELEMENT_NODE) {
                             nextNode = nextNode.getNextSibling();
                             i++;
                         }
@@ -274,7 +271,10 @@ public class Parser {
     private ParameterValue parseParameterValue(Node parameterNode) {
 
         ParameterValue parameterValue;
-        if (parameterNode.getChildNodes().getLength() != 0) {
+
+        // I genuinely hate you java
+        // https://stackoverflow.com/questions/20089661/how-to-get-child-nodes-with-element-node-type-only/20091101
+        if (((Element) parameterNode).getElementsByTagName("*").getLength() != 0) {
             parameterValue = new ParameterValue(parseParameterArray(parameterNode));
         } else {
             parameterValue = new ParameterValue(parameterNode.getTextContent());

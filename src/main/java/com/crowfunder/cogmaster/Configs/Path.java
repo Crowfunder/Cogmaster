@@ -43,10 +43,15 @@ public class Path {
         return path;
     }
 
+    public int hashCode() {
+        return path.hashCode();
+    }
+
     public void setPath(String newPath) {
         this.path = newPath;
     }
 
     public void setPath(Path newPath) { this.path = newPath.getPath(); }
+
 
 }
