@@ -8,6 +8,8 @@ import com.crowfunder.cogmaster.Parsers.ParserService;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
+
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -19,13 +21,13 @@ class IndexRepository {
     private final Index index = new Index();
 
     // Get ConfigEntry object by its config path
-    public ConfigEntry resolveConfig(Path path) {
-        return index.getPathIndex().get(path);
+    public ConfigEntry resolveConfig(String configName, Path path) {
+        return index.getPathIndex(configName).get(path);
     }
 
     // Get ConfigEntry object by resolving a ConfigReference object
-    public ConfigEntry resolveConfig(ConfigReference configReference) {
-        return index.getPathIndex().get(configReference.getPath());
+    public ConfigEntry resolveConfig(String configName, ConfigReference configReference) {
+        return index.getPathIndex(configName).get(configReference.getPath());
     }
 
     // Reverse search by specific parameter names and values,
@@ -39,12 +41,12 @@ class IndexRepository {
 
     @PostConstruct
     public void populateIndex() {
-        System.out.println("Parsing the configs, populating PathIndex...");
-        index.update(parserService.populatePathIndex());
+        System.out.println("Parsing the configs, populating ConfigIndex...");
+        index.update(parserService.populateConfigIndex());
         System.out.println("Finished parsing");
 
         System.out.println("Resolving derivations...");
-        resolvePathIndexDerivations();
+        resolveConfigIndexDerivations();
         System.out.println("Finished resolving");
 
 //        System.out.println("Populating ParameterIndex...");
@@ -54,8 +56,8 @@ class IndexRepository {
 
     // Resolve the derivation of a config in-place
     // We want to cache the resolved derivation in the index
-    private void resolveDerivation(Path path) {
-        ConfigEntry configEntry = resolveConfig(path);
+    private void resolveDerivation(String configName, Path path) {
+        ConfigEntry configEntry = resolveConfig(configName, path);
 
         // We only resolve derivations of derived configs
         if (!configEntry.isDerived()) {
@@ -63,20 +65,22 @@ class IndexRepository {
         }
 
         ParameterArray derivedParameters = new ParameterArray();
-        ConfigEntry derivedConfig = resolveConfig(configEntry.getDerivedPath());
+        ConfigEntry derivedConfig = resolveConfig(configName, configEntry.getDerivedPath());
         while (derivedConfig != null) {
             derivedParameters.update(derivedConfig.getParameters());
-            derivedConfig = resolveConfig(derivedConfig.getDerivedPath());
+            derivedConfig = resolveConfig(configName, derivedConfig.getDerivedPath());
         }
         configEntry.updateDerivedParameters(derivedParameters);
 
-        index.addPathIndexEntry(path, configEntry);
+        index.addConfigIndexEntry(configEntry.getSourceConfig(), path, configEntry);
     }
 
-    // Resolve and cache ALL derivations from PathIndex
-    public void resolvePathIndexDerivations() {
-        for (Path path : index.getPathIndex().keySet()) {
-            resolveDerivation(path);
+    // Resolve and cache ALL derivations from ConfigIndex
+    public void resolveConfigIndexDerivations() {
+        for (String configName : index.getConfigIndex().keySet() ) {
+            for (Path path : index.getConfigIndex().get(configName).keySet()) {
+                resolveDerivation(configName, path);
+            }
         }
     }
 

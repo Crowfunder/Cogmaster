@@ -24,10 +24,10 @@ public class ParserService {
 
     }
 
-    public Index populatePathIndex() {
+    public Index populateConfigIndex() {
         Index index = new Index();
         for (Parser parser : parsers) {
-            index.update(parser.populatePathIndex());
+            index.update(parser.populateConfigIndex());
         }
         return index;
     }

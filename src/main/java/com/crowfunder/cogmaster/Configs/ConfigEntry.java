@@ -51,6 +51,10 @@ public class ConfigEntry implements Exportable {
         return this.derivedPath.getPath() != null;
     }
 
+    public String getSourceConfig() {
+        return this.sourceConfig;
+    }
+
     public String toJSONString() {
         StringBuilder out = new StringBuilder();
         out.append("{");

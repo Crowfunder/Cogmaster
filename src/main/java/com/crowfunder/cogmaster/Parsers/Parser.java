@@ -83,7 +83,7 @@ public class Parser {
         return childNode;
     }
 
-    public Index populatePathIndex() {
+    public Index populateConfigIndex() {
 
         // Restart the index for parsing
         index = new Index();
@@ -111,7 +111,7 @@ public class Parser {
                 }
 
                 ConfigEntry configEntry = parseEntry(entry);
-                index.addPathIndexEntry(configEntry.getPath(), configEntry);
+                index.addConfigIndexEntry(configName, configEntry.getPath(), configEntry);
 
             }
         }
