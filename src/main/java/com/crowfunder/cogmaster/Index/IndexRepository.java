@@ -25,9 +25,15 @@ class IndexRepository {
         return index.getPathIndex(configName).get(path);
     }
 
+    // Get ConfigEntry object by its config path
+    public ConfigEntry resolveConfig(String configName, String path) {
+        return index.getPathIndex(configName).get(new Path(path));
+    }
+
+
     // Get ConfigEntry object by resolving a ConfigReference object
-    public ConfigEntry resolveConfig(String configName, ConfigReference configReference) {
-        return index.getPathIndex(configName).get(configReference.getPath());
+    public ConfigEntry resolveConfig(ConfigReference configReference) {
+        return index.getPathIndex(configReference.getSourceConfig()).get(configReference.getPath());
     }
 
     // Reverse search by specific parameter names and values,

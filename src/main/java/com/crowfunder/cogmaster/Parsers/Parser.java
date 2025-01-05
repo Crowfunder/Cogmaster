@@ -169,7 +169,7 @@ public class Parser {
     }
 
     private ConfigReference parseReference(Node referenceRoot) {
-        ConfigReference reference = new ConfigReference();
+        ConfigReference reference = new ConfigReference(configName);
         NodeList implementationNodes = referenceRoot.getChildNodes();
         Node parameterRoot;
         for (int i = 0; i < implementationNodes.getLength(); i++) {

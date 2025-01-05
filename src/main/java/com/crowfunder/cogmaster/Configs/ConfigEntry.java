@@ -1,6 +1,6 @@
 package com.crowfunder.cogmaster.Configs;
 
-public class ConfigEntry implements Exportable {
+public class ConfigEntry {
 
     // Own identifier config path
     private final Path path;
@@ -16,6 +16,9 @@ public class ConfigEntry implements Exportable {
 
     // Source config name
     private final String sourceConfig;
+
+    // Config entry type
+    private final String type = "ConfigEntry";
 
     public Path getPath() {
         return this.path;
@@ -53,23 +56,6 @@ public class ConfigEntry implements Exportable {
 
     public String getSourceConfig() {
         return this.sourceConfig;
-    }
-
-    public String toJSONString() {
-        StringBuilder out = new StringBuilder();
-        out.append("{");
-        out.append("\"path\": \"").append(this.path).append("\",");
-        out.append("\"sourceConfig\": \"").append(this.sourceConfig).append("\",");
-        if (isDerived()) {
-            out.append("\"type\": \"").append("DerivedConfig").append("\",");
-            out.append("\"derivedPath\": \"").append(this.derivedPath).append("\",");
-        }
-        else {
-            out.append("\"type\": \"").append("BaseConfig").append("\",");
-        }
-        out.append("\"parameters\": ");
-        out.append(getParameters().toJSONString());
-        return out.append("}").toString();
     }
 
     // Parameterless

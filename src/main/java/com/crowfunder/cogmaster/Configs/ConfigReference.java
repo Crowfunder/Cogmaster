@@ -1,6 +1,6 @@
 package com.crowfunder.cogmaster.Configs;
 
-public class ConfigReference implements Exportable {
+public class ConfigReference {
 
     // Path to derived config
     // References don't have their own path identifiers!
@@ -8,6 +8,11 @@ public class ConfigReference implements Exportable {
 
     // Overridden parameters
     private final ParameterArray parameters;
+
+    private final String sourceConfig;
+
+    // Config entry type
+    private final String type = "ConfigEntry";   // May be used for more precise Class types in the future
 
     public Path getPath() {
         return this.derivedPath;
@@ -17,29 +22,24 @@ public class ConfigReference implements Exportable {
         return this.parameters;
     }
 
-    public String toJSONString() {
-        StringBuilder out = new StringBuilder();
-        out.append("{");
-        out.append("\"type\": \"").append("ConfigReference").append("\",");
-        out.append("\"path\": \"").append(derivedPath).append("\",");
-        out.append("\"parameters\": ");
-        out.append(getParameters().toJSONString());
-        return out.append("}").toString();
-    }
+    public String getSourceConfig() { return this.sourceConfig; }
 
-    public ConfigReference() {
+    public ConfigReference(String sourceConfig) {
         this.derivedPath = new Path();
         this.parameters = new ParameterArray();
+        this.sourceConfig = sourceConfig;
     }
 
-    public ConfigReference(Path derivedPath) {
+    public ConfigReference(String sourceConfig, Path derivedPath) {
         this.derivedPath = derivedPath;
         this.parameters = new ParameterArray();
+        this.sourceConfig = sourceConfig;
     }
 
-    public ConfigReference(Path derivedPath, ParameterArray parameters) {
+    public ConfigReference(String sourceConfig, Path derivedPath, ParameterArray parameters) {
         this.derivedPath = derivedPath;
         this.parameters = parameters;
+        this.sourceConfig = sourceConfig;
     }
 
 }

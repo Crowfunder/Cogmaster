@@ -2,20 +2,11 @@ package com.crowfunder.cogmaster.Configs;
 
 import java.util.HashMap;
 
-public class ParameterArray implements Exportable {
+public class ParameterArray {
     private final HashMap<String, ParameterValue> hashmap;
 
     public HashMap<String, ParameterValue> getHashMap() {
         return hashmap;
-    }
-
-    public String toJSONString() {
-        StringBuilder out = new StringBuilder();
-        for (String key : hashmap.keySet()) {
-            out.append("\"").append(key).append("\"").append(": ").append("\"").append(hashmap.get(key)).append("\",\n");
-
-        }
-        return out.toString();
     }
 
     public ParameterArray update(ParameterArray parameterArray) {

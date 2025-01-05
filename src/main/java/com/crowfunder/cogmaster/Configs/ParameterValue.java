@@ -45,12 +45,13 @@ public class ParameterValue {
             return value.toString();
         }
 
+        // Todo: Not the right way to return it, it has to be serialized to json as well
         else if (value instanceof ParameterArray) {
-            return ((ParameterArray) value).toJSONString();
+            return ((ParameterArray) value).toString();
         }
 
         else if (value instanceof ConfigReference) {
-            return ((ConfigReference) value).toJSONString();
+            return ((ConfigReference) value).toString();
         }
         return "";
     }
