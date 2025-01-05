@@ -141,17 +141,22 @@ public class Parser {
                 case "implementation" -> {
 
                     // Handle derived ConfigEntries
-                    if (implementationNode.getAttributes().getNamedItem("class").getNodeValue().contains("$Derived")) {
+                    String implementationType = implementationNode.getAttributes().getNamedItem("class").getNodeValue();
+                    if (implementationType == null) {
+                        System.out.println("Unable to locate implementation of \"<implementation>\" node");
+                        implementationType = "ConfigEntry";
+                    }
+                    configEntry.setImplementationType(implementationType);
+                    if (implementationType.contains("$Derived")) {
                         Node derivedRoot = getFirstChild(implementationNode);
-                        if (derivedRoot == null) {
-                            continue;
-                        }
+                        if (derivedRoot == null) { continue; }
                         if (!derivedRoot.getNodeName().equals(configName)) {
                             System.out.printf(derivedRoot.getNodeName());
                             System.out.printf(configName);
                             throw new RuntimeException("A fine punishment for laziness, somehow parameterroot wasn't the first subnode of implementation.");
                         }
                         configEntry.loadReference(parseReference(derivedRoot));
+
                     } else {
                         configEntry.updateOwnParameters(parseParameterArray(implementationNode));
                     }

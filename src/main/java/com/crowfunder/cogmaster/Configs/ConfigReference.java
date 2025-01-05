@@ -2,6 +2,8 @@ package com.crowfunder.cogmaster.Configs;
 
 public class ConfigReference {
 
+    private final String implementationType = "com.threerings.config.ConfigReference";
+
     // Path to derived config
     // References don't have their own path identifiers!
     private final Path derivedPath;
@@ -11,8 +13,6 @@ public class ConfigReference {
 
     private final String sourceConfig;
 
-    // Config entry type
-    private final String type = "ConfigEntry";   // May be used for more precise Class types in the future
 
     public Path getPath() {
         return this.derivedPath;
@@ -23,6 +23,8 @@ public class ConfigReference {
     }
 
     public String getSourceConfig() { return this.sourceConfig; }
+
+    public String getImplementationType() { return this.implementationType; }
 
     public ConfigReference(String sourceConfig) {
         this.derivedPath = new Path();

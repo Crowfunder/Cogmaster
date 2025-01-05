@@ -2,6 +2,8 @@ package com.crowfunder.cogmaster.Configs;
 
 public class ConfigEntry {
 
+    private String implementationType = "ConfigEntry";
+
     // Own identifier config path
     private final Path path;
 
@@ -18,7 +20,7 @@ public class ConfigEntry {
     private final String sourceConfig;
 
     // Config entry type
-    private final String type = "ConfigEntry";
+
 
     public Path getPath() {
         return this.path;
@@ -42,6 +44,14 @@ public class ConfigEntry {
         return this.derivedParameters;
     }
 
+    public String getImplementationType() { return this.implementationType; }
+
+    public String getSourceConfig() {
+        return this.sourceConfig;
+    }
+
+    public void setImplementationType(String implementationType) { this.implementationType = implementationType; }
+
     public void updateOwnParameters(ParameterArray newParameters) {
         parameters.update(newParameters);
     }
@@ -54,9 +64,7 @@ public class ConfigEntry {
         return this.derivedPath.getPath() != null;
     }
 
-    public String getSourceConfig() {
-        return this.sourceConfig;
-    }
+
 
     // Parameterless
     public ConfigEntry(String sourceConfig) {
@@ -65,6 +73,7 @@ public class ConfigEntry {
         this.parameters = new ParameterArray();
         this.derivedPath = new Path();   // Empty string for no derivation
         this.derivedParameters = new ParameterArray();
+        this.implementationType = "";
     }
 
     // Base (Non-derived) class constructor
