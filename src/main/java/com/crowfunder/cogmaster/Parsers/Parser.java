@@ -3,6 +3,8 @@ package com.crowfunder.cogmaster.Parsers;
 import com.crowfunder.cogmaster.Configs.*;
 import com.crowfunder.cogmaster.Index.Index;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,19 +35,7 @@ public class Parser {
     // Do I care? No idea.
     Index index = new Index();
 
-    public Parser(String configName, String xmlFilePath, List<Path> indexableParameterPaths) {
-        this.xmlFilePath = xmlFilePath;
-        this.indexableParameterPaths = indexableParameterPaths;
-        this.configName = configName;
-    }
-
-    // Temporary constructor until reverse indexing works
-    public Parser(String configName, String xmlFilePath) {
-        this.xmlFilePath = xmlFilePath;
-        this.indexableParameterPaths = new ArrayList<>();
-        this.configName = configName;
-
-    }
+    Logger logger = LoggerFactory.getLogger(Parser.class);
 
     public String getXmlFilePath() {
         return xmlFilePath;
@@ -103,6 +93,8 @@ public class Parser {
 
             // Start iterating over entries
             NodeList entries = rootNode.getChildNodes();
+            logger.debug("Parsing \"{}\" config.", configName);
+            logger.debug("Found {} entries.", entries.getLength());
             for (int i = 0; i < entries.getLength(); i++) {
                 Node entry = entries.item(i);
 
@@ -128,7 +120,6 @@ public class Parser {
         ConfigEntry configEntry = new ConfigEntry(configName);
 
         NodeList implementationNodes = entry.getChildNodes();
-        Node parametersRoot = null;
 
         for (int i = 0; i < implementationNodes.getLength(); i++) {
             Node implementationNode = implementationNodes.item(i);
@@ -143,7 +134,7 @@ public class Parser {
                     // Handle derived ConfigEntries
                     String implementationType = implementationNode.getAttributes().getNamedItem("class").getNodeValue();
                     if (implementationType == null) {
-                        System.out.println("Unable to locate implementation of \"<implementation>\" node");
+                        logger.debug("Unable to locate implementation of \"<implementation>\" node");
                         implementationType = "ConfigEntry";
                     }
                     configEntry.setImplementationType(implementationType);
@@ -151,9 +142,7 @@ public class Parser {
                         Node derivedRoot = getFirstChild(implementationNode);
                         if (derivedRoot == null) { continue; }
                         if (!derivedRoot.getNodeName().equals(configName)) {
-                            System.out.printf(derivedRoot.getNodeName());
-                            System.out.printf(configName);
-                            throw new RuntimeException("A fine punishment for laziness, somehow parameterroot wasn't the first subnode of implementation.");
+                            logger.debug("Derived config parameter root node name different from config name.");
                         }
                         configEntry.loadReference(parseReference(derivedRoot));
 
@@ -275,7 +264,6 @@ public class Parser {
 
 
     private ParameterValue parseParameterValue(Node parameterNode) {
-
         ParameterValue parameterValue;
 
         // I genuinely hate you java
@@ -289,9 +277,17 @@ public class Parser {
     }
 
 
-    // Populates parameter index
-//    public Index populateParameterIndex(Index index) {
-//
-//    }
+    public Parser(String configName, String xmlFilePath, List<Path> indexableParameterPaths) {
+        this.xmlFilePath = xmlFilePath;
+        this.indexableParameterPaths = indexableParameterPaths;
+        this.configName = configName;
+    }
+
+    // Temporary constructor until reverse indexing works
+    public Parser(String configName, String xmlFilePath) {
+        this.xmlFilePath = xmlFilePath;
+        this.indexableParameterPaths = new ArrayList<>();
+        this.configName = configName;
+    }
 
 }
