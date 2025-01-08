@@ -5,10 +5,6 @@ import java.util.HashMap;
 public class ParameterArray {
     private final HashMap<String, ParameterValue> hashmap;
 
-    public HashMap<String, ParameterValue> getHashMap() {
-        return hashmap;
-    }
-
     public ParameterArray update(ParameterArray parameterArray) {
         this.hashmap.putAll(parameterArray.getHashMap());
         return this;
@@ -21,14 +17,6 @@ public class ParameterArray {
         ParameterArray effectiveParameterArray = new ParameterArray();
         effectiveParameterArray.update(derivedParameterArray).update(this);
         return effectiveParameterArray;
-    }
-
-    public ParameterArray(HashMap<String, ParameterValue> hashmap) {
-        this.hashmap = hashmap;
-    }
-
-    public ParameterArray() {
-        this.hashmap = new HashMap<>();
     }
 
     public ParameterValue resolveParameterPath(Path path) {
@@ -53,5 +41,17 @@ public class ParameterArray {
 
     public void addParameter(String key, ParameterValue value) {
         hashmap.put(key, value);
+    }
+
+    public HashMap<String, ParameterValue> getHashMap() {
+        return hashmap;
+    }
+
+    public ParameterArray(HashMap<String, ParameterValue> hashmap) {
+        this.hashmap = hashmap;
+    }
+
+    public ParameterArray() {
+        this.hashmap = new HashMap<>();
     }
 }

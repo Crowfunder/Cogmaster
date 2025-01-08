@@ -2,25 +2,25 @@ package com.crowfunder.cogmaster.Configs;
 
 public class ConfigEntry {
 
-    private String implementationType = "ConfigEntry";
+    private String implementationType;
+
+    // Derived implementation
+    private String derivedImplementationType;
 
     // Own identifier config path
     private final Path path;
 
-    // Overriden/Own parameters
-    private final ParameterArray parameters;
-
     // If the config is a derived config, this path points to derivative (parent) config
     private final Path derivedPath;
-
-    // Non-overriden parameters pulled from all derivative (parent) configs
-    private final ParameterArray derivedParameters;
 
     // Source config name
     private final String sourceConfig;
 
-    // Config entry type
+    // Overriden/Own parameters
+    private final ParameterArray parameters;
 
+    // Non-overriden parameters pulled from all derivative (parent) configs
+    private final ParameterArray derivedParameters;
 
     public Path getPath() {
         return this.path;
@@ -46,11 +46,13 @@ public class ConfigEntry {
 
     public String getImplementationType() { return this.implementationType; }
 
-    public String getSourceConfig() {
-        return this.sourceConfig;
-    }
+    public String getSourceConfig() { return this.sourceConfig; }
+
+    public String getDerivedImplementationType() { return this.derivedImplementationType; }
 
     public void setImplementationType(String implementationType) { this.implementationType = implementationType; }
+
+    public void setDerivedImplementationType(String derivedImplementationType) { this.derivedImplementationType = derivedImplementationType; }
 
     public void updateOwnParameters(ParameterArray newParameters) {
         parameters.update(newParameters);
@@ -64,7 +66,10 @@ public class ConfigEntry {
         return this.derivedPath.getPath() != null;
     }
 
-
+    public void loadReference(ConfigReference reference) {
+        this.derivedPath.setPath(reference.getPath());
+        this.parameters.update(reference.getParameters());
+    }
 
     // Parameterless
     public ConfigEntry(String sourceConfig) {
@@ -74,27 +79,7 @@ public class ConfigEntry {
         this.derivedPath = new Path();   // Empty string for no derivation
         this.derivedParameters = new ParameterArray();
         this.implementationType = "";
+        this.derivedImplementationType = "";
     }
 
-    // Base (Non-derived) class constructor
-    public ConfigEntry(String sourceConfig, Path path, ParameterArray parameters) {
-        this.sourceConfig = sourceConfig;
-        this.path = path;
-        this.parameters = parameters;
-        this.derivedPath = new Path();   // Empty string for no derivation
-        this.derivedParameters = new ParameterArray();
-    }
-
-    public ConfigEntry(String sourceConfig, Path path, Path derivedPath, ParameterArray parameters, ParameterArray derivedParameters) {
-        this.sourceConfig = sourceConfig;
-        this.path = path;
-        this.parameters = parameters;
-        this.derivedPath = derivedPath;
-        this.derivedParameters = derivedParameters;
-    }
-
-    public void loadReference(ConfigReference reference) {
-        this.derivedPath.setPath(reference.getPath());
-        this.parameters.update(reference.getParameters());
-    }
 }

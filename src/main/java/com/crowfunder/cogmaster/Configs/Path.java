@@ -9,29 +9,6 @@ public class Path {
     private String path;
     private final String delimiter = "/";
 
-    public Path() {
-        this.path = "";
-    }
-
-    public Path(String path) {
-        this.path = path;
-    }
-
-    public String getPath() {
-        if (path == null || path.isEmpty()) {
-            return null;
-        }
-        return path;
-    }
-
-    // Get first element of the path
-    public String getNextPath() {
-        if (Objects.equals(path, "")) {
-            return null;
-        }
-        return path.split(delimiter)[0];
-    }
-
     // Returns a new object of a rotated path (remove 1st element)
     public Path rotatePath() {
         String[] pathParts = path.split(delimiter);
@@ -57,11 +34,32 @@ public class Path {
         return false;
     }
 
+    public String getPath() {
+        if (path == null || path.isEmpty()) {
+            return null;
+        }
+        return path;
+    }
+
+    // Get first element of the path
+    public String getNextPath() {
+        if (Objects.equals(path, "")) {
+            return null;
+        }
+        return path.split(delimiter)[0];
+    }
+
     public void setPath(String newPath) {
         this.path = newPath;
     }
 
     public void setPath(Path newPath) { this.path = newPath.getPath(); }
+    
+    public Path() {
+        this.path = "";
+    }
 
-
+    public Path(String path) {
+        this.path = path;
+    }
 }

@@ -7,16 +7,8 @@ public class ParameterValue {
 
     private final Object value;
 
-    public ParameterValue(Object value) {
-        this.value = value;
-    }
-
     public boolean isNested() {
         return value instanceof ParameterArray;
-    }
-
-    public Object getValue() {
-        return value;
     }
 
     public String toString() {
@@ -45,7 +37,6 @@ public class ParameterValue {
             return value.toString();
         }
 
-        // Todo: Not the right way to return it, it has to be serialized to json as well
         else if (value instanceof ParameterArray) {
             return ((ParameterArray) value).toString();
         }
@@ -54,5 +45,13 @@ public class ParameterValue {
             return ((ConfigReference) value).toString();
         }
         return "";
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public ParameterValue(Object value) {
+        this.value = value;
     }
 }

@@ -8,11 +8,10 @@ public class ConfigReference {
     // References don't have their own path identifiers!
     private final Path derivedPath;
 
-    // Overridden parameters
-    private final ParameterArray parameters;
-
     private final String sourceConfig;
 
+    // Overridden parameters
+    private final ParameterArray parameters;
 
     public Path getPath() {
         return this.derivedPath;
