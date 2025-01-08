@@ -21,7 +21,6 @@ public class ParserService {
         parsers.add(new Parser("conversation", "src/main/resources/parseable/conversation.xml"));   // for now no reverse search
         parsers.add(new Parser("effect", "src/main/resources/parseable/effect.xml"));   // for now no reverse search
         parsers.add(new Parser("harness", "src/main/resources/parseable/harness.xml"));   // for now no reverse search
-
     }
 
     public Index populateConfigIndex() {
