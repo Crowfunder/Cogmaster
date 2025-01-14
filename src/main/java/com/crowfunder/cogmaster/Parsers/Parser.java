@@ -108,7 +108,7 @@ public class Parser {
             }
         }
         catch (ParserConfigurationException | SAXException | IOException e) {
-            e.printStackTrace();
+            logger.error(e.toString());
             throw new RuntimeException(e);
         }
 
