@@ -45,6 +45,8 @@ public class Parser {
         return indexableParameterPaths;
     }
 
+    // DOM helper method
+    // get the next node that actually is of ELEMENT_NODE type
     private Node getNextNode(Node node) {
         Node nextNode = node.getNextSibling();
         if (nextNode == null) {
@@ -59,6 +61,9 @@ public class Parser {
         return nextNode;
     }
 
+
+    // DOM helper method
+    // get the first child that actually is the first child of ELEMENT_NODE type
     private Node getFirstChild(Node node) {
         Node childNode = node.getFirstChild();
         if (childNode == null) {
@@ -72,6 +77,7 @@ public class Parser {
         }
         return childNode;
     }
+
 
     public Index populateConfigIndex() {
 
@@ -114,6 +120,7 @@ public class Parser {
 
         return index;
     }
+
 
     // Parses <entry> node into a ConfigEntry object
     private ConfigEntry parseEntry(Node entry) {
@@ -161,6 +168,7 @@ public class Parser {
         }
         return configEntry;
     }
+
 
     private ConfigReference parseReference(Node referenceRoot) {
         ConfigReference reference = new ConfigReference(configName);
