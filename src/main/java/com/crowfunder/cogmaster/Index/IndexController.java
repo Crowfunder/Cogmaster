@@ -19,11 +19,7 @@ public class IndexController {
     @GetMapping("{configName}")
     public ResponseEntity<ConfigEntry> resolveConfigByPath(@PathVariable("configName") String configName, @RequestParam String path) {
         Optional<ConfigEntry> resolvedConfig = Optional.ofNullable(indexRepository.resolveConfig(configName, path));
-        if (resolvedConfig.isPresent()) {
-            return ResponseEntity.ok(resolvedConfig.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return resolvedConfig.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 }
