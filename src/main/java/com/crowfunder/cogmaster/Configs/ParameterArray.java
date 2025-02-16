@@ -1,9 +1,10 @@
 package com.crowfunder.cogmaster.Configs;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ParameterArray {
-    private final HashMap<String, ParameterValue> hashmap;
+    private final Map<String, ParameterValue> hashmap;
 
     public ParameterArray update(ParameterArray parameterArray) {
         this.hashmap.putAll(parameterArray.getHashMap());
@@ -43,7 +44,7 @@ public class ParameterArray {
         hashmap.put(key, value);
     }
 
-    public HashMap<String, ParameterValue> getHashMap() {
+    public Map<String, ParameterValue> getHashMap() {
         return hashmap;
     }
 

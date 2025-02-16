@@ -5,17 +5,18 @@ import com.crowfunder.cogmaster.Configs.Path;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Index {
     // The base ConfigIndex that maps config names to hashmaps containing mappings of paths to ConfigEntry objects
-    private final HashMap<String, HashMap<Path, ConfigEntry>> configIndex = new HashMap<>();
+    private final Map<String, Map<Path, ConfigEntry>> configIndex = new HashMap<>();
 
     // Index mapping specific parameter values to ConfigEntry paths from configIndex
-    private final HashMap<Path, HashMap<String, List<Path>>> parameterIndex = new HashMap<>();
+    private final Map<Path, Map<String, List<Path>>> parameterIndex = new HashMap<>();
 
     // Return index for one config
-    public HashMap<Path, ConfigEntry> getPathIndex(String configName) {
+    public Map<Path, ConfigEntry> getPathIndex(String configName) {
         return configIndex.get(configName);
     }
 
@@ -24,7 +25,7 @@ public class Index {
     }
 
     // Return the entire ConfigIndex
-    public HashMap<String, HashMap<Path, ConfigEntry>> getConfigIndex() {
+    public Map<String, Map<Path, ConfigEntry>> getConfigIndex() {
         return configIndex;
     }
 
@@ -32,7 +33,7 @@ public class Index {
         return configIndex.keySet();
     }
 
-    public HashMap<Path, HashMap<String, List<Path>>> getParameterIndex() {
+    public Map<Path, Map<String, List<Path>>> getParameterIndex() {
         return parameterIndex;
     }
 
