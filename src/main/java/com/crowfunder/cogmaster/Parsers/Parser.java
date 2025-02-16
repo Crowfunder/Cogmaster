@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.crowfunder.cogmaster.Utils.DOMUtil.getFirstChild;
+import static com.crowfunder.cogmaster.Utils.DOMUtil.getNextNode;
+
 public class Parser {
 
     // Path to parsed xml config file
@@ -43,39 +46,6 @@ public class Parser {
 
     public List<Path> getIndexableParameterPaths() {
         return indexableParameterPaths;
-    }
-
-    // DOM helper method
-    // get the next node that actually is of ELEMENT_NODE type
-    private Node getNextNode(Node node) {
-        Node nextNode = node.getNextSibling();
-        if (nextNode == null) {
-            return null;
-        }
-        while (nextNode.getNodeType() != Node.ELEMENT_NODE) {
-            nextNode = nextNode.getNextSibling();
-            if (nextNode == null) {
-                return null;
-            }
-        }
-        return nextNode;
-    }
-
-
-    // DOM helper method
-    // get the first child that actually is the first child of ELEMENT_NODE type
-    private Node getFirstChild(Node node) {
-        Node childNode = node.getFirstChild();
-        if (childNode == null) {
-            return null;
-        }
-        while (childNode.getNodeType() != Node.ELEMENT_NODE) {
-            childNode = childNode.getNextSibling();
-            if (childNode == null) {
-                break;
-            }
-        }
-        return childNode;
     }
 
 

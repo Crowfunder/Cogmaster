@@ -15,12 +15,12 @@ public class ParserService {
         // Initialize existing parsers, probably not the best idea to do it like that but oh well
         parsers = new ArrayList<>();
         parsers.add(new Parser("item", "src/main/resources/parseable/item.xml"));   // for now no reverse search
-        parsers.add(new Parser("actor", "src/main/resources/parseable/actor.xml"));   // for now no reverse search
-        parsers.add(new Parser("attack", "src/main/resources/parseable/attack.xml"));   // for now no reverse search
-        parsers.add(new Parser("accessory", "src/main/resources/parseable/accessory.xml"));   // for now no reverse search
-        parsers.add(new Parser("conversation", "src/main/resources/parseable/conversation.xml"));   // for now no reverse search
-        parsers.add(new Parser("effect", "src/main/resources/parseable/effect.xml"));   // for now no reverse search
-        parsers.add(new Parser("harness", "src/main/resources/parseable/harness.xml"));   // for now no reverse search
+        parsers.add(new Parser("actor", "src/main/resources/parseable/actor.xml"));
+        parsers.add(new Parser("attack", "src/main/resources/parseable/attack.xml"));
+        parsers.add(new Parser("accessory", "src/main/resources/parseable/accessory.xml"));
+        parsers.add(new Parser("conversation", "src/main/resources/parseable/conversation.xml"));
+        parsers.add(new Parser("effect", "src/main/resources/parseable/effect.xml"));
+        parsers.add(new Parser("harness", "src/main/resources/parseable/harness.xml"));
     }
 
     public Index populateConfigIndex() {
