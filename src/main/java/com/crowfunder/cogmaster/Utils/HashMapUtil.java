@@ -19,7 +19,7 @@ public class HashMapUtil {
     }
 
     // Converts Properties to HashMap
-    public Map<String, String> propertiesToHashMap(Properties prop) {
+    public static Map<String, String> propertiesToHashMap(Properties prop) {
         return prop.entrySet().stream().collect(
                 Collectors.toMap(
                         e -> String.valueOf(e.getKey()),

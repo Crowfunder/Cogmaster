@@ -34,3 +34,6 @@ build/
 
 ### Configs ###
 src/main/resources/parseable/
+
+### Names ###
+src/main/resources/properties/
