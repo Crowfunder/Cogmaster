@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -22,7 +23,7 @@ public class PropertiesRepository {
     // I'm begging you, I'm begging you please just some proper settings file
     private final String propertiesFilesPath = "src/main/resources/properties";
     private Map<String, String> properties;
-    private Map<String, ArrayList<String>> reverseProperties;
+    private Map<String, List<String>> reverseProperties;
 
     Logger logger = LoggerFactory.getLogger(PropertiesRepository.class);
 
@@ -30,7 +31,7 @@ public class PropertiesRepository {
         return properties.get(property);
     }
 
-    public ArrayList<String> reverseSearchProperty(String propertyValue) {
+    public List<String> reverseSearchProperty(String propertyValue) {
         return reverseProperties.get(propertyValue);
     }
 
@@ -65,7 +66,7 @@ public class PropertiesRepository {
     private void PopulateProperties() {
         logger.info("Populating properties repository...");
         properties = propertiesToHashMap(loadAllProperties());
-        reverseProperties = (Map<String, ArrayList<String>>) invertHashMap(properties);
+        reverseProperties = invertHashMap(properties);
         logger.info("Finished populating");
     }
 

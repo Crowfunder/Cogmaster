@@ -3,17 +3,18 @@ package com.crowfunder.cogmaster.Properties;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PropertiesService {
 
     private PropertiesRepository propertiesRepository;
 
-    public ArrayList<String> resolveName(String name) {
-        return propertiesRepository.reverseSearchProperty(name);
+    public List<String> resolveValue(String value) {
+        return propertiesRepository.reverseSearchProperty(value);
     }
 
-    public String resolveProperty(String property) {
+    public String resolveKey(String property) {
         return propertiesRepository.searchProperty(property);
     }
 

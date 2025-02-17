@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 public class HashMapUtil {
 
     // Inverts a hashmap into a hashmap mapping values to one or more keys (in case of duplicates)
-    public static Map<?, ?> invertHashMap(Map<?, ?> hashMap) {
+    public static <X, Y> Map<Y, List<X>> invertHashMap(Map<X, Y> hashMap) {
         return hashMap.entrySet()
                 .stream()
                 .collect(Collectors.groupingBy(
