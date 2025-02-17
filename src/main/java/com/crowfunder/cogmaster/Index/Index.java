@@ -15,6 +15,9 @@ public class Index {
     // Index mapping specific parameter values to ConfigEntry paths from configIndex
     private final Map<Path, Map<String, List<Path>>> parameterIndex = new HashMap<>();
 
+    // Name Index mapping properties keys found in <name> node to specific config paths
+    private final Map<String, Path> nameIndex = new HashMap<>();
+
     // Return index for one config
     public Map<Path, ConfigEntry> getPathIndex(String configName) {
         return configIndex.get(configName);
@@ -37,9 +40,14 @@ public class Index {
         return parameterIndex;
     }
 
+    private Map<String, Path> getNameIndex() {
+        return nameIndex;
+    }
+
     public void update(Index newIndex) {
         configIndex.putAll(newIndex.getConfigIndex());
         parameterIndex.putAll(newIndex.getParameterIndex());
+        nameIndex.putAll(newIndex.getNameIndex());
     }
 
     public void addConfigIndexEntry(String configName, Path path, ConfigEntry entry) {
@@ -47,6 +55,9 @@ public class Index {
             initializePathIndex(configName);
         }
         configIndex.get(configName).put(path, entry);
+        if (entry.getName() != null && !entry.getName().isEmpty()) {
+            nameIndex.put(entry.getName(), path);
+        }
     }
 //    public void addParameterIndexEntry(String configName, Path path, HashMap<String, List<Path>> parameterIndexEntry) {
 //        if (parameterIndex.get(configName) != null) {

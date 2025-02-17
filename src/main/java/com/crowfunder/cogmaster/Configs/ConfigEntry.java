@@ -66,6 +66,20 @@ public class ConfigEntry {
         return this.derivedPath.getPath() != null;
     }
 
+    // Return effective name, may be replaced by implementation routes in the future
+    // Name gets priority as it's often used as a parameter overriding name in derivation
+    public String getName() {
+        if (this.getParameters().resolveParameterPath("Name") != null) {
+            return this.getParameters().resolveParameterPath("Name").toString();
+        } else if (this.getParameters().resolveParameterPath("name") != null) {
+            return this.getParameters().resolveParameterPath("name").toString();
+        } else {
+            return null;
+        }
+
+
+    }
+
     public void loadReference(ConfigReference reference) {
         this.derivedPath.setPath(reference.getPath());
         this.parameters.update(reference.getParameters());

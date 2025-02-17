@@ -36,6 +36,11 @@ public class ParameterArray {
         return val;
     }
 
+    public ParameterValue resolveParameterPath(String strPath) {
+        Path path = new Path(strPath);
+        return resolveParameterPath(path);
+    }
+
     public boolean isEmpty() {
         return hashmap.isEmpty();
     }
