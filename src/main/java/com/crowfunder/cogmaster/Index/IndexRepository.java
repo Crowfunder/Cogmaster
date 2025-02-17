@@ -29,7 +29,17 @@ class IndexRepository {
 
     // Get ConfigEntry object by its config path
     public ConfigEntry resolveConfig(String configName, String path) {
-        return index.getPathIndex(configName).get(new Path(path));
+        return resolveConfig(configName, new Path(path));
+    }
+
+    // Get ConfigEntry by path that leads both to the correct index and entry within it
+    public ConfigEntry resolveConfig(Path path) {
+        return index.getPathIndex(path.getNextPath()).get(path.rotatePath());
+    }
+
+    // Get ConfigEntry by path that leads both to the correct index and entry within it
+    public ConfigEntry resolveConfig(String path) {
+        return resolveConfig(new Path(path));
     }
 
     // Get ConfigEntry object by resolving a ConfigReference object
@@ -87,6 +97,8 @@ class IndexRepository {
         logger.info("Resolving derivations...");
         resolveConfigIndexDerivations();
         logger.info("Finished resolving");
+        // TODO: NameIndex powinien mapować nazwy na listy ścieżek w które wchodzi jaki to config
+        // np. Path("item/weapon/sword/brandish")
 
 //        System.out.println("Populating ParameterIndex...");
 //        index.update(parserService.populateParameterIndex(index));

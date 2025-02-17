@@ -3,10 +3,7 @@ package com.crowfunder.cogmaster.Index;
 import com.crowfunder.cogmaster.Configs.ConfigEntry;
 import com.crowfunder.cogmaster.Configs.Path;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Index {
     // The base ConfigIndex that maps config names to hashmaps containing mappings of paths to ConfigEntry objects
@@ -16,15 +13,14 @@ public class Index {
     private final Map<Path, Map<String, List<Path>>> parameterIndex = new HashMap<>();
 
     // Name Index mapping properties keys found in <name> node to specific config paths
-    private final Map<String, Path> nameIndex = new HashMap<>();
-
-    // Return index for one config
-    public Map<Path, ConfigEntry> getPathIndex(String configName) {
-        return configIndex.get(configName);
-    }
+    private final Map<String, List<Path>> nameIndex = new HashMap<>();
 
     private void initializePathIndex(String configName) {
         this.configIndex.put(configName, new HashMap<>());
+    }
+
+    private void initalizeNameIndex(String name) {
+        this.nameIndex.put(name, new ArrayList<>());
     }
 
     // Return the entire ConfigIndex
@@ -40,8 +36,13 @@ public class Index {
         return parameterIndex;
     }
 
-    private Map<String, Path> getNameIndex() {
+    private Map<String, List<Path>> getNameIndex() {
         return nameIndex;
+    }
+
+    // Return index for one config
+    public Map<Path, ConfigEntry> getPathIndex(String configName) {
+        return configIndex.get(configName);
     }
 
     public void update(Index newIndex) {
@@ -55,8 +56,12 @@ public class Index {
             initializePathIndex(configName);
         }
         configIndex.get(configName).put(path, entry);
-        if (entry.getName() != null && !entry.getName().isEmpty()) {
-            nameIndex.put(entry.getName(), path);
+        String name = entry.getName();
+        if (name != null && !name.isEmpty()) {
+            if (nameIndex.get(name) == null) {
+                initalizeNameIndex(name);
+            }
+            nameIndex.get(name).add(path.prependedPath(configName));
         }
     }
 //    public void addParameterIndexEntry(String configName, Path path, HashMap<String, List<Path>> parameterIndexEntry) {

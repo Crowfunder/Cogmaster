@@ -54,7 +54,23 @@ public class Path {
     }
 
     public void setPath(Path newPath) { this.path = newPath.getPath(); }
-    
+
+    public Path prependedPath(String newPath) {
+        return new Path(newPath + this.delimiter + this.path);
+    }
+
+    public Path prependedPath(Path newPath) {
+        return prependedPath(newPath.getPath());
+    }
+
+    public Path appendedPath(String newPath) {
+        return new Path(this.path + this.delimiter + newPath);
+    }
+
+    public Path appendedPath(Path newPath) {
+        return appendedPath(newPath.getPath());
+    }
+
     public Path() {
         this.path = "";
     }
