@@ -72,4 +72,11 @@ class IndexControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].path.path").value("Weapon/Sword/Brandish"));
     }
+
+    @Test
+    void getConfigByNameFail() throws Exception {
+        String path = "Bollocksnamethatdoesnotexist";
+        ResultActions result = mockMvc.perform(get("/api/v1/index/search?q={path}", path));
+        result.andExpect(status().isNotFound());
+    }
 }

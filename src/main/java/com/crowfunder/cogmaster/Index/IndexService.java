@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class IndexService {
@@ -55,9 +56,13 @@ public class IndexService {
     // that can be used in nameIndex
     public List<ConfigEntry> resolveConfigByName(String name) {
         List<Path> paths = new ArrayList<>();
-        for (String key : propertiesService.resolveValue(name)) {
-            paths.addAll(indexRepository.readNameIndex(key));
+        if (propertiesService.resolveValue(name) == null) {
+            return null;
         }
+        for (String key : propertiesService.resolveValue(name)) {
+            Optional.ofNullable(indexRepository.readNameIndex(key)).ifPresent(paths::addAll);
+        }
+        if (paths.isEmpty()) { return null; }
         return resolveConfigsFullPath(paths);
     }
 
