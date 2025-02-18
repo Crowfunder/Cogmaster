@@ -22,40 +22,22 @@ class IndexRepository {
     // The actual index
     private final Index index = new Index();
 
-    // Get ConfigEntry object by its config path
-    public ConfigEntry resolveConfig(String configName, Path path) {
+    public ConfigEntry readPathIndex(String configName, Path path) {
         return index.getPathIndex(configName).get(path);
     }
 
-    // Get ConfigEntry object by its config path
-    public ConfigEntry resolveConfig(String configName, String path) {
-        return resolveConfig(configName, new Path(path));
-    }
-
-    // Get ConfigEntry by path that leads both to the correct index and entry within it
-    public ConfigEntry resolveConfig(Path path) {
-        return index.getPathIndex(path.getNextPath()).get(path.rotatePath());
-    }
-
-    // Get ConfigEntry by path that leads both to the correct index and entry within it
-    public ConfigEntry resolveConfig(String path) {
-        return resolveConfig(new Path(path));
-    }
-
-    // Get ConfigEntry object by resolving a ConfigReference object
-    public ConfigEntry resolveConfig(ConfigReference configReference) {
-        return index.getPathIndex(configReference.getSourceConfig()).get(configReference.getPath());
-    }
-
-    // Reverse search by specific parameter names and values,
-    public List<Path> getConfigsByParameter(Path paramPath, String paramValue) {
+    public List<Path> readParameterIndex(Path paramPath, String paramValue) {
         return index.getParameterIndex().get(paramPath).get(paramValue);
+    }
+
+    public List<Path> readNameIndex(String key) {
+        return index.getNameIndex().get(key);
     }
 
     // Resolve the derivation of a config in-place
     // We want to cache the resolved derivation in the index
     private void resolveDerivation(String configName, Path path) {
-        ConfigEntry configEntry = resolveConfig(configName, path);
+        ConfigEntry configEntry = readPathIndex(configName, path);
 
         // We only resolve derivations of derived configs
         if (!configEntry.isDerived()) {
@@ -63,13 +45,13 @@ class IndexRepository {
         }
 
         ParameterArray derivedParameters = new ParameterArray();
-        ConfigEntry derivedConfig = resolveConfig(configName, configEntry.getDerivedPath());
+        ConfigEntry derivedConfig = readPathIndex(configName, configEntry.getDerivedPath());
         while (derivedConfig != null) {
             derivedParameters.update(derivedConfig.getParameters());
             if (!derivedConfig.isDerived()) {
                 configEntry.setDerivedImplementationType(derivedConfig.getImplementationType());
             }
-            derivedConfig = resolveConfig(configName, derivedConfig.getDerivedPath());
+            derivedConfig = readPathIndex(configName, derivedConfig.getDerivedPath());
         }
         configEntry.updateDerivedParameters(derivedParameters);
         index.addConfigIndexEntry(configEntry.getSourceConfig(), path, configEntry);
@@ -97,8 +79,6 @@ class IndexRepository {
         logger.info("Resolving derivations...");
         resolveConfigIndexDerivations();
         logger.info("Finished resolving");
-        // TODO: NameIndex powinien mapować nazwy na listy ścieżek w które wchodzi jaki to config
-        // np. Path("item/weapon/sword/brandish")
 
 //        System.out.println("Populating ParameterIndex...");
 //        index.update(parserService.populateParameterIndex(index));

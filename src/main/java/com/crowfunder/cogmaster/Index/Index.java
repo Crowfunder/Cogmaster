@@ -36,7 +36,7 @@ public class Index {
         return parameterIndex;
     }
 
-    private Map<String, List<Path>> getNameIndex() {
+    public Map<String, List<Path>> getNameIndex() {
         return nameIndex;
     }
 
