@@ -20,9 +20,9 @@ class IndexControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void RealConfigDeepParameter() throws Exception {
+    void getConfigByPathDeepParameter() throws Exception {
         String path = "Accessory/Armor/Aura/Snipe Aura, Cocoa";
-        ResultActions result = mockMvc.perform(get("/api/v1/config/item?path={path}", path));
+        ResultActions result = mockMvc.perform(get("/api/v1/index/config/item?path={path}", path));
         result.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.path.path").value(path))
@@ -30,37 +30,46 @@ class IndexControllerTest {
     }
 
     @Test
-    void RealConfig() throws Exception {
+    void getConfigByPath() throws Exception {
         String path = "Block/Barbed Hedgehog";
-        ResultActions result = mockMvc.perform(get("/api/v1/config/actor?path={path}", path));
+        ResultActions result = mockMvc.perform(get("/api/v1/index/config/actor?path={path}", path));
         result.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.path.path").value(path));
 
         // Path without forward slashes
         path = "Action";
-        result = mockMvc.perform(get("/api/v1/config/effect?path={path}", path));
+        result = mockMvc.perform(get("/api/v1/index/config/effect?path={path}", path));
         result.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.path.path").value(path));
     }
 
     @Test
-    void FakeConfig() throws Exception {
+    void getConfigByPathFail() throws Exception {
 
         // Fake config
         String path = "Block/Fake Entry That Does Not Exist";
-        ResultActions result = mockMvc.perform(get("/api/v1/config/actor?path={path}", path));
+        ResultActions result = mockMvc.perform(get("/api/v1/index/config/actor?path={path}", path));
         result.andExpect(status().isNotFound());
 
         // Fake config without forward slashes
         path = "Fake Entry That Does Not Exist";
-        result = mockMvc.perform(get("/api/v1/config/actor?path={path}", path));
+        result = mockMvc.perform(get("/api/v1/index/config/actor?path={path}", path));
         result.andExpect(status().isNotFound());
 
         // Bad path with backslashes
         path = "Block\\Barbed Hedgehog";
-        result = mockMvc.perform(get("/api/v1/config/actor?path={path}", path));
+        result = mockMvc.perform(get("/api/v1/index/config/actor?path={path}", path));
         result.andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getConfigByName() throws Exception {
+        String path = "Brandish";
+        ResultActions result = mockMvc.perform(get("/api/v1/index/search?q={path}", path));
+        result.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0].path.path").value("Weapon/Sword/Brandish"));
     }
 }
