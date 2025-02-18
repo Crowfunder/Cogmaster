@@ -56,13 +56,17 @@ public class Index {
             initializePathIndex(configName);
         }
         configIndex.get(configName).put(path, entry);
-        String name = entry.getName();
-        if (name != null && !name.isEmpty()) {
-            if (nameIndex.get(name) == null) {
-                initalizeNameIndex(name);
-            }
-            nameIndex.get(name).add(path.prependedPath(configName));
+    }
+
+    public void addNameIndexEntry(String name, Path path, String configName) {
+        addNameIndexEntry(name, path.prependedPath(configName));
+    }
+
+    public void addNameIndexEntry(String name, Path path) {
+        if (nameIndex.get(name) == null) {
+            initalizeNameIndex(name);
         }
+        nameIndex.get(name).add(path);
     }
 //    public void addParameterIndexEntry(String configName, Path path, HashMap<String, List<Path>> parameterIndexEntry) {
 //        if (parameterIndex.get(configName) != null) {

@@ -22,7 +22,7 @@ class IndexRepository {
     // The actual index
     private final Index index = new Index();
 
-    public ConfigEntry readPathIndex(String configName, Path path) {
+    public ConfigEntry readConfigIndex(String configName, Path path) {
         return index.getPathIndex(configName).get(path);
     }
 
@@ -37,7 +37,7 @@ class IndexRepository {
     // Resolve the derivation of a config in-place
     // We want to cache the resolved derivation in the index
     private void resolveDerivation(String configName, Path path) {
-        ConfigEntry configEntry = readPathIndex(configName, path);
+        ConfigEntry configEntry = readConfigIndex(configName, path);
 
         // We only resolve derivations of derived configs
         if (!configEntry.isDerived()) {
@@ -45,23 +45,29 @@ class IndexRepository {
         }
 
         ParameterArray derivedParameters = new ParameterArray();
-        ConfigEntry derivedConfig = readPathIndex(configName, configEntry.getDerivedPath());
+        ConfigEntry derivedConfig = readConfigIndex(configName, configEntry.getDerivedPath());
         while (derivedConfig != null) {
             derivedParameters.update(derivedConfig.getParameters());
             if (!derivedConfig.isDerived()) {
                 configEntry.setDerivedImplementationType(derivedConfig.getImplementationType());
             }
-            derivedConfig = readPathIndex(configName, derivedConfig.getDerivedPath());
+            derivedConfig = readConfigIndex(configName, derivedConfig.getDerivedPath());
         }
         configEntry.updateDerivedParameters(derivedParameters);
         index.addConfigIndexEntry(configEntry.getSourceConfig(), path, configEntry);
     }
 
     // Resolve and cache ALL derivations from ConfigIndex
-    public void resolveConfigIndexDerivations() {
+    // Populate name index
+    public void resolveAllDerivations() {
         for (String configName : index.getConfigIndex().keySet() ) {
             for (Path path : index.getConfigIndex().get(configName).keySet()) {
                 resolveDerivation(configName, path);
+                String name = readConfigIndex(configName, path).getName();
+                if (name != null && !name.isEmpty()) {
+                    index.addNameIndexEntry(name, path, configName);
+                    index.getNameIndex().get(name).add(path.prependedPath(configName));
+                }
             }
         }
     }
@@ -77,12 +83,8 @@ class IndexRepository {
         logger.info("Finished parsing");
 
         logger.info("Resolving derivations...");
-        resolveConfigIndexDerivations();
+        resolveAllDerivations();
         logger.info("Finished resolving");
-
-//        System.out.println("Populating ParameterIndex...");
-//        index.update(parserService.populateParameterIndex(index));
-//        System.out.println("Finished populating");
     }
 
 }
