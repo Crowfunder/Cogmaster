@@ -66,7 +66,6 @@ class IndexRepository {
                 String name = readConfigIndex(configName, path).getName();
                 if (name != null && !name.isEmpty()) {
                     index.addNameIndexEntry(name, path, configName);
-                    index.getNameIndex().get(name).add(path.prependedPath(configName));
                 }
             }
         }

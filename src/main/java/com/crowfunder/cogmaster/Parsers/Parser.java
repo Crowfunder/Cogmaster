@@ -80,7 +80,6 @@ public class Parser {
 
                 ConfigEntry configEntry = parseEntry(entry);
                 index.addConfigIndexEntry(configName, configEntry.getPath(), configEntry);
-
             }
         }
         catch (ParserConfigurationException | SAXException | IOException e) {
