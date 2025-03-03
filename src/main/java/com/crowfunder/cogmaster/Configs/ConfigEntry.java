@@ -76,8 +76,6 @@ public class ConfigEntry {
         } else {
             return null;
         }
-
-
     }
 
     public void loadReference(ConfigReference reference) {

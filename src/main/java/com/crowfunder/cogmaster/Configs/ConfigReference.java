@@ -43,4 +43,12 @@ public class ConfigReference {
         this.sourceConfig = sourceConfig;
     }
 
+    public ConfigReference(ConfigEntry sourceEntry) {
+        this.derivedPath = sourceEntry.getPath();
+        this.sourceConfig = sourceEntry.getSourceConfig();
+
+        // By default, reference does not alter any parameters of the config
+        this.parameters = new ParameterArray();
+    }
+
 }
