@@ -1,0 +1,8 @@
+---
+implementation: "com.threerings.projectx.item.config.ItemConfig$Sword"
+routes:
+  name: "Name"
+  flavor: "Flavor"
+  rarity: "Rarity"
+  model: "Model"
+  icon: "Icon"
