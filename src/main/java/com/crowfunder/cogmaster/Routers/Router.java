@@ -1,6 +1,8 @@
 package com.crowfunder.cogmaster.Routers;
 
 import com.crowfunder.cogmaster.Configs.Path;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashMap;
 
 public class Router {
@@ -15,7 +17,7 @@ public class Router {
         return routes;
     }
 
-    public Router(String implementation, HashMap<String, Path> routes) {
+    public Router(@JsonProperty("implementation") String implementation, @JsonProperty("routes") HashMap<String, Path> routes) {
         this.implementation = implementation;
         this.routes = routes;
     }
