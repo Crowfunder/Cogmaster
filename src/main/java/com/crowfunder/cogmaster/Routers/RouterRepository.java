@@ -1,5 +1,6 @@
 package com.crowfunder.cogmaster.Routers;
 
+import com.crowfunder.cogmaster.CogmasterConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -14,8 +15,10 @@ import java.util.Map;
 @Repository
 public class RouterRepository {
 
+    private final CogmasterConfig cogmasterConfig;
+
     private final Map<String, Router> routers = new HashMap<>();
-    private final String routersPath = "routers";
+    private final String routersPath;
 
     Logger logger = LoggerFactory.getLogger(RouterRepository.class);
 
@@ -42,7 +45,9 @@ public class RouterRepository {
         }
     }
 
-    public RouterRepository() {
+    public RouterRepository(CogmasterConfig cogmasterConfig) {
+        this.cogmasterConfig = cogmasterConfig;
+        this.routersPath = cogmasterConfig.getRouters().getPath();
         logger.info("Loading routers...");
         loadRouters();
         logger.info("Finished loading");

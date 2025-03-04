@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: "Cogmaster"
+
+cogmaster:
+  properties:
+    path: "properties"
+
+  routers:
+    path: "routers"
+
+  parsers:
+    path: "parseable"
+    list:
+      - "item"
+      - "harness"
+      - "effect"
+      - "conversation"
+      - "attack"
+      - "actor"
+      - "accessory"
