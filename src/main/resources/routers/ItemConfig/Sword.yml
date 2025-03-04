@@ -1,4 +1,4 @@
----
+!!com.crowfunder.cogmaster.Routers.Router
 implementation: "com.threerings.projectx.item.config.ItemConfig$Sword"
 routes:
   name: "Name"

@@ -9,6 +9,8 @@ import java.util.List;
 @Service
 public class ParserService {
     private final List<Parser> parsers;
+    private final List<String> parserNames = new ArrayList<>();
+    private final String parseablePath = "src/main/resources/parseable";
 
     public ParserService() {
 

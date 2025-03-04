@@ -11,6 +11,9 @@ import java.util.Map;
 public class RoutedConfig {
 
     private final Router sourceRouter;
+
+    // We won't be referencing the full config in the routed config
+    // To reduce bandwidth usage, needs to be resolved from ConfigReference
     private final ConfigReference sourceConfig;
     private final ParameterArray routedParameters;
 
@@ -29,7 +32,7 @@ public class RoutedConfig {
     // Populate parameters array according to routes in Router
     private ParameterArray populateRoutedParameters(ConfigEntry sourceConfig, Router sourceRouter) {
         ParameterArray parameters = new ParameterArray();
-        for (Map.Entry<String, Path> e: sourceRouter.routes().entrySet()) {
+        for (Map.Entry<String, Path> e: sourceRouter.getRoutes().entrySet()) {
             parameters.addParameter(e.getKey(), sourceConfig.getParameters().resolveParameterPath(e.getValue()));
         }
         return parameters;
