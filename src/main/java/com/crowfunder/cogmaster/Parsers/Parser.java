@@ -56,7 +56,7 @@ public class Parser {
 
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = builder.parse(new File(xmlFilePath));
+            Document doc = builder.parse(Parser.class.getResourceAsStream(xmlFilePath));
             doc.getDocumentElement().normalize();
 
             // Start reading

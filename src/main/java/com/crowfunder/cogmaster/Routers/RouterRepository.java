@@ -40,7 +40,7 @@ public class RouterRepository {
                     routers.put(router.getImplementation(), router);
             }
         } catch(IOException e) {
-            logger.error("Failed to load routers from specified path: " + "/" + routersPath +"/*");
+            logger.error("Failed to load routers from specified path: /{}/*", routersPath);
             throw new RuntimeException("Failed to load routers");
         }
     }

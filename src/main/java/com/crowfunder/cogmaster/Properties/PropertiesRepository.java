@@ -1,15 +1,15 @@
 package com.crowfunder.cogmaster.Properties;
 
+import com.crowfunder.cogmaster.CogmasterConfig;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Repository;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -21,11 +21,12 @@ import static com.crowfunder.cogmaster.Utils.HashMapUtil.propertiesToHashMap;
 public class PropertiesRepository {
 
     // I'm begging you, I'm begging you please just some proper settings file
-    private final String propertiesFilesPath = "src/main/resources/properties";
+    private final String propertiesPath;
     private Map<String, String> properties;
     private Map<String, List<String>> reverseProperties;
 
     Logger logger = LoggerFactory.getLogger(PropertiesRepository.class);
+    CogmasterConfig cogmasterConfig;
 
     public String searchProperty(String property) {
         return properties.get(property);
@@ -37,28 +38,29 @@ public class PropertiesRepository {
 
     private Properties loadAllProperties() {
         Properties properties = new Properties();
-        File dir = new File(propertiesFilesPath);
-        File[] files = dir.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isFile()) {
-                    properties.putAll(loadProperties(file));
-                }
+        try {
+            PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver();
+            Resource[] resources = r.getResources("classpath*:/" + propertiesPath + "/*.properties");
+            for (Resource resource : resources) {
+                properties.putAll(loadProperties(resource.getInputStream()));
             }
-        }
-        return properties;
-    }
-
-    private Properties loadProperties(File file) {
-        try (InputStream input = new FileInputStream(file)) {
-            Properties newProperties = new Properties();
-            newProperties.load(input);
-            return newProperties;
+            return properties;
 
         } catch (IOException e) {
-            logger.error("Failed to read properties file.");
-            throw new RuntimeException(e);
+            logger.error("Failed to load properties from specified path: /{}/*", propertiesPath);
+            throw new RuntimeException("Failed to load properties", e);
         }
+    }
+
+    private Properties loadProperties(InputStream inputStream) throws IOException {
+        Properties newProperties = new Properties();
+        newProperties.load(inputStream);
+        return newProperties;
+    }
+
+    public PropertiesRepository(CogmasterConfig cogmasterConfig) {
+        this.cogmasterConfig = cogmasterConfig;
+        this.propertiesPath = cogmasterConfig.getProperties().getPath();
     }
 
     // We interface with the properties through Map because we want to utilize inverting util
