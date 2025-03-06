@@ -13,11 +13,10 @@ public class RouterService {
     }
 
     public Router getRouter(ConfigEntry configEntry) {
+        if (configEntry == null) {
+            return null;
+        }
         return getRouter(configEntry.getDerivedImplementationType());
-    }
-
-    public RoutedConfig routeConfig(ConfigEntry configEntry) {
-        return new RoutedConfig(configEntry, getRouter(configEntry));
     }
 
     public RouterService(RouterRepository routerRepository) {

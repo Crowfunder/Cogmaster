@@ -1,6 +1,7 @@
 package com.crowfunder.cogmaster.Index;
 
 import com.crowfunder.cogmaster.Configs.ConfigEntry;
+import com.crowfunder.cogmaster.Routers.RouterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +13,11 @@ import java.util.Optional;
 public class IndexController {
 
     private final IndexService indexService;
+    private final RouterService routerService;
 
-    public IndexController(IndexService indexService) {
+    public IndexController(IndexService indexService, RouterService routerService) {
         this.indexService = indexService;
+        this.routerService = routerService;
     }
 
     @GetMapping("config/{configName}")

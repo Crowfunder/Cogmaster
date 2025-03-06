@@ -6,6 +6,7 @@ import com.crowfunder.cogmaster.Configs.ParameterArray;
 import com.crowfunder.cogmaster.Configs.Path;
 import com.crowfunder.cogmaster.Parsers.ParserService;
 
+import com.crowfunder.cogmaster.Routers.RouterService;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import java.util.List;
 class IndexRepository {
 
     private final ParserService parserService;
+    private final RouterService routerService;
     Logger logger = LoggerFactory.getLogger(IndexRepository.class);
 
     // The actual index
@@ -36,8 +38,7 @@ class IndexRepository {
 
     // Resolve the derivation of a config in-place
     // We want to cache the resolved derivation in the index
-    private void resolveDerivation(String configName, Path path) {
-        ConfigEntry configEntry = readConfigIndex(configName, path);
+    private void resolveDerivation(ConfigEntry configEntry) {
 
         // We only resolve derivations of derived configs
         if (!configEntry.isDerived()) {
@@ -45,25 +46,34 @@ class IndexRepository {
         }
 
         ParameterArray derivedParameters = new ParameterArray();
-        ConfigEntry derivedConfig = readConfigIndex(configName, configEntry.getDerivedPath());
+        ConfigEntry derivedConfig = readConfigIndex(configEntry.getSourceConfig(), configEntry.getDerivedPath());
         while (derivedConfig != null) {
             derivedParameters.update(derivedConfig.getParameters());
             if (!derivedConfig.isDerived()) {
                 configEntry.setDerivedImplementationType(derivedConfig.getImplementationType());
             }
-            derivedConfig = readConfigIndex(configName, derivedConfig.getDerivedPath());
+            derivedConfig = readConfigIndex(configEntry.getSourceConfig(), derivedConfig.getDerivedPath());
         }
         configEntry.updateDerivedParameters(derivedParameters);
-        index.addConfigIndexEntry(configEntry.getSourceConfig(), path, configEntry);
+        index.addConfigIndexEntry(configEntry.getSourceConfig(), configEntry.getPath(), configEntry);
     }
 
     // Resolve and cache ALL derivations from ConfigIndex
     // Populate name index
-    public void resolveAllDerivations() {
+    // Populate routed parameters
+    public void resolveConfigDependencies() {
         for (String configName : index.getConfigIndex().keySet() ) {
             for (Path path : index.getConfigIndex().get(configName).keySet()) {
-                resolveDerivation(configName, path);
-                String name = readConfigIndex(configName, path).getName();
+                ConfigEntry configEntry = readConfigIndex(configName, path);
+
+                // Resolve derivations
+                resolveDerivation(configEntry);
+
+                // Populate routed parameters
+                configEntry.populateRoutedParameters(routerService.getRouter(configEntry));
+
+                // Populate name index
+                String name = configEntry.getName();
                 if (name != null && !name.isEmpty()) {
                     index.addNameIndexEntry(name, path, configName);
                 }
@@ -71,8 +81,9 @@ class IndexRepository {
         }
     }
 
-    public IndexRepository(ParserService parserService) {
+    public IndexRepository(ParserService parserService, RouterService routerService) {
         this.parserService = parserService;
+        this.routerService = routerService;
     }
 
     @PostConstruct
@@ -82,7 +93,7 @@ class IndexRepository {
         logger.info("Finished parsing");
 
         logger.info("Resolving derivations...");
-        resolveAllDerivations();
+        resolveConfigDependencies();
         logger.info("Finished resolving");
     }
 

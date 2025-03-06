@@ -1,5 +1,9 @@
 package com.crowfunder.cogmaster.Configs;
 
+import com.crowfunder.cogmaster.Routers.Router;
+
+import java.util.Map;
+
 public class ConfigEntry {
 
     private String implementationType;
@@ -18,6 +22,8 @@ public class ConfigEntry {
 
     // Overriden/Own parameters
     private final ParameterArray parameters;
+
+    private final ParameterArray routedParameters;
 
     // Non-overriden parameters pulled from all derivative (parent) configs
     private final ParameterArray derivedParameters;
@@ -44,6 +50,10 @@ public class ConfigEntry {
         return this.derivedParameters;
     }
 
+    public ParameterArray getRoutedParameters() {
+        return this.routedParameters;
+    }
+
     public String getImplementationType() { return this.implementationType; }
 
     public String getSourceConfig() { return this.sourceConfig; }
@@ -66,21 +76,35 @@ public class ConfigEntry {
         return this.derivedPath.getPath() != null;
     }
 
-    // Return effective name, may be replaced by implementation routes in the future
-    // Name gets priority as it's often used as a parameter overriding name in derivation
+    // Return effective name using routes
     public String getName() {
-        if (this.getParameters().resolveParameterPath("Name") != null) {
-            return this.getParameters().resolveParameterPath("Name").toString();
-        } else if (this.getParameters().resolveParameterPath("name") != null) {
-            return this.getParameters().resolveParameterPath("name").toString();
-        } else {
-            return null;
+        ParameterValue name = routedParameters.resolveParameterPath("name");
+        if (name != null) {
+            return name.toString();
         }
+        return null;
     }
 
     public void loadReference(ConfigReference reference) {
         this.derivedPath.setPath(reference.getPath());
         this.parameters.update(reference.getParameters());
+    }
+
+    // Populate parameters array according to routes in Router
+    public void populateRoutedParameters(Router sourceRouter) {
+        if (sourceRouter == null) {
+            return;
+        }
+        for (Map.Entry<String, Path> e: sourceRouter.getRoutes().entrySet()) {
+            ParameterValue value = getParameters().resolveParameterPath(e.getValue());
+            if (value == null) {
+                // Walkaround for parameters of derived configs
+                // I pray OOO used the same scheme for all parameters
+                // If uppercase-starting path doesn't exist, try a lowercase path
+                value = getParameters().resolveParameterPath(new Path(e.getValue().getPath().toLowerCase()));
+            }
+            routedParameters.addParameter(e.getKey(), value);
+        }
     }
 
     // Parameterless
@@ -92,6 +116,7 @@ public class ConfigEntry {
         this.derivedParameters = new ParameterArray();
         this.implementationType = "";
         this.derivedImplementationType = "";
+        this.routedParameters = new ParameterArray();
     }
 
 }

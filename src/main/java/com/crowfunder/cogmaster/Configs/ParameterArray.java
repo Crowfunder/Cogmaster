@@ -21,9 +21,7 @@ public class ParameterArray {
     }
 
     public ParameterValue resolveParameterPath(Path path) {
-
         ParameterValue val = hashmap.get(path.getNextPath());
-
         if (val == null) {
             return null;
         }
@@ -32,7 +30,6 @@ public class ParameterArray {
         if (val.isNested()) {
             return ((ParameterArray) val.getValue()).resolveParameterPath(path.rotatePath());
         }
-
         return val;
     }
 
