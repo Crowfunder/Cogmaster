@@ -4,5 +4,5 @@ routes:
   name: "Name"
   flavor: "Flavor"
   model: "Model"
-  icon: "Icon"
+  icon: "Icon/file"
   accessoryBlockers: "Accessory Blockers"

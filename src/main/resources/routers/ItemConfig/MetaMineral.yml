@@ -1,7 +1,9 @@
 !!com.crowfunder.cogmaster.Routers.Router
-implementation: "com.threerings.projectx.item.config.ItemConfig$ArmorCostume"
+implementation: "com.threerings.projectx.item.config.ItemConfig$MetaMineral"
 routes:
   name: "Name"
   flavor: "Flavor"
   model: "Model"
-  icon: "Icon/file"
+  mineral: "Mineral"
+
+  

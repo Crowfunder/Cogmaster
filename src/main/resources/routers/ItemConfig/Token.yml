@@ -1,7 +1,9 @@
 !!com.crowfunder.cogmaster.Routers.Router
-implementation: "com.threerings.projectx.item.config.DungeonItemConfig$Vial"
+implementation: "com.threerings.projectx.item.config.ItemConfig$Token"
 routes:
   name: "Name"
   flavor: "Flavor"
   icon: "Icon/file"
-  itemProp: "itemProp"
+  expireEvent: "expireEvent"
+
+  

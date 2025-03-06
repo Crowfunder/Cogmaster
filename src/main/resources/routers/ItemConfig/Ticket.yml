@@ -1,0 +1,9 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$Ticket"
+routes:
+  name: "Name"
+  flavor: "Flavor"
+  icon: "Icon/file"
+  type: "Type"
+  rarity: "Rarity"
+  

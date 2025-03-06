@@ -1,7 +1,8 @@
 !!com.crowfunder.cogmaster.Routers.Router
-implementation: "com.threerings.projectx.item.config.DungeonItemConfig$Vial"
+implementation: "com.threerings.projectx.item.config.ItemConfig$WrappingPaper"
 routes:
   name: "Name"
   flavor: "Flavor"
   icon: "Icon/file"
-  itemProp: "itemProp"
+  giftBox: "Gift Box"
+

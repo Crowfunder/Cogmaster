@@ -1,0 +1,7 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.FurniConfig$Placeable"
+routes:
+  name: "Name"
+  flavor: "Flavor"
+  description: "Description"
+  icon: "Icon/file"

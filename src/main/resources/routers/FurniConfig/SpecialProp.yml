@@ -1,7 +1,7 @@
 !!com.crowfunder.cogmaster.Routers.Router
-implementation: "com.threerings.projectx.item.config.DungeonItemConfig$Vial"
+implementation: "com.threerings.projectx.item.config.FurniConfig$Prop"
 routes:
   name: "Name"
   flavor: "Flavor"
   icon: "Icon/file"
-  itemProp: "itemProp"
+  model: "Model"

@@ -1,0 +1,7 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$GuildHallGlobalTicket"
+routes:
+  name: "Name"
+  flavor: "Flavor"
+  floorRequired: "Floor Required"
+  retexture: "Retexture"
