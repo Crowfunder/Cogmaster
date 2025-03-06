@@ -1,9 +1,6 @@
 package com.crowfunder.cogmaster.Routers;
 
-import com.crowfunder.cogmaster.Configs.ConfigEntry;
-import com.crowfunder.cogmaster.Configs.ConfigReference;
-import com.crowfunder.cogmaster.Configs.ParameterArray;
-import com.crowfunder.cogmaster.Configs.Path;
+import com.crowfunder.cogmaster.Configs.*;
 
 import java.util.Map;
 
@@ -33,7 +30,14 @@ public class RoutedConfig {
     private ParameterArray populateRoutedParameters(ConfigEntry sourceConfig, Router sourceRouter) {
         ParameterArray parameters = new ParameterArray();
         for (Map.Entry<String, Path> e: sourceRouter.getRoutes().entrySet()) {
-            parameters.addParameter(e.getKey(), sourceConfig.getParameters().resolveParameterPath(e.getValue()));
+            ParameterValue value = sourceConfig.getParameters().resolveParameterPath(e.getValue());
+            if (value == null) {
+                // Walkaround for parameters of derived configs
+                // I pray OOO used the same scheme for all parameters
+                // If uppercase-starting path doesn't exist, try a lowercase path
+                value = sourceConfig.getParameters().resolveParameterPath(new Path(e.getValue().getPath().toLowerCase()));
+            }
+            parameters.addParameter(e.getKey(), value);
         }
         return parameters;
     }
