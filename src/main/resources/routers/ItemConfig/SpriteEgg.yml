@@ -1,0 +1,9 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$SpriteEgg"
+routes:
+  name: "Name"
+  flavor: "Flavor"
+  icon: "Icon"
+  itemProp: "itemProp"
+  sprite: "Sprite"
+  variant: "Variant"

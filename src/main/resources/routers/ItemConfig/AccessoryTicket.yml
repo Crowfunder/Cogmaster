@@ -1,0 +1,5 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$AccessoryTicket"
+routes:
+  icon: "Icon"
+  accessory: "Accessory"

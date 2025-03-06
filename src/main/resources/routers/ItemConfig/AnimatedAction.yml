@@ -1,0 +1,6 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$AnimatedAction"
+routes:
+  icon: "Icon/file"
+  name: "Name"
+  flavor: "Flavor"

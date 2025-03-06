@@ -1,9 +1,8 @@
 !!com.crowfunder.cogmaster.Routers.Router
-implementation: "com.threerings.projectx.item.config.ItemConfig$Sword"
+implementation: "com.threerings.projectx.item.config.ItemConfig$GiftBox"
 routes:
   name: "Name"
   flavor: "Flavor"
-  rarity: "Rarity"
-  model: "Model"
+  modelVariant: "Model Variant"
   icon: "Icon"
   itemProp: "itemProp"

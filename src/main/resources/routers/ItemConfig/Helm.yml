@@ -1,0 +1,10 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$Helm"
+routes:
+  name: "Name"
+  rarity: "Rarity"
+  flavor: "Flavor"
+  model: "Model"
+  icon: "Icon/file"
+  accessoryBlockers: "accessoryBlockers"
+  itemProp: "itemProp"

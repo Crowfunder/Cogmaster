@@ -1,0 +1,9 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$Craft"
+routes:
+  name: "Name"
+  flavor: "Flavor"
+  icon: "Icon/file"
+  rarity: "Rarity"
+  itemProp: "itemProp"
+  locked: "Locked"

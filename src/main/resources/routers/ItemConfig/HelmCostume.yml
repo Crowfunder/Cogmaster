@@ -1,0 +1,8 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$HelmCostume"
+routes:
+  name: "Name"
+  flavor: "Flavor"
+  model: "Model"
+  icon: "Icon"
+  accessoryBlockers: "Accessory Blockers"

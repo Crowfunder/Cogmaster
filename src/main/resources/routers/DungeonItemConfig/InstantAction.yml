@@ -1,0 +1,6 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.DungeonItemConfig$InstantAction"
+routes:
+  name: "Name"
+  flavor: "Flavor"
+  icon: "Icon/file"

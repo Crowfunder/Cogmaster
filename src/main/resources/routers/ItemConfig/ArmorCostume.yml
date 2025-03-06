@@ -1,0 +1,7 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$ArmorCostume"
+routes:
+  name: "Name"
+  flavor: "Flavor"
+  model: "Model"
+  icon: "Icon"

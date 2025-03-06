@@ -1,0 +1,4 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$RecipeDerived"
+routes:
+  recipe: "Recipe"

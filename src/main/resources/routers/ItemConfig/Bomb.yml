@@ -1,5 +1,5 @@
 !!com.crowfunder.cogmaster.Routers.Router
-implementation: "com.threerings.projectx.item.config.ItemConfig$Sword"
+implementation: "com.threerings.projectx.item.config.ItemConfig$Bomb"
 routes:
   name: "Name"
   flavor: "Flavor"
