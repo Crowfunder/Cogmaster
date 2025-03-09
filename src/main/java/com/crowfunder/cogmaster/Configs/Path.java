@@ -52,6 +52,10 @@ public class Path {
         return path.split(delimiter)[0];
     }
 
+    public String getDelimiter() {
+        return delimiter;
+    }
+
     public void setPath(String newPath) {
         this.path = newPath;
     }
