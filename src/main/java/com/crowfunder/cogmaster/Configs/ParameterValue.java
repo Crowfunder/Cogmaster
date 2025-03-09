@@ -11,6 +11,10 @@ public class ParameterValue {
         return value instanceof ParameterArray;
     }
 
+    public boolean isReference() {
+        return value instanceof ConfigReference;
+    }
+
     @Override
     public String toString() {
 

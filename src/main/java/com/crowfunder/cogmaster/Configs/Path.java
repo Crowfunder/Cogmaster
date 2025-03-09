@@ -1,5 +1,7 @@
 package com.crowfunder.cogmaster.Configs;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -42,6 +44,7 @@ public class Path {
     }
 
     // Get first element of the path
+    @JsonIgnore
     public String getNextPath() {
         if (Objects.equals(path, "")) {
             return null;
