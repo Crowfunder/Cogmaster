@@ -63,6 +63,15 @@ class IndexControllerTest {
         result.andExpect(status().isNotFound());
     }
 
+    // Config that does not exist
+    @Test
+    void getConfigFail() throws Exception {
+        String path = "Block/Fake Entry That Does Not Exist";
+        String configName = "FakeConfigThatDoesNotExist";
+        ResultActions result = mockMvc.perform(get("/api/v1/index/config/{configName}?path={path}", configName, path));
+        result.andExpect(status().isNotFound());
+    }
+
     @Test
     void getConfigByName() throws Exception {
         String path = "Brandish";

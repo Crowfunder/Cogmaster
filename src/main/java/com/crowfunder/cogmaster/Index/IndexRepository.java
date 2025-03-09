@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 class IndexRepository {
@@ -25,7 +26,9 @@ class IndexRepository {
     private final Index index = new Index();
 
     public ConfigEntry readConfigIndex(String configName, Path path) {
-        return index.getPathIndex(configName).get(path);
+        return Optional.ofNullable(index.getPathIndex(configName))
+                .map(pathIndex -> pathIndex.get(path))
+                .orElse(null);
     }
 
     public List<Path> readParameterIndex(Path paramPath, String paramValue) {
