@@ -28,6 +28,14 @@ public class PropertiesRepository {
     Logger logger = LoggerFactory.getLogger(PropertiesRepository.class);
     CogmasterConfig cogmasterConfig;
 
+    public boolean containsKey(String key) {
+        return properties.containsKey(key);
+    }
+
+    public boolean containsValue(String value) {
+        return reverseProperties.containsKey(value);
+    }
+
     public String searchProperty(String property) {
         return properties.get(property);
     }
