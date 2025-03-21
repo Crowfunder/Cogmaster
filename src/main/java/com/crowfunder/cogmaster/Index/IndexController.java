@@ -13,11 +13,9 @@ import java.util.Optional;
 public class IndexController {
 
     private final IndexService indexService;
-    private final RouterService routerService;
 
-    public IndexController(IndexService indexService, RouterService routerService) {
+    public IndexController(IndexService indexService) {
         this.indexService = indexService;
-        this.routerService = routerService;
     }
 
     @GetMapping("config/{configName}")
