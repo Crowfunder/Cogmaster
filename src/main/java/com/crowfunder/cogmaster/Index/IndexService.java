@@ -55,15 +55,7 @@ public class IndexService {
     // querying the propertiesService for name mappings
     // that can be used in nameIndex
     public List<ConfigEntry> resolveConfigByName(String name) {
-        List<Path> paths = new ArrayList<>();
-        if (propertiesService.resolveValue(name) == null) {
-            return null;
-        }
-        for (String key : propertiesService.resolveValue(name)) {
-            Optional.ofNullable(indexRepository.readNameIndex(key)).ifPresent(paths::addAll);
-        }
-        if (paths.isEmpty()) { return null; }
-        return resolveConfigsFullPath(paths);
+        return resolveConfigsFullPath(indexRepository.readNameIndex(name));
     }
 
     public IndexService(IndexRepository indexRepository, PropertiesService propertiesService) {

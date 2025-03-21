@@ -6,12 +6,14 @@ import com.crowfunder.cogmaster.Configs.ParameterArray;
 import com.crowfunder.cogmaster.Configs.Path;
 import com.crowfunder.cogmaster.Parsers.ParserService;
 
+import com.crowfunder.cogmaster.Properties.PropertiesService;
 import com.crowfunder.cogmaster.Routers.RouterService;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,7 @@ class IndexRepository {
 
     private final ParserService parserService;
     private final RouterService routerService;
+    private final PropertiesService propertiesService;
     Logger logger = LoggerFactory.getLogger(IndexRepository.class);
 
     // The actual index
@@ -36,7 +39,7 @@ class IndexRepository {
     }
 
     public List<Path> readNameIndex(String key) {
-        return index.getNameIndex().get(key);
+        return index.getNameIndex().getOrDefault(key, new ArrayList<>());
     }
 
     // Resolve the derivation of a config in-place
@@ -78,15 +81,16 @@ class IndexRepository {
                 // Populate name index
                 String name = configEntry.getName();
                 if (name != null && !name.isEmpty()) {
-                    index.addNameIndexEntry(name, path, configName);
+                    index.addNameIndexEntry(propertiesService.parsePropertyString(name), path, configName);
                 }
             }
         }
     }
 
-    public IndexRepository(ParserService parserService, RouterService routerService) {
+    public IndexRepository(ParserService parserService, RouterService routerService, PropertiesService propertiesService) {
         this.parserService = parserService;
         this.routerService = routerService;
+        this.propertiesService = propertiesService;
     }
 
     @PostConstruct
