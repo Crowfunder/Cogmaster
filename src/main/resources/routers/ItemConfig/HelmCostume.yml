@@ -3,6 +3,6 @@ implementation: "com.threerings.projectx.item.config.ItemConfig$HelmCostume"
 routes:
   name: "Name"
   flavor: "Flavor"
-  model: "Model"
+  model: "Model/name"
   icon: "Icon/file"
   accessoryBlockers: "Accessory Blockers"

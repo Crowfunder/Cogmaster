@@ -3,6 +3,6 @@ implementation: "com.threerings.projectx.item.config.ItemConfig$ShieldCostume"
 routes:
   name: "Name"
   flavor: "Flavor"
-  model: "Model"
+  model: "Model/name"
   icon: "Icon/file"
   itemProp: "itemProp"

@@ -4,6 +4,6 @@ routes:
   name: "Name"
   flavor: "Flavor"
   rarity: "Rarity"
-  model: "Model"
+  model: "Model/name"
   icon: "Icon/file"
   itemProp: "itemProp"

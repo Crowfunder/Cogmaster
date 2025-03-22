@@ -3,7 +3,7 @@ implementation: "com.threerings.projectx.item.config.ItemConfig$Color"
 routes:
   name: "Name"
   flavor: "Flavor"
-  model: "Model"
+  model: "Model/name"
   icon: "Icon/file"
   itemProp: "itemProp"
   color: "Color"
