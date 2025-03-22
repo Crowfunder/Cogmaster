@@ -1,6 +1,7 @@
 package com.crowfunder.cogmaster.Configs;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ParameterArray {
@@ -31,6 +32,22 @@ public class ParameterArray {
             return ((ParameterArray) val.getValue()).resolveParameterPath(path.rotatePath());
         }
         return val;
+    }
+
+    // Checks numerous variants of nextpath, i.e "Something Something", "SomethingSomething", "somethingSomething" etc.
+    public ParameterValue resolveParameterPathFlex(Path path) {
+        List<String> nextPaths = path.getNextPathFlex();
+        for (String nextPath : nextPaths) {
+            ParameterValue val = hashmap.get(nextPath);
+            if (val != null) {
+                // If value is yet another ParameterArray, recurse into it until it's not
+                if (val.isNested() && path.rotatePath().getPath() != null) {
+                    return ((ParameterArray) val.getValue()).resolveParameterPathFlex(path.rotatePath());
+                }
+                return val;
+            }
+        }
+        return null;
     }
 
     public ParameterValue resolveParameterPath(String strPath) {

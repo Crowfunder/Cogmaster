@@ -3,6 +3,7 @@ package com.crowfunder.cogmaster.Configs;
 import com.crowfunder.cogmaster.Routers.Router;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class ConfigEntry {
 
@@ -96,14 +97,7 @@ public class ConfigEntry {
             return;
         }
         for (Map.Entry<String, Path> e: sourceRouter.getRoutes().entrySet()) {
-            ParameterValue value = getParameters().resolveParameterPath(e.getValue());
-            if (value == null) {
-                // Walkaround for parameters of derived configs
-                // I pray OOO used the same scheme for all parameters
-                // If uppercase-starting path doesn't exist, try a lowercase path
-                value = getParameters().resolveParameterPath(new Path(e.getValue().getPath().toLowerCase()));
-            }
-            routedParameters.addParameter(e.getKey(), value);
+            routedParameters.addParameter(e.getKey(), getParameters().resolveParameterPathFlex(e.getValue()));
         }
     }
 

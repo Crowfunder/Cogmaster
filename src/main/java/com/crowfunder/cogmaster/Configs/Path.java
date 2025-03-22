@@ -2,7 +2,9 @@ package com.crowfunder.cogmaster.Configs;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 // Generic path for all purposes
@@ -34,6 +36,19 @@ public class Path {
             return Objects.equals(path, other.path);
         }
         return false;
+    }
+
+    // Generates various iterations of nextpath
+    @JsonIgnore
+    public List<String> getNextPathFlex() {
+        String nextPath = getNextPath();
+        List<String> variants = new ArrayList<>();
+        variants.add(nextPath);
+        variants.add(nextPath.replace(" ", ""));
+        variants.add(Character.toLowerCase(nextPath.charAt(0)) + nextPath.substring(1));
+        variants.add(variants.get(1).substring(0, 1).toLowerCase() + variants.get(1).substring(1));
+        variants.add(nextPath.toLowerCase().replace(" ", ""));
+        return variants;
     }
 
     public String getPath() {
