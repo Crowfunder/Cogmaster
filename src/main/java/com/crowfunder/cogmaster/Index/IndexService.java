@@ -48,6 +48,9 @@ public class IndexService {
         for (Path path : paths) {
             configs.add(resolveConfig(path));
         }
+        if (configs.isEmpty()) {
+            return null;
+        }
         return configs;
     }
 
