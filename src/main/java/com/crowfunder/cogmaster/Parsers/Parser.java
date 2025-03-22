@@ -217,11 +217,11 @@ public class Parser {
                     }
 
                     // Heuristic 3 - ConfigReference value
-                    if (nextNode.getAttributes().getNamedItem("class") != null && nextNode.getAttributes().getNamedItem("class").getNodeValue().contains("ConfigReference")) {
-                        value = new ParameterValue(parseReference(nextNode));
-                    } else {
-                        value = parseParameterValue(nextNode);
-                    }
+//                    if (nextNode.getAttributes().getNamedItem("class") != null && nextNode.getAttributes().getNamedItem("class").getNodeValue().contains("ConfigReference")) {
+//                        value = new ParameterValue(parseReference(nextNode));
+//                    } else {
+//                    }
+                    value = parseParameterValue(nextNode);  // ConfigReference values are too confusing, to be consulted
 
                 }
                 case "value" -> {
