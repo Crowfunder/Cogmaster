@@ -36,6 +36,52 @@ class PropertiesControllerTest {
     }
 
     @Test
+    void getValueComplex() throws Exception {
+        // Needs recursive resolving
+        String path = "/api/v1/properties/key?q=a.shd|a.sniped\\!m.buccaneer_bicorne";
+        ResultActions result = mockMvc.perform(get(path));
+        result.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.valueOf("text/plain;charset=UTF-8")))
+                .andExpect(content().string("Shadow Sniped Buccaneer Bicorne"));
+
+        // Multiple arguments into 1 key, one of args tainted
+        path = "/api/v1/properties/key?q=m.prize_box_seq|p.anniv|\\~2013";
+        result = mockMvc.perform(get(path));
+        result.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.valueOf("text/plain;charset=UTF-8")))
+                .andExpect(content().string("Anniversary Prize Box 2013"));
+    }
+
+    @Test
+    void getValueComplexFail() throws Exception {
+        // Key does not exist
+        String path = "/api/v1/properties/key?q=m.thisdoesnotexisthonestly|p.anniv|\\~2013";
+        ResultActions result = mockMvc.perform(get(path));
+        result.andExpect(status().isNotFound());
+
+        // Provide less args than key holds
+        path = "/api/v1/properties/key?q=m.prize_box_seq|p.anniv";
+        result = mockMvc.perform(get(path));
+        result.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.valueOf("text/plain;charset=UTF-8")))
+                .andExpect(content().string("Anniversary Prize Box {1}"));
+
+        // Provide more args than key holds
+        path = "/api/v1/properties/key?q=m.prize_box_seq|p.anniv|\\~2013|\\~test";
+        result = mockMvc.perform(get(path));
+        result.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.valueOf("text/plain;charset=UTF-8")))
+                .andExpect(content().string("Anniversary Prize Box 2013"));
+
+        // Arg does not exist
+        path = "/api/v1/properties/key?q=m.prize_box_seq|p.annivasd|\\~2013";
+        result = mockMvc.perform(get(path));
+        result.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.valueOf("text/plain;charset=UTF-8")))
+                .andExpect(content().string("(Invalid Key) Prize Box 2013"));
+    }
+
+    @Test
     void getValueFail() throws Exception {
         // Query by value instead of key
         String path = "/api/v1/properties/key?q=Oni Helm";
@@ -62,7 +108,6 @@ class PropertiesControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[1]").value("n.great_escape"));
-
     }
 
     @Test

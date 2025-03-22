@@ -56,13 +56,13 @@ public class PropertiesService {
             }
 
             else {
-                argsValues.add(resolveKey(arg));
+                argsValues.add(resolveKey(arg) != null ? resolveKey(arg) : "(Invalid Key)");
             }
         }
 
         String keyVal = resolveKey(key);
         if (keyVal == null) {
-            return property;
+            return null;
         }
         return MessageFormat.format(keyVal, argsValues.toArray());
     }
