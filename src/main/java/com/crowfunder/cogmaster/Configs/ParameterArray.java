@@ -27,7 +27,7 @@ public class ParameterArray {
         }
 
         // If value is yet another ParameterArray, recurse into it until it's not
-        if (val.isNested()) {
+        if (val.isNested() && path.rotatePath().getPath() != null) {
             return ((ParameterArray) val.getValue()).resolveParameterPath(path.rotatePath());
         }
         return val;
