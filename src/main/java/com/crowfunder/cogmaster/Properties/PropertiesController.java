@@ -23,7 +23,7 @@ public class PropertiesController {
 
     @GetMapping(path = "key", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> getValue(@RequestParam("q") String q) {
-        Optional<String> value = Optional.ofNullable(propertiesService.resolveKey(q));
+        Optional<String> value = Optional.ofNullable(propertiesService.parsePropertyString(q));
         return value.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
