@@ -33,7 +33,7 @@ build/
 .vscode/
 
 ### Configs ###
-src/main/resources/parseable/
+**/main/resources/parseable/
 
 ### Names ###
-src/main/resources/properties/
+**/main/resources/properties/
