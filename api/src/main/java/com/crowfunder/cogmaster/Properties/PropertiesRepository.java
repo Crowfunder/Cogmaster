@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 import static com.crowfunder.cogmaster.Utils.HashMapUtil.invertHashMap;
@@ -28,12 +29,14 @@ public class PropertiesRepository {
     Logger logger = LoggerFactory.getLogger(PropertiesRepository.class);
     CogmasterConfig cogmasterConfig;
 
-    public String searchProperty(String property) {
-        return properties.get(property);
+    public Optional<String> searchProperty(String property) {
+        var result = properties.get(property);
+        return Optional.ofNullable(result);
     }
 
-    public List<String> reverseSearchProperty(String propertyValue) {
-        return reverseProperties.get(propertyValue);
+    public Optional<List<String>> reverseSearchProperty(String propertyValue) {
+        var results = reverseProperties.get(propertyValue);
+        return Optional.ofNullable(results);
     }
 
     private Properties loadAllProperties() {
@@ -63,7 +66,8 @@ public class PropertiesRepository {
         this.propertiesPath = cogmasterConfig.getProperties().getPath();
     }
 
-    // We interface with the properties through Map because we want to utilize inverting util
+    // We interface with the properties through Map because we want to utilize
+    // inverting util
     @PostConstruct
     private void PopulateProperties() {
         logger.info("Populating properties repository...");

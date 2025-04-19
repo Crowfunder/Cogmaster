@@ -66,7 +66,7 @@ class IndexRepository {
     // Populate name index
     // Populate routed parameters
     public void resolveConfigDependencies() {
-        for (String configName : index.getConfigIndex().keySet() ) {
+        for (String configName : index.getConfigIndex().keySet()) {
             for (Path path : index.getConfigIndex().get(configName).keySet()) {
                 ConfigEntry configEntry = readConfigIndex(configName, path);
 
@@ -79,13 +79,15 @@ class IndexRepository {
                 // Populate name index
                 String name = configEntry.getName();
                 if (name != null && !name.isEmpty()) {
-                    index.addNameIndexEntry(propertiesService.parsePropertyString(name), path, configName);
+                    index.addNameIndexEntry(propertiesService.parsePropertyString(name).orElseGet(() -> null), path,
+                            configName);
                 }
             }
         }
     }
 
-    public IndexRepository(ParserService parserService, RouterService routerService, PropertiesService propertiesService) {
+    public IndexRepository(ParserService parserService, RouterService routerService,
+            PropertiesService propertiesService) {
         this.parserService = parserService;
         this.routerService = routerService;
         this.propertiesService = propertiesService;
