@@ -1,6 +1,5 @@
 package com.crowfunder.cogmaster.Properties;
 
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,8 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.crowfunder.cogmaster.Utils.StringResult;
+
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("api/v1/properties")
@@ -21,16 +22,16 @@ public class PropertiesController {
         this.propertiesService = propertiesService;
     }
 
-    @GetMapping(path = "key", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> getValue(@RequestParam("q") String q) {
-        Optional<String> value = Optional.ofNullable(propertiesService.parsePropertyString(q));
+    @GetMapping(path = "key")
+    public ResponseEntity<StringResult> getValue(@RequestParam("q") String q) {
+        var value = propertiesService.parsePropertyString(q).map(x -> new StringResult(x));
         return value.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("value")
-    public ResponseEntity<List<String>> getKey(@RequestParam("q") String q) {
-        Optional<List<String>> key = Optional.ofNullable(propertiesService.resolveValue(q));
-        return key.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping(path = "value")
+    public ResponseEntity<Stream<StringResult>> getKey(@RequestParam("q") String q) {
+        var keys = propertiesService.searchByValue(q);
+        return keys.map(list -> ResponseEntity.ok(list.stream().map(str -> new StringResult(str))))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 }

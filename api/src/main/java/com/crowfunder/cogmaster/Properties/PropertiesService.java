@@ -6,26 +6,26 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PropertiesService {
 
     private final PropertiesRepository propertiesRepository;
 
-    public List<String> resolveValue(String value) {
-        return propertiesRepository.reverseSearchProperty(value);
-    }
-
-    public String resolveKey(String property) {
-        return propertiesRepository.searchProperty(property);
-    }
-
     public PropertiesService(PropertiesRepository propertiesRepository) {
         this.propertiesRepository = propertiesRepository;
     }
 
+    public Optional<List<String>> searchByValue(String value) {
+        return propertiesRepository.reverseSearchProperty(value);
+    }
 
-    public String parsePropertyString(String property) {
+    public Optional<String> searchByKey(String property) {
+        return propertiesRepository.searchProperty(property);
+    }
+
+    public Optional<String> parsePropertyString(String property) {
 
         // We do not care about qualified keys as we toss all bundles
         // into one dictionary anyway
@@ -35,36 +35,37 @@ public class PropertiesService {
 
         String[] args = property.split("\\|");
         String key = args[0];
+        var keyVal = searchByKey(key);
+        if (keyVal.isEmpty()) {
+            return Optional.<String>empty();
+        }
+
         args = args.length > 1 ? Arrays.copyOfRange(args, 1, args.length) : new String[0];
 
         // No need for resolving if there are no args
         if (args.length == 0) {
-            return resolveKey(key);
+            return searchByKey(key);
         }
 
         List<String> argsValues = new ArrayList<>();
         for (String arg : args) {
-
             // Recursive resolution
             if (arg.contains("!")) {
-                argsValues.add(parsePropertyString(arg.replace("\\!", "|")));
+                var parsed = parsePropertyString(arg.replace("\\!", "|"));
+                argsValues.add(parsed.orElseGet(() -> null));
+                continue;
             }
 
             // Tainted property, do not resolve, insert as-is
-            else if (arg.contains("~")) {
-                argsValues.add(arg.replace("\\~",""));
+            if (arg.contains("~")) {
+                argsValues.add(arg.replace("\\~", ""));
+                continue;
             }
 
-            else {
-                argsValues.add(resolveKey(arg) != null ? resolveKey(arg) : "(Invalid Key)");
-            }
+            argsValues.add(searchByKey(arg).orElseGet(() -> "(Invalid Key)"));
         }
 
-        String keyVal = resolveKey(key);
-        if (keyVal == null) {
-            return null;
-        }
-        return MessageFormat.format(keyVal, argsValues.toArray());
+        return keyVal.map(x -> MessageFormat.format(x, argsValues.toArray()));
     }
 
 }
