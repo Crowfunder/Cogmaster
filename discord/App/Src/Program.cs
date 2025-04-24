@@ -12,6 +12,7 @@ internal sealed class Program
         var services = new ServiceCollection()
             .ConfigureCoreServices()
             .ConfigureHandlers()
+            .ConfigureHelpers()
             .BuildServiceProvider();
 
         await StartAppAsync(services);
