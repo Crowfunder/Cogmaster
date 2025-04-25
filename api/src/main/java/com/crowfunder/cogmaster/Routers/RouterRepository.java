@@ -15,19 +15,15 @@ import java.util.Map;
 @Repository
 public class RouterRepository {
 
-    private final CogmasterConfig cogmasterConfig;
-
+    Logger logger = LoggerFactory.getLogger(RouterRepository.class);
     private final Map<String, Router> routers = new HashMap<>();
     private final String routersPath;
 
-    Logger logger = LoggerFactory.getLogger(RouterRepository.class);
-
-    public String getRoutersPath() {
-        return routersPath;
-    }
-
-    public Map<String, Router> getRouters() {
-        return routers;
+    public RouterRepository(CogmasterConfig cogmasterConfig) {
+        this.routersPath = cogmasterConfig.routers().path();
+        logger.info("Loading routers...");
+        loadRouters();
+        logger.info("Finished loading");
     }
 
     private void loadRouters() {
@@ -36,20 +32,20 @@ public class RouterRepository {
             PathMatchingResourcePatternResolver r = new PathMatchingResourcePatternResolver();
             Resource[] resources = r.getResources("classpath*:/" + routersPath + "/**/*.yml");
             for (Resource resource : resources) {
-                    Router router = yamlMapper.readValue(resource.getInputStream(), Router.class);
-                    routers.put(router.getImplementation(), router);
+                Router router = yamlMapper.readValue(resource.getInputStream(), Router.class);
+                routers.put(router.getImplementation(), router);
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error("Failed to load routers from specified path: /{}/*", routersPath);
             throw new RuntimeException("Failed to load routers");
         }
     }
 
-    public RouterRepository(CogmasterConfig cogmasterConfig) {
-        this.cogmasterConfig = cogmasterConfig;
-        this.routersPath = cogmasterConfig.getRouters().getPath();
-        logger.info("Loading routers...");
-        loadRouters();
-        logger.info("Finished loading");
+    public String getRoutersPath() {
+        return routersPath;
+    }
+
+    public Map<String, Router> getRouters() {
+        return routers;
     }
 }

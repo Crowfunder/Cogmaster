@@ -5,7 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 public class ParameterArray {
+
     private final Map<String, ParameterValue> hashmap;
+
+    public ParameterArray() {
+        this.hashmap = new HashMap<>();
+    }
+
+    public ParameterArray(HashMap<String, ParameterValue> hashmap) {
+        this.hashmap = hashmap;
+    }
 
     public ParameterArray update(ParameterArray parameterArray) {
         this.hashmap.putAll(parameterArray.getHashMap());
@@ -65,13 +74,5 @@ public class ParameterArray {
 
     public Map<String, ParameterValue> getHashMap() {
         return hashmap;
-    }
-
-    public ParameterArray(HashMap<String, ParameterValue> hashmap) {
-        this.hashmap = hashmap;
-    }
-
-    public ParameterArray() {
-        this.hashmap = new HashMap<>();
     }
 }

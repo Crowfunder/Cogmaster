@@ -3,7 +3,6 @@ package com.crowfunder.cogmaster.Configs;
 import com.crowfunder.cogmaster.Routers.Router;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class ConfigEntry {
 
@@ -28,6 +27,18 @@ public class ConfigEntry {
 
     // Non-overriden parameters pulled from all derivative (parent) configs
     private final ParameterArray derivedParameters;
+
+    // Parameterless
+    public ConfigEntry(String sourceConfig) {
+        this.sourceConfig = sourceConfig;
+        this.path = new Path();
+        this.parameters = new ParameterArray();
+        this.derivedPath = new Path(); // Empty string for no derivation
+        this.derivedParameters = new ParameterArray();
+        this.implementationType = "";
+        this.derivedImplementationType = "";
+        this.routedParameters = new ParameterArray();
+    }
 
     public Path getPath() {
         return this.path;
@@ -96,21 +107,8 @@ public class ConfigEntry {
         if (sourceRouter == null) {
             return;
         }
-        for (Map.Entry<String, Path> e: sourceRouter.getRoutes().entrySet()) {
+        for (Map.Entry<String, Path> e : sourceRouter.getRoutes().entrySet()) {
             routedParameters.addParameter(e.getKey(), getParameters().resolveParameterPathFlex(e.getValue()));
         }
     }
-
-    // Parameterless
-    public ConfigEntry(String sourceConfig) {
-        this.sourceConfig = sourceConfig;
-        this.path = new Path();
-        this.parameters = new ParameterArray();
-        this.derivedPath = new Path();   // Empty string for no derivation
-        this.derivedParameters = new ParameterArray();
-        this.implementationType = "";
-        this.derivedImplementationType = "";
-        this.routedParameters = new ParameterArray();
-    }
-
 }

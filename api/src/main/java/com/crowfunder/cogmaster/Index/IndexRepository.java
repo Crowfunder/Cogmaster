@@ -18,13 +18,30 @@ import java.util.Optional;
 @Repository
 class IndexRepository {
 
+    Logger logger = LoggerFactory.getLogger(IndexRepository.class);
     private final ParserService parserService;
     private final RouterService routerService;
     private final PropertiesService propertiesService;
-    Logger logger = LoggerFactory.getLogger(IndexRepository.class);
-
     // The actual index
     private final Index index = new Index();
+
+    public IndexRepository(ParserService parserService, RouterService routerService,
+            PropertiesService propertiesService) {
+        this.parserService = parserService;
+        this.routerService = routerService;
+        this.propertiesService = propertiesService;
+    }
+
+    @PostConstruct
+    public void populateIndex() {
+        logger.info("Parsing the configs, populating ConfigIndex...");
+        index.update(parserService.populateConfigIndex());
+        logger.info("Finished parsing");
+
+        logger.info("Resolving derivations...");
+        resolveConfigDependencies();
+        logger.info("Finished resolving");
+    }
 
     public ConfigEntry readConfigIndex(String configName, Path path) {
         return Optional.ofNullable(index.getPathIndex(configName))
@@ -85,23 +102,4 @@ class IndexRepository {
             }
         }
     }
-
-    public IndexRepository(ParserService parserService, RouterService routerService,
-            PropertiesService propertiesService) {
-        this.parserService = parserService;
-        this.routerService = routerService;
-        this.propertiesService = propertiesService;
-    }
-
-    @PostConstruct
-    public void populateIndex() {
-        logger.info("Parsing the configs, populating ConfigIndex...");
-        index.update(parserService.populateConfigIndex());
-        logger.info("Finished parsing");
-
-        logger.info("Resolving derivations...");
-        resolveConfigDependencies();
-        logger.info("Finished resolving");
-    }
-
 }
