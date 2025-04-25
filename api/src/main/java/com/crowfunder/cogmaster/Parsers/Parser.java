@@ -4,6 +4,7 @@ import com.crowfunder.cogmaster.Configs.*;
 import com.crowfunder.cogmaster.Index.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,12 +23,11 @@ import static com.crowfunder.cogmaster.Utils.DOMUtil.getNextNode;
 
 public class Parser {
 
-    // Path to parsed xml config file
-    private final String xmlFilePath;
-
+    Logger logger = LoggerFactory.getLogger(Parser.class);
+    // Parsed xml config file resource
+    private final Resource xmlFileResource;
     // Config name, should also correspond to root node of parameters in derived entries
     private final String configName;
-
     // List of paths leading to parameters to index into ParameterIndex
     private final List<Path> indexableParameterPaths;
 
@@ -37,11 +37,20 @@ public class Parser {
     // Do I care? No idea.
     Index index = new Index();
 
-    Logger logger = LoggerFactory.getLogger(Parser.class);
-
-    public String getXmlFilePath() {
-        return xmlFilePath;
+    public Parser(String configName, Resource xmlFileResource, List<Path> indexableParameterPaths) {
+        this.xmlFileResource = xmlFileResource;
+        this.indexableParameterPaths = indexableParameterPaths;
+        this.configName = configName;
     }
+
+    // Temporary constructor until reverse indexing works
+    public Parser(String configName, Resource xmlFileResource) {
+        this.xmlFileResource = xmlFileResource;
+        this.indexableParameterPaths = new ArrayList<>();
+        this.configName = configName;
+    }
+
+
 
     public List<Path> getIndexableParameterPaths() {
         return indexableParameterPaths;
@@ -55,7 +64,7 @@ public class Parser {
 
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = builder.parse(Parser.class.getResourceAsStream(xmlFilePath));
+            Document doc = builder.parse(xmlFileResource.getInputStream());
             doc.getDocumentElement().normalize();
 
             // Start reading
@@ -85,7 +94,6 @@ public class Parser {
             logger.error(e.toString());
             throw new RuntimeException(e);
         }
-
         return index;
     }
 
@@ -251,19 +259,4 @@ public class Parser {
         }
         return parameterValue;
     }
-
-
-    public Parser(String configName, String xmlFilePath, List<Path> indexableParameterPaths) {
-        this.xmlFilePath = xmlFilePath;
-        this.indexableParameterPaths = indexableParameterPaths;
-        this.configName = configName;
-    }
-
-    // Temporary constructor until reverse indexing works
-    public Parser(String configName, String xmlFilePath) {
-        this.xmlFilePath = xmlFilePath;
-        this.indexableParameterPaths = new ArrayList<>();
-        this.configName = configName;
-    }
-
 }

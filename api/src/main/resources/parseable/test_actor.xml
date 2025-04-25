@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><java class="com.threerings.export.XMLImporter" version="1.0">
+<object class="[Lcom.threerings.tudey.config.ActorConfig;">
+  <entry>
+    <name>Block/Barbed Hedgehog</name>
+    <implementation class="com.threerings.tudey.config.ActorConfig$Derived">
+      <actor>
+        <name>Block/Parts/Barbed Hedgehog Base</name>
+        <arguments>
+          <key class="java.lang.String">Variant</key>
+          <value class="java.lang.String">Normal</value>
+        </arguments>
+      </actor>
+    </implementation>
+  </entry>
+</object>
+</java>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><java class="com.threerings.export.XMLImporter" version="1.0">
+<object class="[Lcom.threerings.tudey.config.EffectConfig;">
+  <entry>
+    <name>Action</name>
+    <parameters>
+      <entry class="com.threerings.config.Parameter$Direct">
+        <name>Action</name>
+        <paths>implementation.action.fire_action</paths>
+      </entry>
+    </parameters>
+    <implementation class="com.threerings.tudey.config.EffectConfig$Original">
+      <action class="com.threerings.projectx.dungeon.config.DungeonActionConfig$FireAction">
+      </action>
+    </implementation>
+  </entry>
+</object>
+</java>
