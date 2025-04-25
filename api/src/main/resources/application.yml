@@ -14,14 +14,6 @@ cogmaster:
 
   parsers:
     path: "parseable"
-    list:
-      - "item"
-      - "harness"
-      - "effect"
-      - "conversation"
-      - "attack"
-      - "actor"
-      - "accessory"
 
   assets:
     path: "assets"
