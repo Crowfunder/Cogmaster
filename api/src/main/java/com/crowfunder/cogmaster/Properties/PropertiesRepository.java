@@ -21,22 +21,24 @@ import static com.crowfunder.cogmaster.Utils.HashMapUtil.propertiesToHashMap;
 @Repository
 public class PropertiesRepository {
 
+    Logger logger = LoggerFactory.getLogger(PropertiesRepository.class);
     // I'm begging you, I'm begging you please just some proper settings file
     private final String propertiesPath;
     private Map<String, String> properties;
     private Map<String, List<String>> reverseProperties;
 
-    Logger logger = LoggerFactory.getLogger(PropertiesRepository.class);
-    CogmasterConfig cogmasterConfig;
-
-    public Optional<String> searchProperty(String property) {
-        var result = properties.get(property);
-        return Optional.ofNullable(result);
+    public PropertiesRepository(CogmasterConfig cogmasterConfig) {
+        this.propertiesPath = cogmasterConfig.properties().path();
     }
 
-    public Optional<List<String>> reverseSearchProperty(String propertyValue) {
-        var results = reverseProperties.get(propertyValue);
-        return Optional.ofNullable(results);
+    // We interface with the properties through Map because we want to utilize
+    // inverting util
+    @PostConstruct
+    private void PopulateProperties() {
+        logger.info("Populating properties repository...");
+        properties = propertiesToHashMap(loadAllProperties());
+        reverseProperties = invertHashMap(properties);
+        logger.info("Finished populating");
     }
 
     private Properties loadAllProperties() {
@@ -61,19 +63,14 @@ public class PropertiesRepository {
         return newProperties;
     }
 
-    public PropertiesRepository(CogmasterConfig cogmasterConfig) {
-        this.cogmasterConfig = cogmasterConfig;
-        this.propertiesPath = cogmasterConfig.getProperties().getPath();
+    public Optional<String> searchProperty(String property) {
+        var result = properties.get(property);
+        return Optional.ofNullable(result);
     }
 
-    // We interface with the properties through Map because we want to utilize
-    // inverting util
-    @PostConstruct
-    private void PopulateProperties() {
-        logger.info("Populating properties repository...");
-        properties = propertiesToHashMap(loadAllProperties());
-        reverseProperties = invertHashMap(properties);
-        logger.info("Finished populating");
+    public Optional<List<String>> reverseSearchProperty(String propertyValue) {
+        var results = reverseProperties.get(propertyValue);
+        return Optional.ofNullable(results);
     }
 
 }

@@ -3,27 +3,12 @@ package com.crowfunder.cogmaster.Configs;
 public class ConfigReference {
 
     private final String implementationType = "com.threerings.config.ConfigReference";
-
     // Path to derived config
     // References don't have their own path identifiers!
     private final Path derivedPath;
-
     private final String sourceConfig;
-
     // Overridden parameters
     private final ParameterArray parameters;
-
-    public Path getPath() {
-        return this.derivedPath;
-    }
-
-    public ParameterArray getParameters() {
-        return this.parameters;
-    }
-
-    public String getSourceConfig() { return this.sourceConfig; }
-
-    public String getImplementationType() { return this.implementationType; }
 
     public ConfigReference(String sourceConfig) {
         this.derivedPath = new Path();
@@ -51,4 +36,19 @@ public class ConfigReference {
         this.parameters = new ParameterArray();
     }
 
+    public Path getPath() {
+        return this.derivedPath;
+    }
+
+    public ParameterArray getParameters() {
+        return this.parameters;
+    }
+
+    public String getSourceConfig() {
+        return this.sourceConfig;
+    }
+
+    public String getImplementationType() {
+        return this.implementationType;
+    }
 }

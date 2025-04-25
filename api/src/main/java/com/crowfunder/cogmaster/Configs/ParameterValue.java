@@ -1,19 +1,18 @@
 package com.crowfunder.cogmaster.Configs;
 
-
 import java.util.List;
 
 public class ParameterValue {
 
     private final Object value;
 
+    public ParameterValue(Object value) {
+        this.value = value;
+    }
+
     public boolean isNested() {
         return value instanceof ParameterArray;
     }
-
-//    public boolean isReference() {
-//        return value instanceof ConfigReference;
-//    }
 
     @Override
     public String toString() {
@@ -54,9 +53,5 @@ public class ParameterValue {
 
     public Object getValue() {
         return value;
-    }
-
-    public ParameterValue(Object value) {
-        this.value = value;
     }
 }

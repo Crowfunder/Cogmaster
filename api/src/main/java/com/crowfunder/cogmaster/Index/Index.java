@@ -68,9 +68,4 @@ public class Index {
         }
         nameIndex.get(name).add(path);
     }
-//    public void addParameterIndexEntry(String configName, Path path, HashMap<String, List<Path>> parameterIndexEntry) {
-//        if (parameterIndex.get(configName) != null) {
-//            parameterIndex.get(configName).put(path, parameterIndexEntry);
-//        }
-//    }
 }

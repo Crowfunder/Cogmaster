@@ -13,6 +13,14 @@ public class Path {
     private String path;
     private final String delimiter = "/";
 
+    public Path() {
+        this.path = "";
+    }
+
+    public Path(String path) {
+        this.path = path;
+    }
+
     // Returns a new object of a rotated path (remove 1st element)
     public Path rotatePath() {
         String[] pathParts = path.split(delimiter);
@@ -91,13 +99,5 @@ public class Path {
 
     public Path appendedPath(Path newPath) {
         return appendedPath(newPath.getPath());
-    }
-
-    public Path() {
-        this.path = "";
-    }
-
-    public Path(String path) {
-        this.path = path;
     }
 }

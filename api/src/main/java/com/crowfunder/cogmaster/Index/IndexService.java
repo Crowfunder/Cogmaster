@@ -15,6 +15,11 @@ public class IndexService {
     IndexRepository indexRepository;
     PropertiesService propertiesService;
 
+    public IndexService(IndexRepository indexRepository, PropertiesService propertiesService) {
+        this.indexRepository = indexRepository;
+        this.propertiesService = propertiesService;
+    }
+
     // Get ConfigEntry object by its config path
     public ConfigEntry resolveConfig(String configName, Path path) {
         return indexRepository.readConfigIndex(configName, path);
@@ -59,10 +64,4 @@ public class IndexService {
     public List<ConfigEntry> resolveConfigByName(String name) {
         return resolveConfigsFullPath(indexRepository.readNameIndex(name));
     }
-
-    public IndexService(IndexRepository indexRepository, PropertiesService propertiesService) {
-        this.indexRepository = indexRepository;
-        this.propertiesService = propertiesService;
-    }
-
 }
