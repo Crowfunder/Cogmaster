@@ -4,7 +4,7 @@ routes:
   name: "Name"
   flavor: "Flavor"
   icon: "Icon/file"
-  itemProp: "itemProp"
+  itemProp: "itemProp/name"
   model: "Model/name"
 
   

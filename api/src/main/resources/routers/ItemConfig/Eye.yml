@@ -5,4 +5,4 @@ routes:
   flavor: "Flavor"
   eye: "Eye"
   icon: "Icon/file"
-  itemProp: "itemProp"
+  itemProp: "itemProp/name"

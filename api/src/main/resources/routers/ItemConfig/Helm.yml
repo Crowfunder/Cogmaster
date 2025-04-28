@@ -7,4 +7,4 @@ routes:
   model: "Model/name"
   icon: "Icon/file"
   accessoryBlockers: "accessoryBlockers"
-  itemProp: "itemProp"
+  itemProp: "itemProp/name"
