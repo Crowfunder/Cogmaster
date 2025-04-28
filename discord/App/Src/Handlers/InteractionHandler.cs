@@ -1,4 +1,5 @@
-﻿using Cogmaster.Src.Helpers;
+﻿using Cogmaster.Src.Enums;
+using Cogmaster.Src.Helpers;
 using Cogmaster.Src.Logging;
 using Discord;
 using Discord.Interactions;
@@ -8,7 +9,7 @@ using System.Reflection;
 
 namespace Cogmaster.Src.Handlers;
 
-public class InteractionHandler(IAppLogger logger, IMemoryCache cache, IFileReader jsonFileReader, IServiceProvider services, InteractionService service) : IInteractionHandler
+public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache, IFileReader jsonFileReader, IServiceProvider services, InteractionService service) : IInteractionHandler
 {
     public async Task InitializeAsync()
     {
@@ -19,6 +20,7 @@ public class InteractionHandler(IAppLogger logger, IMemoryCache cache, IFileRead
     public async Task RegisterCommandsAsync()
     {
         await service.RegisterCommandsGloballyAsync();
+        logger.Log(LogLevel.Discord, "Commands have been registered");
     }
 
     public async Task HandleInteractionAsync(SocketInteraction interaction)
@@ -29,7 +31,10 @@ public class InteractionHandler(IAppLogger logger, IMemoryCache cache, IFileRead
             return;
         }
 
-        throw new NotImplementedException();
+        await interaction.DeferAsync(ephemeral: true);
+
+        var context = new SocketInteractionContext(app.Client, interaction);
+        await service.ExecuteCommandAsync(context, services);
     }
 
     private async Task HandleAutocompleteAsync(SocketAutocompleteInteraction interaction)

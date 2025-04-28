@@ -38,6 +38,7 @@ internal sealed class Program
         var interactionHandler = services.GetRequiredService<IInteractionHandler>();
 
         client.Log += services.GetRequiredService<IAppLogger>().HandleDiscordLog;
+        //Uncomment to update or add commands to discord:
         //client.Ready += interactionHandler.RegisterCommandsAsync;
         client.InteractionCreated += interactionHandler.HandleInteractionAsync;
     }
