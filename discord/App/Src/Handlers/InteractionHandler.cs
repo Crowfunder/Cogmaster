@@ -1,4 +1,5 @@
 ﻿using Cogmaster.Src.Helpers;
+using Cogmaster.Src.Logging;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -7,11 +8,12 @@ using System.Reflection;
 
 namespace Cogmaster.Src.Handlers;
 
-public class InteractionHandler(IMemoryCache cache, IFileReader jsonFileReader, IServiceProvider services, InteractionService service) : IInteractionHandler
+public class InteractionHandler(IAppLogger logger, IMemoryCache cache, IFileReader jsonFileReader, IServiceProvider services, InteractionService service) : IInteractionHandler
 {
     public async Task InitializeAsync()
     {
         await service.AddModulesAsync(Assembly.GetEntryAssembly(), services);
+        service.InteractionExecuted += logger.HandlePostInteractionAsync;
     }
 
     public async Task RegisterCommandsAsync()
