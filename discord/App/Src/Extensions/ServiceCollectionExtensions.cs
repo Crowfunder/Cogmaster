@@ -23,7 +23,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection ConfigureHandlers(this IServiceCollection services)
     {
         return services
-            .AddSingleton<IInteractionHandler, InteractionHandler>();
+            .AddSingleton<IInteractionHandler, InteractionHandler>()
+            .AddSingleton<IEmbedHandler, EmbedHandler>();
     }
 
     public static IServiceCollection ConfigureHelpers(this IServiceCollection services)
