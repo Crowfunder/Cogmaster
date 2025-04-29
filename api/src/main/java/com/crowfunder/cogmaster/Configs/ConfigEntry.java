@@ -66,6 +66,15 @@ public class ConfigEntry {
         return this.routedParameters;
     }
 
+    // This getter returns effective (actual, in-depth)
+    // implementation, in case the config is derived
+    public String getEffectiveImplementation() {
+        if (this.derivedImplementationType.isEmpty()) {
+            return this.implementationType;
+        }
+        return this.derivedImplementationType;
+    }
+
     public String getImplementationType() { return this.implementationType; }
 
     public String getSourceConfig() { return this.sourceConfig; }

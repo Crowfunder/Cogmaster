@@ -16,7 +16,7 @@ public class RouterService {
         if (configEntry == null) {
             return null;
         }
-        return getRouter(configEntry.getDerivedImplementationType());
+        return getRouter(configEntry.getEffectiveImplementation());
     }
 
     public RouterService(RouterRepository routerRepository) {
