@@ -1,23 +1,31 @@
 ﻿using Cogmaster.Src.Handlers;
 using Cogmaster.Src.Helpers;
 using Discord.Interactions;
+using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
 
 namespace Cogmaster.Src.Commands;
 
-public class Parameters(IEmbedHandler embedHandler, IApiFetcher apiFetcher) : InteractionModuleBase<SocketInteractionContext>
+public class Parameters(IMemoryCache cache, IEmbedHandler embedHandler, IApiFetcher apiFetcher) : InteractionModuleBase<SocketInteractionContext>
 {
+    private static readonly MemoryCacheEntryOptions _cacheOptions = new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1) };
 
     [SlashCommand("parameters", "Get the parameters from any item.")]
     public async Task ExecuteAsync([Summary(description: "Item the app should return the parameters for."), Autocomplete(), MinLength(3), MaxLength(69)] string item)
     {
+        var cacheKey = $"parameter_{item}";
         var embed = embedHandler.GetEmbed(item);
 
         try
         {
-            var data = await apiFetcher.FetchAsync($"http://127.0.0.1:8080/api/v1/index/search?q={item}");
-            var parameters = data.RootElement[0].GetProperty("routedParameters");
-            embed.WithDescription(FormatParameters(parameters));
+            if (!cache.TryGetValue(cacheKey, out string? parameters) || string.IsNullOrEmpty(parameters))
+            {
+                var data = await apiFetcher.FetchAsync($"http://127.0.0.1:8080/api/v1/index/search?q={item}");
+                parameters = FormatParameters(data.RootElement[0].GetProperty("routedParameters"));
+                cache.Set(cacheKey, parameters, _cacheOptions);
+            }
+            
+            embed.WithDescription(parameters);
         }
         catch
         {
