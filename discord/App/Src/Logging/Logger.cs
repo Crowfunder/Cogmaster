@@ -20,7 +20,12 @@ public class Logger(IEmbedHandler embedHandler) : IAppLogger
             return;
         }
 
-        Log(LogLevel.Command, $"{context.Interaction.User.Username} used /{command}");
+        switch (context.Interaction.Type)
+        {
+            case InteractionType.ApplicationCommand: Log(LogLevel.Command, $"{context.Interaction.User.Username} used /{command}"); break;
+            case InteractionType.MessageComponent: Log(LogLevel.Button, $"{context.Interaction.User.Username} used {((IComponentInteraction)context.Interaction).Data.CustomId}"); break;
+            default: return;
+        }
     }
 
     public Task HandleDiscordLog(LogMessage msg)

@@ -1,4 +1,5 @@
 ﻿using Cogmaster.Src.Data.Classes;
+using Cogmaster.Src.Extensions;
 using Discord;
 
 namespace Cogmaster.Src.Handlers;
@@ -13,4 +14,7 @@ public class EmbedHandler : IEmbedHandler
             Color = Colors.Default
         };
     }
+
+    public Embed GetAndBuildEmbed(string title) =>
+        GetEmbed(title).Build();
 }

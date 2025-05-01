@@ -31,6 +31,8 @@ public static class ServiceCollectionExtensions
     {
         return services
             .AddSingleton<IFileReader, JsonFileReader>()
-            .AddSingleton<IApiFetcher, ApiFetcher>();
+            .AddSingleton<IApiFetcher, ApiFetcher>()
+            .AddSingleton<IDiscordPaginator, DiscordPaginator>()
+            .AddSingleton<IConfigHelper, ConfigHelper>();
     }
 }
