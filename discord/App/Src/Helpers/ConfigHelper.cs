@@ -22,12 +22,13 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         new ParamInfo("ownParameters", "Own Info", "This config's own parameters, without parameters derived from parents.", ComponentIds.Own)
     ];
 
-    // Should run within try catch block
-    public async Task CreateConfigPagesAsync(string url, string cacheKey, string item)
+    public async Task<bool> CreateConfigPagesAsync(string url, string cacheKey, string item)
     {
-        if (cache.TryGetValue(cacheKey, out List<string>? itemParameters) && itemParameters is not null) return;
+        if (cache.TryGetValue(cacheKey, out List<string>? itemParameters) && itemParameters is not null) return true;
 
         var data = await apiFetcher.FetchAsync(url);
+        if (data is null) return false;
+
         var author = new EmbedAuthorBuilder().WithName(item);
         var pages = new List<EmbedBuilder>();
         var indexes = new Dictionary<string, ParameterIndexData>();
@@ -44,6 +45,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
 
         cache.Set($"{cacheKey}_index", indexes, CacheOptions);
         paginator.AddPageCounterAndSaveToCache(CacheOptions, [.. pages], cacheKey, addTitle: true);
+        return true;
     }
 
     public MessageComponent GetComponents(string pagesKey, string userKey, string baseId)

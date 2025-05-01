@@ -42,7 +42,7 @@ public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache,
         var cacheKey = $"Autocomplete_{interaction.Data.CommandName}_{interaction.Data.Current.Name}";
         var fileName = interaction.Data.Current.Name switch
         {
-            "item" => "Items.json",
+            "name" => "Items.json",
             _ => throw new InvalidOperationException($"Unknown autocomplete option: {interaction.Data.Current.Name}")
         };
 
