@@ -3,6 +3,7 @@
 public enum LogLevel
 {
     Command,
+    Button,
     Discord,
     Error
 }

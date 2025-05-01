@@ -7,6 +7,7 @@ public static class EnumExtensions
     private static readonly Dictionary<LogLevel, string> LogLevelMapping = new()
     {
         { LogLevel.Command, "\u001b[34m" },
+        { LogLevel.Button, "\u001b[36m" },
         { LogLevel.Discord, "\u001b[90m" },
         { LogLevel.Error, "\u001b[31m" }
     };
