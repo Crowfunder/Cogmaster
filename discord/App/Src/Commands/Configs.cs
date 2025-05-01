@@ -6,19 +6,31 @@ using Discord.Interactions;
 
 namespace Cogmaster.Src.Commands;
 
+[Group(CommandIds.Configs, "Get the configs from any item.")]
 public class Configs(IEmbedHandler embedHandler, IDiscordPaginator paginator, IConfigHelper configHelper) : InteractionModuleBase<SocketInteractionContext>
 {
-
-
-    [SlashCommand(CommandIds.Configs, "Get the configs from any item.")]
-    public async Task ExecuteAsync([Summary(description: "Item the app should return the configs for."), Autocomplete(), MinLength(3), MaxLength(69)] string item)
+    [SlashCommand("name", "Get the configs from any item by in-game name.")]
+    public async Task NameCommand([Summary(description: "In-game name of the config entry, i.e \"Brandish\"."), Autocomplete(), MinLength(3), MaxLength(69)] string name)
     {
-        var cacheKey = $"{CommandIds.Configs}_{item}";
-        var userCacheKey = $"{cacheKey}_{Context.User.Id}";
+        await HandleCommandAsync($"{DotNetEnv.Env.GetString("api")}/index/search?q={name}", name);
+    }
 
-        try
+    [SlashCommand("path", "Get the configs from any item by path.")]
+    public async Task PathCommand(
+        [Summary(name: "config-entry-path",description: "Path of the entry in the selected config, i.e \"Weapon/Sword/Troika\"."), MinLength(3), MaxLength(69)] string path,
+        [Summary(name: "config-name",description: "Name of the config in which we are searching for, i.e \"item\", \"actor\"."), MinLength(3), MaxLength(69)] string name)
+    {
+        await HandleCommandAsync($"{DotNetEnv.Env.GetString("api")}/index/config/{name}?path={path}", $"{name}_{path}");
+    }
+
+    private async Task HandleCommandAsync(string url, string title)
+    {
+        var cacheKey = $"{CommandIds.Configs}_{title}";
+        var matchFound = await configHelper.CreateConfigPagesAsync(url, cacheKey, title);
+
+        if (matchFound)
         {
-            await configHelper.CreateConfigPagesAsync($"{DotNetEnv.Env.GetString("api")}/search?q={item}", cacheKey, item);
+            var userCacheKey = $"{cacheKey}_{Context.User.Id}";
 
             await ModifyOriginalResponseAsync(msg =>
             {
@@ -26,14 +38,13 @@ public class Configs(IEmbedHandler embedHandler, IDiscordPaginator paginator, IC
                 msg.Components = configHelper.GetComponents(cacheKey, userCacheKey, ComponentIds.ConfigBase);
             });
         }
-        catch
+        else
         {
             await ModifyOriginalResponseAsync(msg =>
             {
-                msg.Embed = embedHandler.GetEmbed(item).WithDescription("Failed to find item or something went wrong.").Build();
+                msg.Embed = embedHandler.GetEmbed(title).WithDescription("Failed to find config or something went wrong.").Build();
                 msg.Components = new ComponentBuilder().Build();
             });
         }
     }
-
 }

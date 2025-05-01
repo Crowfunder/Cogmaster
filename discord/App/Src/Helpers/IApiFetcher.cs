@@ -4,5 +4,5 @@ namespace Cogmaster.Src.Helpers;
 
 public interface IApiFetcher
 {
-    Task<JsonDocument> FetchAsync(string url);
+    Task<JsonDocument?> FetchAsync(string url);
 }
