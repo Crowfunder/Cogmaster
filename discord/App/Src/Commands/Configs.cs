@@ -10,18 +10,14 @@ namespace Cogmaster.Src.Commands;
 public class Configs(IEmbedHandler embedHandler, IDiscordPaginator paginator, IConfigHelper configHelper) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("name", "Get the configs from any item by in-game name.")]
-    public async Task NameCommand([Summary(description: "In-game name of the config entry, i.e \"Brandish\"."), Autocomplete(), MinLength(3), MaxLength(69)] string name)
-    {
+    public async Task NameCommand([Summary(description: "In-game name of the config entry, i.e \"Brandish\"."), Autocomplete(), MinLength(3), MaxLength(69)] string name) =>
         await HandleCommandAsync($"{DotNetEnv.Env.GetString("api")}/index/search?q={name}", name);
-    }
 
     [SlashCommand("path", "Get the configs from any item by path.")]
     public async Task PathCommand(
-        [Summary(name: "config-entry-path",description: "Path of the entry in the selected config, i.e \"Weapon/Sword/Troika\"."), MinLength(3), MaxLength(69)] string path,
-        [Summary(name: "config-name",description: "Name of the config in which we are searching for, i.e \"item\", \"actor\"."), MinLength(3), MaxLength(69)] string name)
-    {
-        await HandleCommandAsync($"{DotNetEnv.Env.GetString("api")}/index/config/{name}?path={path}", $"{name}_{path}");
-    }
+        [Summary(name: "config-entry-path", description: "Path of the entry in the selected config, i.e \"Weapon/Sword/Troika\"."), MinLength(3), MaxLength(69)] string path,
+        [Summary(name: "config-name", description: "Name of the config in which we are searching for, i.e \"item\", \"actor\"."), MinLength(3), MaxLength(69)] string name) =>
+            await HandleCommandAsync($"{DotNetEnv.Env.GetString("api")}/index/config/{name}?path={path}", $"{name}_{path}");
 
     private async Task HandleCommandAsync(string url, string title)
     {
