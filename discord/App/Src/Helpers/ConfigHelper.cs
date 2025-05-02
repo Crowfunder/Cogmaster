@@ -24,7 +24,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
 
     public async Task<bool> CreateConfigPagesAsync(string url, string cacheKey, string item)
     {
-        if (cache.TryGetValue(cacheKey, out List<string>? itemParameters) && itemParameters is not null) return true;
+        if (cache.TryGetValue(cacheKey, out List<Embed>? itemParameters) && itemParameters is not null) return true;
 
         var data = await apiFetcher.FetchAsync(url);
         if (data is null) return false;

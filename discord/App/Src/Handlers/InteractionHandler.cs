@@ -39,12 +39,13 @@ public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache,
 
     private async Task HandleAutocompleteAsync(SocketAutocompleteInteraction interaction)
     {
-        var cacheKey = $"Autocomplete_{interaction.Data.CommandName}_{interaction.Data.Current.Name}";
         var fileName = interaction.Data.Current.Name switch
         {
             "name" => "Items.json",
+            "value" => "Items.json",
             _ => throw new InvalidOperationException($"Unknown autocomplete option: {interaction.Data.Current.Name}")
         };
+        var cacheKey = $"Autocomplete_{fileName}";
 
         if (!cache.TryGetValue(cacheKey, out List<AutocompleteResult>? suggestions) || suggestions is null)
         {
