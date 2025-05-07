@@ -1,0 +1,5 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.AccessoryConfig$Remove"
+routes:
+  name: "Name"
+  location: "Location"

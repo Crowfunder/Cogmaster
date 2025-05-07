@@ -1,0 +1,7 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.AccessoryConfig$Footstep"
+routes:
+  name: "Name"
+  model: "Model/name"
+  footstepEffect: "Footstep Effect"
+  location: "Location"
