@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><java class="com.threerings.export.XMLImporter" version="1.0">
+<object class="[Lcom.threerings.projectx.item.config.ItemConfig;">
+  <entry>
+    <name>Accessory/Armor/Aura/Snipe Aura, Cocoa</name>
+    <creatable>true</creatable>
+    <implementation class="com.threerings.projectx.item.config.ItemConfig$Derived">
+      <item>
+        <name>Accessory/Parts/Base, Custom Colors</name>
+        <arguments>
+          <key class="java.lang.String">Accessory</key>
+          <value class="com.threerings.config.ConfigReference">
+            <name>Armor/Aura/Snipe Aura, Cocoa</name>
+          </value>
+          <key class="java.lang.String">Colorizations</key>
+          <value class="[Lcom.threerings.opengl.renderer.config.ColorizationConfig;">
+            <entry class="com.threerings.opengl.renderer.config.ColorizationConfig$Translated">
+              <clazz>11</clazz>
+              <source class="com.threerings.opengl.renderer.config.ColorizationConfig$Normal">
+                <colorization>1295</colorization>
+              </source>
+            </entry>
+            <entry class="com.threerings.opengl.renderer.config.ColorizationConfig$Normal">
+              <colorization>3114</colorization>
+            </entry>
+            <entry class="com.threerings.opengl.renderer.config.ColorizationConfig$Normal">
+              <colorization>3370</colorization>
+            </entry>
+          </value>
+          <key class="java.lang.String">Icon</key>
+          <value class="java.lang.String">ui/icon/inventory/icon_accessory-aaura_cm.png</value>
+        </arguments>
+      </item>
+    </implementation>
+  </entry>
+   <entry>
+    <name>Weapon/Sword/Brandish</name>
+    <creatable>true</creatable>
+    <implementation class="com.threerings.projectx.item.config.ItemConfig$Derived">
+      <item>
+        <name>Weapon/Sword/Parts/Base (3 Hit)</name>
+        <arguments>
+          <key class="java.lang.String">233+((667/Chain End Speed)*Fire Speed)</key>
+          <value class="java.lang.Integer">677</value>
+          <key class="java.lang.String">Attack Values</key>
+          <value class="[Lcom.threerings.projectx.item.config.ItemConfig$AttackValue;">
+            <entry>
+              <value>80</value>
+              <depthScale>
+                <name>PC/Damage/Sword/Sword Base</name>
+              </depthScale>
+            </entry>
+          </value>
+          <key class="java.lang.String">AutoSpawnType</key>
+          <value class="com.threerings.projectx.item.data.ItemCodes$AutoSpawnType">GEAR</value>
+          <key class="java.lang.String">Chain End Speed</key>
+          <value class="java.lang.Float">1.5</value>
+          <key class="java.lang.String">Charge Time</key>
+          <value class="java.lang.Integer">3000</value>
+          <key class="java.lang.String">Charged Attack</key>
+          <value class="com.threerings.config.ConfigReference">
+            <name>Weapon/Sword/Burst Brandish (Charge)</name>
+            <arguments>
+              <key class="java.lang.String">Burst Color</key>
+              <value class="com.threerings.opengl.renderer.Color4f">0.654902, 0.7490196, 0.7764706, 1.0</value>
+              <key class="java.lang.String">Burst Damage</key>
+              <value class="com.threerings.projectx.dungeon.config.DamageConfig$DepthScale">
+                <depthScale>
+                  <name>PC/Damage/Handgun/Handgun Base</name>
+                </depthScale>
+                <flags>2</flags>
+                <majorReact>true</majorReact>
+              </value>
+              <key class="java.lang.String">Damage</key>
+              <value class="com.threerings.projectx.dungeon.config.DamageConfig$DepthScale">
+                <depthScale>
+                  <name>PC/Damage/Sword/Sword Base (Charged)</name>
+                </depthScale>
+                <flags>2</flags>
+                <majorReact>true</majorReact>
+              </value>
+              <key class="java.lang.String">Style</key>
+              <value class="java.lang.String">Cautery Sword</value>
+            </arguments>
+          </value>
+          <key class="java.lang.String">Damage</key>
+          <value class="com.threerings.projectx.dungeon.config.DamageConfig$DepthScale">
+            <depthScale>
+              <name>PC/Damage/Sword/Sword Base</name>
+            </depthScale>
+            <flags>2</flags>
+          </value>
+          <key class="java.lang.String">Damage Sound</key>
+          <value/>
+          <key class="java.lang.String">Description</key>
+          <value class="java.lang.String"><!--empty--></value>
+          <key class="java.lang.String">Display Speed</key>
+          <value class="java.lang.Integer">5</value>
+          <key class="java.lang.String">End Combo Damage</key>
+          <value class="com.threerings.projectx.dungeon.config.DamageConfig$DepthScale">
+            <depthScale>
+              <name>PC/Damage/Sword/Sword Base (Last Chain)</name>
+            </depthScale>
+            <flags>2</flags>
+            <majorReact>true</majorReact>
+          </value>
+          <key class="java.lang.String">End Speed</key>
+          <value class="java.lang.Float">2.0</value>
+          <key class="java.lang.String">Extra Action 0</key>
+          <value/>
+          <key class="java.lang.String">Extra Action 1</key>
+          <value/>
+          <key class="java.lang.String">Extra Action 2</key>
+          <value/>
+          <key class="java.lang.String">Fire Speed</key>
+          <value class="java.lang.Float">1.0</value>
+          <key class="java.lang.String">Flavor</key>
+          <value class="java.lang.String">f.brandish</value>
+          <key class="java.lang.String">Global Modifier</key>
+          <value class="com.threerings.projectx.item.config.LevelConfig$Empty">
+          </value>
+          <key class="java.lang.String">Icon</key>
+          <value class="java.lang.String">ui/icon/inventory/weapon/sword/bandish.png</value>
+          <key class="java.lang.String">Icon Colorizations</key>
+          <value class="[Lcom.threerings.opengl.renderer.config.ColorizationConfig;">
+          </value>
+          <key class="java.lang.String">Model</key>
+          <value class="com.threerings.config.ConfigReference">
+            <name>item/weapon/sword/calibur/model_brandish-r1.dat</name>
+          </value>
+          <key class="java.lang.String">Name</key>
+          <value class="java.lang.String">m.brandish</value>
+          <key class="java.lang.String">Rarity</key>
+          <value class="java.lang.Integer">2</value>
+          <key class="java.lang.String">Sound - Pitch</key>
+          <value class="java.lang.String">Default</value>
+          <key class="java.lang.String">Start Speed</key>
+          <value class="java.lang.Float">1.75</value>
+          <key class="java.lang.String">Status Values</key>
+          <value class="[Lcom.threerings.projectx.item.config.ItemConfig$StatusValue;">
+          </value>
+          <key class="java.lang.String">Swing FX</key>
+          <value class="com.threerings.config.ConfigReference">
+            <name>particle/swing/pc_default_simple.dat</name>
+            <arguments>
+              <key class="java.lang.String">Blend</key>
+              <value class="com.threerings.opengl.effect.AlphaMode">ADDITIVE</value>
+              <key class="java.lang.String">Scale</key>
+              <value class="java.lang.Float">1.5</value>
+              <key class="java.lang.String">Strider Color</key>
+              <value class="com.threerings.opengl.renderer.Color4f">0.6862745, 0.80784315, 0.8117647, 1.0</value>
+              <key class="java.lang.String">Strider Style</key>
+              <value class="java.lang.String">Default</value>
+              <key class="java.lang.String">Swing Color In/Out</key>
+              <value class="com.threerings.opengl.renderer.Color4f">0.5254902, 0.42745098, 0.44705883, 0.0</value>
+              <key class="java.lang.String">Swing Color Middle</key>
+              <value class="com.threerings.opengl.renderer.Color4f">0.57254905, 0.7764706, 0.78039217, 1.0</value>
+              <key class="java.lang.String">Texture</key>
+              <value class="java.lang.String">particle/texture/fx_pcswing.png</value>
+            </arguments>
+          </value>
+          <key class="java.lang.String">Swing Sound 1</key>
+          <value class="java.lang.String">sound/effect/weapon/sword_01.ogg</value>
+          <key class="java.lang.String">Swing Sound 2</key>
+          <value class="java.lang.String">sound/effect/weapon/sword_02.ogg</value>
+          <key class="java.lang.String">Swing Sound 3</key>
+          <value class="java.lang.String">sound/effect/weapon/sword_03.ogg</value>
+          <key class="java.lang.String">Tags</key>
+          <value class="com.threerings.tudey.config.TagConfig">
+            <tags>fam_beast, fam_slime, fam_undead, sc_freeze, vanilla</tags>
+          </value>
+        </arguments>
+      </item>
+    </implementation>
+  </entry>
+</object>
+</java>
