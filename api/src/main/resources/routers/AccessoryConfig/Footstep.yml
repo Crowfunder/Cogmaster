@@ -3,5 +3,5 @@ implementation: "com.threerings.projectx.item.config.AccessoryConfig$Footstep"
 routes:
   name: "Name"
   model: "Model/name"
-  footstepEffect: "Footstep Effect"
+  footstepEffect: "Footstep Effect/name"
   location: "Location"
