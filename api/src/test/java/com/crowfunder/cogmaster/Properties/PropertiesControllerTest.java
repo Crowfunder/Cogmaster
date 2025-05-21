@@ -20,7 +20,7 @@ class PropertiesControllerTest {
 
         @Test
         void getValue() throws Exception {
-                // item.properties
+                // test_item.properties
                 String path = "/api/v1/properties/key?q=m.oni_helm";
                 ResultActions result = mockMvc.perform(get(path));
                 result.andExpect(status().isOk())
@@ -28,7 +28,7 @@ class PropertiesControllerTest {
                                 .andExpect(content().string("""
                                                 {"value":"Oni Helm"}"""));
 
-                // design.properties
+                // test_design.properties
                 path = "/api/v1/properties/key?q=e.location_already_placed";
                 result = mockMvc.perform(get(path));
                 result.andExpect(status().isOk())
