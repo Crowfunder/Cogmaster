@@ -1,0 +1,6 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.AccessoryConfig$Original"
+routes:
+  name: "Name"
+  model: "Model/name"
+  location: "Location"
