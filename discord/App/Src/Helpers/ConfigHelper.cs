@@ -6,6 +6,7 @@ using Discord;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cogmaster.Src.Helpers;
 
@@ -43,9 +44,19 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
             pages.AddRange(chunks.Select(page => embedHandler.GetEmbed(param.Title).WithAuthor(author).WithDescription($"{param.Info}\n\n{page}")));
         }
 
+        AddSpecificProperties(pages, data);
+
         cache.Set($"{cacheKey}_index", indexes, CacheOptions);
         paginator.AddPageCounterAndSaveToCache(CacheOptions, [.. pages], cacheKey, addTitle: true);
         return true;
+    }
+
+    private static void AddSpecificProperties(List<EmbedBuilder> pages, JsonDocument data)
+    {
+        var path = data.RootElement[0].GetProperty("path").GetProperty("path").GetString();
+        var sourceConfig = data.RootElement[0].GetProperty("sourceConfig").GetString();
+
+        pages[0].Description = $"{Format.Bold("Config Path")}: {path}\n{Format.Bold("SourceConfig")}: {sourceConfig}{pages[0].Description}";
     }
 
     public MessageComponent GetComponents(string pagesKey, string userKey, string baseId)
@@ -112,7 +123,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
                             _ => value.ToString()
                         };
 
-                        builder.AppendLine($"**{indent}{key}**: {formatted}");
+                        builder.AppendLine($"{Format.Bold($"{indent}{key}")}: {formatted}");
                     }
                 }
             }
