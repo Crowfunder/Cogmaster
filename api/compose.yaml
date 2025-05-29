@@ -1,0 +1,16 @@
+services:
+  cogmaster-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cogmaster-api
+    image: cogmaster-api
+    ports:
+      - "2137:2137"
+    networks:
+      - cogmaster-net
+    restart: unless-stopped
+
+networks:
+  cogmaster-net:
+    external: true
