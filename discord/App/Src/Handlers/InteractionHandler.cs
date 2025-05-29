@@ -54,7 +54,18 @@ public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache,
             cache.Set(cacheKey, suggestions, new MemoryCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7) });
         }
 
-        var input = interaction.Data.Current.Value.ToString()?.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
-        await interaction.RespondAsync(suggestions.Where(s => input.All(word => s.Name.Contains(word, StringComparison.OrdinalIgnoreCase))).Take(25));
+        var input = (interaction.Data.Current.Value as string)?.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+        var matches = new List<AutocompleteResult>(25);
+
+        foreach (var s in suggestions)
+        {
+            if (input.All(word => s.Name.Contains(word, StringComparison.OrdinalIgnoreCase)))
+            {
+                matches.Add(s);
+                if (matches.Count == 25) break;
+            }
+        }
+
+        await interaction.RespondAsync(matches);
     }
 }
