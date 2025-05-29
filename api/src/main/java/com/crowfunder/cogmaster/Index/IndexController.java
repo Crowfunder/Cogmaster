@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/index")
@@ -26,6 +27,12 @@ public class IndexController {
     @GetMapping("search")
     public ResponseEntity<List<ConfigEntry>> resolveConfigByName(@RequestParam String q) {
         Optional<List<ConfigEntry>> resolvedConfigs = Optional.ofNullable(indexService.resolveConfigByName(q));
+        return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("info/names")
+    public ResponseEntity<Set<String>> getAllConfigNames() {
+        Optional<Set<String>> resolvedConfigs = Optional.ofNullable(indexService.getAllConfigNames());
         return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

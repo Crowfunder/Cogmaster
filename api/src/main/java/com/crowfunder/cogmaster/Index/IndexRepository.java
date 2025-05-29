@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 class IndexRepository {
@@ -101,5 +102,11 @@ class IndexRepository {
                 }
             }
         }
+    }
+
+    // Return list of all keys in index
+    public Set<String> getIndexKeys() {
+        return index.getConfigIndex().keySet();
+
     }
 }
