@@ -1,0 +1,15 @@
+﻿services:
+    cogmaster-app:
+        build: .
+        environment:
+            - botToken=$botToken
+            - api=$api
+        container_name: cogmaster-app
+        image: cogmaster-app
+        restart: unless-stopped
+        networks:
+            - cogmaster-net
+
+networks:
+  cogmaster-net:
+    external: true
