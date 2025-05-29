@@ -33,4 +33,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <EditorConfigFiles Remove=".editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
+  </ItemGroup>
 </Project>

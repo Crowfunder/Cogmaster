@@ -1,0 +1,8 @@
+﻿services:
+    cogmaster:
+        build: .
+        environment:
+            - botToken=$botToken
+            - api=$api
+        image: cogmaster-app
+        restart: unless-stopped
