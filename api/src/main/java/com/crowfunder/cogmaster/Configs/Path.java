@@ -46,19 +46,6 @@ public class Path {
         return false;
     }
 
-    // Generates various iterations of nextpath
-    @JsonIgnore
-    public List<String> getNextPathFlex() {
-        String nextPath = getNextPath();
-        List<String> variants = new ArrayList<>();
-        variants.add(nextPath);
-        variants.add(nextPath.replace(" ", ""));
-        variants.add(Character.toLowerCase(nextPath.charAt(0)) + nextPath.substring(1));
-        variants.add(variants.get(1).substring(0, 1).toLowerCase() + variants.get(1).substring(1));
-        variants.add(nextPath.toLowerCase().replace(" ", ""));
-        return variants;
-    }
-
     public String getPath() {
         if (path == null || path.isEmpty()) {
             return null;

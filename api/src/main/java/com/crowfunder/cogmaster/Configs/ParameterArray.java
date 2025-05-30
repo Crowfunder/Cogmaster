@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.crowfunder.cogmaster.Utils.StringUtil.generateStringVariants;
+
 public class ParameterArray {
 
     private final Map<String, ParameterValue> hashmap;
@@ -45,7 +47,7 @@ public class ParameterArray {
 
     // Checks numerous variants of nextpath, i.e "Something Something", "SomethingSomething", "somethingSomething" etc.
     public ParameterValue resolveParameterPathFlex(Path path) {
-        List<String> nextPaths = path.getNextPathFlex();
+        List<String> nextPaths = generateStringVariants(path.getNextPath());
         for (String nextPath : nextPaths) {
             ParameterValue val = hashmap.get(nextPath);
             if (val != null) {

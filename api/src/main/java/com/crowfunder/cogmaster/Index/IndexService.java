@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.crowfunder.cogmaster.Utils.StringUtil.uppercaseFirstLetters;
+
 @Service
 public class IndexService {
 
@@ -62,7 +64,9 @@ public class IndexService {
     // Resolve one or more ConfigEntry objects by
     // querying the propertiesService for name mappings
     // that can be used in nameIndex
+    // Ignores case (always searches by first character of word uppercase)
     public List<ConfigEntry> resolveConfigByName(String name) {
+        name = uppercaseFirstLetters(name.toLowerCase());
         return resolveConfigsFullPath(indexRepository.readNameIndex(name));
     }
 
