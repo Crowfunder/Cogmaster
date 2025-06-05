@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,9 +31,27 @@ public class IndexController {
         return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("info/names")
+    @GetMapping("info/config/names")
     public ResponseEntity<Set<String>> getAllConfigNames() {
         Optional<Set<String>> resolvedConfigs = Optional.ofNullable(indexService.getAllConfigNames());
+        return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("info/config/paths")
+    public ResponseEntity<Set<String>> getAllConfigPaths() {
+        Optional<Set<String>> resolvedConfigs = Optional.ofNullable(indexService.getAllConfigPaths());
+        return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("info/config/map")
+    public ResponseEntity<Map<String, Set<String>>> getConfigPathsMap() {
+        Optional<Map<String, Set<String>>> resolvedConfigs = Optional.ofNullable(indexService.getConfigPathsMap());
+        return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("info/search/names")
+    public ResponseEntity<Set<String>> getAllEntryNames() {
+        Optional<Set<String>> resolvedConfigs = Optional.ofNullable(indexService.getAllEntryNames());
         return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

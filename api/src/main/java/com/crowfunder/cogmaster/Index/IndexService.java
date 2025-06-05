@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.crowfunder.cogmaster.Utils.StringUtil.uppercaseFirstLetters;
@@ -72,6 +73,18 @@ public class IndexService {
 
     // Get a list of all available configs
     public Set<String> getAllConfigNames() {
-        return indexRepository.getIndexKeys();
+        return indexRepository.getAllIndexKeys();
+    }
+
+    public Set<String> getAllEntryNames() {
+        return indexRepository.getAllNameIndexKeys();
+    }
+
+    public Set<String> getAllConfigPaths() {
+        return indexRepository.getAllConfigIndexKeysJoint();
+    }
+
+    public Map<String, Set<String>> getConfigPathsMap() {
+        return indexRepository.getAllConfigIndexKeysMapped();
     }
 }

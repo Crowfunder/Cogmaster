@@ -28,10 +28,6 @@ public class Index {
         return configIndex;
     }
 
-    public Set<String> getAllConfigNames() {
-        return configIndex.keySet();
-    }
-
     public Map<Path, Map<String, List<Path>>> getParameterIndex() {
         return parameterIndex;
     }

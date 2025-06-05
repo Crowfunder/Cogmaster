@@ -9,12 +9,10 @@ import com.crowfunder.cogmaster.Routers.RouterService;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 class IndexRepository {
@@ -104,9 +102,44 @@ class IndexRepository {
         }
     }
 
-    // Return list of all keys in index
-    public Set<String> getIndexKeys() {
+    @Cacheable("indexRepository")
+    public Set<String> getAllIndexKeys() {
         return index.getConfigIndex().keySet();
+    }
 
+    @Cacheable("indexCache")
+    public Set<String> getAllNameIndexKeys() {
+        return index.getNameIndex().keySet();
+    }
+
+    // Returns all config index keys, joint into a single set
+    @Cacheable("indexCache")
+    public Set<String> getAllConfigIndexKeysJoint() {
+        Set<String> result = new HashSet<>();
+        for (Map<Path,ConfigEntry> subIndex : index.getConfigIndex().values()) {
+            for (Path path : subIndex.keySet()) {
+                result.add(path.toString());
+            }
+        }
+        return result;
+    }
+
+    // Returns all config index keys, except as a dictionary mapping ConfigIndex keys to Sets
+    @Cacheable("indexCache")
+    public Map<String, Set<String>> getAllConfigIndexKeysMapped() {
+        Map<String, Set<String>> result = new HashMap<>();
+
+        for (Map.Entry<String, Map<Path, ConfigEntry>> entry : index.getConfigIndex().entrySet()) {
+            String outerKey = entry.getKey();
+            Set<Path> innerKeys = entry.getValue().keySet();
+            Set<String> innerKeysString = new HashSet<>();
+            for (Path path : innerKeys) {
+                innerKeysString.add(path.toString());
+            }
+
+            result.put(outerKey, innerKeysString);
+        }
+
+        return result;
     }
 }
