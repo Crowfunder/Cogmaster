@@ -107,13 +107,13 @@ class IndexRepository {
         return index.getConfigIndex().keySet();
     }
 
-    @Cacheable("indexCache")
+    @Cacheable("getAllNameIndexKeys")
     public Set<String> getAllNameIndexKeys() {
         return index.getNameIndex().keySet();
     }
 
     // Returns all config index keys, joint into a single set
-    @Cacheable("indexCache")
+    @Cacheable("getAllConfigIndexKeysJoint")
     public Set<String> getAllConfigIndexKeysJoint() {
         Set<String> result = new HashSet<>();
         for (Map<Path,ConfigEntry> subIndex : index.getConfigIndex().values()) {
@@ -125,7 +125,7 @@ class IndexRepository {
     }
 
     // Returns all config index keys, except as a dictionary mapping ConfigIndex keys to Sets
-    @Cacheable("indexCache")
+    @Cacheable("getAllConfigIndexKeysMapped")
     public Map<String, Set<String>> getAllConfigIndexKeysMapped() {
         Map<String, Set<String>> result = new HashMap<>();
 
