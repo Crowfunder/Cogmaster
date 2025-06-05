@@ -6,7 +6,6 @@ using Discord;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cogmaster.Src.Helpers;
 
@@ -40,23 +39,25 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
             var paramData = data.RootElement.ValueKind == JsonValueKind.Array ? data.RootElement[0].GetProperty(param.Type) : data.RootElement.GetProperty(param.Type);
             var chunks = SplitIntoChunks(FormatParameters(paramData), chunkSize: ExtendedDiscordConfig.MaxEmbedDescChars - 1000);
 
+            chunks[0] = $"{GetExtraProperties(data, param.Id)}{chunks[0]}";
             indexes.Add(param.Id, new ParameterIndexData(paramIndex, param.Id.ToTitleCase(), param.Id, Disabled: chunks.Count == 0));
             pages.AddRange(chunks.Select(page => embedHandler.GetEmbed(param.Title).WithAuthor(author).WithDescription($"{param.Info}\n\n{page}")));
         }
 
-        AddSpecificProperties(pages, data);
 
         cache.Set($"{cacheKey}_index", indexes, CacheOptions);
         paginator.AddPageCounterAndSaveToCache(CacheOptions, [.. pages], cacheKey, addTitle: true);
         return true;
     }
 
-    private static void AddSpecificProperties(List<EmbedBuilder> pages, JsonDocument data)
+    private static string GetExtraProperties(JsonDocument data, string id)
     {
-        var path = data.RootElement[0].GetProperty("path").GetProperty("path").GetString();
-        var sourceConfig = data.RootElement[0].GetProperty("sourceConfig").GetString();
-
-        pages[0].Description = $"{Format.Bold("Config Path")}: {path}\n{Format.Bold("SourceConfig")}: {sourceConfig}{pages[0].Description}";
+        return id switch
+        {
+            ComponentIds.Basic => $"{Format.Bold("Config Path")}: {data.RootElement[0].GetProperty("path").GetProperty("path").GetString()}\n{Format.Bold("SourceConfig")}: {data.RootElement[0].GetProperty("sourceConfig").GetString()}\n\n",
+            ComponentIds.Parent => $"{Format.Bold("Derived Path")}: {data.RootElement[0].GetProperty("derivedPath").GetProperty("path").GetString()}\n{Format.Bold("SourceConfig")}: {data.RootElement[0].GetProperty("sourceConfig").GetString()}\n\n",
+            _ => string.Empty
+        };
     }
 
     public MessageComponent GetComponents(string pagesKey, string userKey, string baseId)
