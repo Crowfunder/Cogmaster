@@ -43,8 +43,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
             indexes.Add(param.Id, new ParameterIndexData(paramIndex, param.Id.ToTitleCase(), param.Id, Disabled: chunks.Count == 0));
             pages.AddRange(chunks.Select(page => embedHandler.GetEmbed(param.Title).WithAuthor(author).WithDescription($"{param.Info}\n\n{page}")));
         }
-
-
+        
         cache.Set($"{cacheKey}_index", indexes, CacheOptions);
         paginator.AddPageCounterAndSaveToCache(CacheOptions, [.. pages], cacheKey, addTitle: true);
         return true;
@@ -52,10 +51,12 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
 
     private static string GetExtraProperties(JsonDocument data, string id)
     {
+        var element = data.RootElement.ValueKind == JsonValueKind.Array ? data.RootElement[0] : data.RootElement;
+
         return id switch
         {
-            ComponentIds.Basic => $"{Format.Bold("Config Path")}: {data.RootElement[0].GetProperty("path").GetProperty("path").GetString()}\n{Format.Bold("SourceConfig")}: {data.RootElement[0].GetProperty("sourceConfig").GetString()}\n\n",
-            ComponentIds.Parent => $"{Format.Bold("Derived Path")}: {data.RootElement[0].GetProperty("derivedPath").GetProperty("path").GetString()}\n{Format.Bold("SourceConfig")}: {data.RootElement[0].GetProperty("sourceConfig").GetString()}\n\n",
+            ComponentIds.Basic => $"{Format.Bold("Config Path")}: {element.GetProperty("path").GetProperty("path").GetString()}\n{Format.Bold("SourceConfig")}: {element.GetProperty("sourceConfig").GetString()}\n\n",
+            ComponentIds.Parent => $"{Format.Bold("Derived Path")}: {element.GetProperty("derivedPath").GetProperty("path").GetString()}\n{Format.Bold("SourceConfig")}: {element.GetProperty("sourceConfig").GetString()}\n\n",
             _ => string.Empty
         };
     }
