@@ -39,7 +39,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
             var paramData = data.RootElement.ValueKind == JsonValueKind.Array ? data.RootElement[0].GetProperty(param.Type) : data.RootElement.GetProperty(param.Type);
             var chunks = SplitIntoChunks(FormatParameters(paramData), chunkSize: ExtendedDiscordConfig.MaxEmbedDescChars - 1000);
 
-            chunks[0] = $"{GetExtraProperties(data, param.Id)}{chunks[0]}";
+            if (chunks.Count > 0) chunks[0] = $"{GetExtraProperties(data, param.Id)}{chunks[0]}";
             indexes.Add(param.Id, new ParameterIndexData(paramIndex, param.Id.ToTitleCase(), param.Id, Disabled: chunks.Count == 0));
             pages.AddRange(chunks.Select(page => embedHandler.GetEmbed(param.Title).WithAuthor(author).WithDescription($"{param.Info}\n\n{page}")));
         }
