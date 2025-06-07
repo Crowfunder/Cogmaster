@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Cogmaster.Src.Handlers;
 
-public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache, IFileReader jsonFileReader, IServiceProvider services, InteractionService service) : IInteractionHandler
+public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache/*, IFileReader jsonFileReader*/, IServiceProvider services, IApiFetcher apiFetcher, InteractionService service) : IInteractionHandler
 {
     public async Task InitializeAsync()
     {
@@ -39,17 +39,18 @@ public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache,
 
     private async Task HandleAutocompleteAsync(SocketAutocompleteInteraction interaction)
     {
-        var fileName = interaction.Data.Current.Name switch
+        var path = interaction.Data.Current.Name switch
         {
-            "name" => "Items.json",
+            "name" => "index/info/search/names",
             _ => throw new InvalidOperationException($"Unknown autocomplete option: {interaction.Data.Current.Name}")
         };
-        var cacheKey = $"Autocomplete_{fileName}";
+        var cacheKey = $"Autocomplete_{path}";
 
-        if (!cache.TryGetValue(cacheKey, out List<AutocompleteResult>? suggestions) || suggestions is null)
+        if (!cache.TryGetValue(cacheKey, out List<AutocompleteResult>? suggestions) || suggestions is null || suggestions.Count == 0)
         {
-            var items = await jsonFileReader.ReadAsync<IReadOnlyList<string>>(Path.Combine("Data", "Autocomplete", fileName));
-            suggestions = items.Select(x => new AutocompleteResult(x, x)).ToList();
+            var data = await apiFetcher.FetchAsync($"{DotNetEnv.Env.GetString("api")}/{path}");
+            var items = data?.RootElement.EnumerateArray().Select(x => x.GetString()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList() ?? [];
+            suggestions = [.. items.Select(x => new AutocompleteResult(x, x))];
             cache.Set(cacheKey, suggestions, new MemoryCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7) });
         }
 
