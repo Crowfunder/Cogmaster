@@ -1,4 +1,5 @@
-﻿using Cogmaster.Src.Enums;
+﻿using Cogmaster.Src.Data.Classes;
+using Cogmaster.Src.Enums;
 using Cogmaster.Src.Helpers;
 using Cogmaster.Src.Logging;
 using Discord;
@@ -9,7 +10,7 @@ using System.Reflection;
 
 namespace Cogmaster.Src.Handlers;
 
-public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache/*, IFileReader jsonFileReader*/, IServiceProvider services, IApiFetcher apiFetcher, InteractionService service) : IInteractionHandler
+public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache, IServiceProvider services, IApiFetcher apiFetcher, InteractionService service) : IInteractionHandler
 {
     public async Task InitializeAsync()
     {
@@ -41,15 +42,17 @@ public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache/
     {
         var path = interaction.Data.Current.Name switch
         {
-            "name" => "index/info/search/names",
+            "name" => "/search/names",
+            "config-entry-path" => "/config/paths",
+            "config-name" => "/config/names",
             _ => throw new InvalidOperationException($"Unknown autocomplete option: {interaction.Data.Current.Name}")
         };
         var cacheKey = $"Autocomplete_{path}";
 
         if (!cache.TryGetValue(cacheKey, out List<AutocompleteResult>? suggestions) || suggestions is null || suggestions.Count == 0)
         {
-            var data = await apiFetcher.FetchAsync($"{DotNetEnv.Env.GetString("api")}/{path}");
-            var items = data?.RootElement.EnumerateArray().Select(x => x.GetString()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList() ?? [];
+            var data = await apiFetcher.FetchAsync($"{DotNetEnv.Env.GetString("api")}/index/info{path}");
+            var items = data?.RootElement.EnumerateArray().Select(x => x.GetString()).Where(x => !string.IsNullOrWhiteSpace(x) && x.Length < 101).ToList() ?? [];
             suggestions = [.. items.Select(x => new AutocompleteResult(x, x))];
             cache.Set(cacheKey, suggestions, new MemoryCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7) });
         }
