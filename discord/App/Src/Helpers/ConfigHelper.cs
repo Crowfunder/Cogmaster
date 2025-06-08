@@ -86,12 +86,19 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         var builder = new StringBuilder();
         var indent = new string(' ', indentLevel * 2);
 
-        if (parameters.TryGetProperty("hashMap", out JsonElement hashMap))
+        if (parameters.ValueKind != JsonValueKind.String && parameters.TryGetProperty("hashMap", out JsonElement hashMap))
         {
             foreach (var property in hashMap.EnumerateObject())
             {
                 var key = property.Name;
                 var valueWrapper = property.Value;
+
+                if (valueWrapper.ValueKind == JsonValueKind.Null)
+                {
+                    builder.AppendLine($"{Format.Bold(key)}: Null");
+                    continue;
+                }
+
                 var isNested = valueWrapper.GetProperty("nested").GetBoolean();
                 var value = valueWrapper.GetProperty("value");
 
@@ -116,9 +123,9 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
                     }
                     else
                     {
-                        string formatted = value.ValueKind switch
+                        var formatted = value.ValueKind switch
                         {
-                            JsonValueKind.String => $"{value.GetString()}",
+                            JsonValueKind.String => value.GetString(),
                             JsonValueKind.Number => value.ToString(),
                             JsonValueKind.True => "true",
                             JsonValueKind.False => "false",
@@ -130,7 +137,11 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
                 }
             }
         }
-
+        else
+        {
+            builder.AppendLine(parameters.GetString());
+        }
+        
         return builder.ToString();
     }
 
