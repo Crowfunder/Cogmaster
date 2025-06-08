@@ -25,9 +25,20 @@ public class StringUtil {
 
         for (String word : words) {
             if (!word.isEmpty()) {
-                capitalized.append(Character.toUpperCase(word.charAt(0)))
-                        .append(word.substring(1))
-                        .append(" ");
+                int i = 0;
+                while (i < word.length() && !Character.isLetter(word.charAt(i))) {
+                    i++;
+                }
+
+                if (i < word.length()) {
+                    capitalized.append(word, 0, i)
+                            .append(Character.toUpperCase(word.charAt(i)))
+                            .append(word.substring(i + 1));
+                } else {
+                    capitalized.append(word);
+                }
+
+                capitalized.append(" ");
             }
         }
 

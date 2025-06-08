@@ -66,8 +66,9 @@ public class IndexService {
     // querying the propertiesService for name mappings
     // that can be used in nameIndex
     // Ignores case (always searches by first character of word uppercase)
+    // Commented out case ignorance, because it is faulty and we use Autocomplete regardless
     public List<ConfigEntry> resolveConfigByName(String name) {
-        name = uppercaseFirstLetters(name.toLowerCase());
+//        name = uppercaseFirstLetters(name.toLowerCase());
         return resolveConfigsFullPath(indexRepository.readNameIndex(name));
     }
 
