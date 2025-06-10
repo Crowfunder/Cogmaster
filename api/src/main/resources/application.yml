@@ -6,7 +6,7 @@ server:
   port: 2137
 
 cogmaster:
-  properties:
+  translations:
     path: "properties"
 
   routers:
