@@ -27,7 +27,7 @@ public class TranslationsRepository {
     private Map<String, List<String>> reverseTranslations;
 
     public TranslationsRepository(CogmasterConfig cogmasterConfig) {
-        this.propertiesPath = cogmasterConfig.properties().path();
+        this.propertiesPath = cogmasterConfig.translations().path();
     }
 
     // We interface with the properties through Map because we want to utilize
