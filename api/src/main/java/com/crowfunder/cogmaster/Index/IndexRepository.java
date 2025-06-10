@@ -4,7 +4,7 @@ import com.crowfunder.cogmaster.Configs.ConfigEntry;
 import com.crowfunder.cogmaster.Configs.ParameterArray;
 import com.crowfunder.cogmaster.Configs.Path;
 import com.crowfunder.cogmaster.Parsers.ParserService;
-import com.crowfunder.cogmaster.Properties.PropertiesService;
+import com.crowfunder.cogmaster.Translations.TranslationsService;
 import com.crowfunder.cogmaster.Routers.RouterService;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -21,15 +21,15 @@ class IndexRepository {
     Logger logger = LoggerFactory.getLogger(IndexRepository.class);
     private final ParserService parserService;
     private final RouterService routerService;
-    private final PropertiesService propertiesService;
+    private final TranslationsService translationsService;
     // The actual index
     private final Index index = new Index();
 
     public IndexRepository(ParserService parserService, RouterService routerService,
-            PropertiesService propertiesService) {
+            TranslationsService translationsService) {
         this.parserService = parserService;
         this.routerService = routerService;
-        this.propertiesService = propertiesService;
+        this.translationsService = translationsService;
     }
 
     @PostConstruct
@@ -96,7 +96,7 @@ class IndexRepository {
                 // Populate name index
                 String name = configEntry.getName();
                 if (name != null && !name.isEmpty()) {
-                    index.addNameIndexEntry(propertiesService.parsePropertyString(name).orElseGet(() -> null), path,
+                    index.addNameIndexEntry(translationsService.parseTranslationString(name).orElseGet(() -> null), path,
                             configName);
                 }
             }
