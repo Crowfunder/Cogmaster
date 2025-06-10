@@ -3,7 +3,7 @@ package com.crowfunder.cogmaster.Index;
 import com.crowfunder.cogmaster.Configs.ConfigEntry;
 import com.crowfunder.cogmaster.Configs.ConfigReference;
 import com.crowfunder.cogmaster.Configs.Path;
-import com.crowfunder.cogmaster.Properties.PropertiesService;
+import com.crowfunder.cogmaster.Translations.TranslationsService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,11 +17,11 @@ import static com.crowfunder.cogmaster.Utils.StringUtil.uppercaseFirstLetters;
 public class IndexService {
 
     IndexRepository indexRepository;
-    PropertiesService propertiesService;
+    TranslationsService translationsService;
 
-    public IndexService(IndexRepository indexRepository, PropertiesService propertiesService) {
+    public IndexService(IndexRepository indexRepository, TranslationsService translationsService) {
         this.indexRepository = indexRepository;
-        this.propertiesService = propertiesService;
+        this.translationsService = translationsService;
     }
 
     // Get ConfigEntry object by its config path

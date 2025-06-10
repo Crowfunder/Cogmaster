@@ -1,4 +1,4 @@
-package com.crowfunder.cogmaster.Properties;
+package com.crowfunder.cogmaster.Translations;
 
 import org.springframework.stereotype.Service;
 
@@ -9,31 +9,31 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PropertiesService {
+public class TranslationsService {
 
-    private final PropertiesRepository propertiesRepository;
+    private final TranslationsRepository translationsRepository;
 
-    public PropertiesService(PropertiesRepository propertiesRepository) {
-        this.propertiesRepository = propertiesRepository;
+    public TranslationsService(TranslationsRepository translationsRepository) {
+        this.translationsRepository = translationsRepository;
     }
 
     public Optional<List<String>> searchByValue(String value) {
-        return propertiesRepository.reverseSearchProperty(value);
+        return translationsRepository.reverseSearchTranslation(value);
     }
 
     public Optional<String> searchByKey(String property) {
-        return propertiesRepository.searchProperty(property);
+        return translationsRepository.searchTranslation(property);
     }
 
-    public Optional<String> parsePropertyString(String property) {
+    public Optional<String> parseTranslationString(String translation) {
 
         // We do not care about qualified keys as we toss all bundles
         // into one dictionary anyway
-        if (property.startsWith("%")) {
-            property = property.substring(property.indexOf(':') + 1);
+        if (translation.startsWith("%")) {
+            translation = translation.substring(translation.indexOf(':') + 1);
         }
 
-        String[] args = property.split("\\|");
+        String[] args = translation.split("\\|");
         String key = args[0];
         var keyVal = searchByKey(key);
         if (keyVal.isEmpty()) {
@@ -51,12 +51,12 @@ public class PropertiesService {
         for (String arg : args) {
             // Recursive resolution
             if (arg.contains("!")) {
-                var parsed = parsePropertyString(arg.replace("\\!", "|"));
+                var parsed = parseTranslationString(arg.replace("\\!", "|"));
                 argsValues.add(parsed.orElseGet(() -> null));
                 continue;
             }
 
-            // Tainted property, do not resolve, insert as-is
+            // Tainted translation, do not resolve, insert as-is
             if (arg.contains("~")) {
                 argsValues.add(arg.replace("\\~", ""));
                 continue;

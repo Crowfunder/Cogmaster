@@ -1,4 +1,4 @@
-package com.crowfunder.cogmaster.Properties;
+package com.crowfunder.cogmaster.Translations;
 
 import com.crowfunder.cogmaster.CogmasterConfig;
 import jakarta.annotation.PostConstruct;
@@ -19,25 +19,24 @@ import static com.crowfunder.cogmaster.Utils.HashMapUtil.invertHashMap;
 import static com.crowfunder.cogmaster.Utils.HashMapUtil.propertiesToHashMap;
 
 @Repository
-public class PropertiesRepository {
+public class TranslationsRepository {
 
-    Logger logger = LoggerFactory.getLogger(PropertiesRepository.class);
-    // I'm begging you, I'm begging you please just some proper settings file
+    Logger logger = LoggerFactory.getLogger(TranslationsRepository.class);
     private final String propertiesPath;
-    private Map<String, String> properties;
-    private Map<String, List<String>> reverseProperties;
+    private Map<String, String> translations;
+    private Map<String, List<String>> reverseTranslations;
 
-    public PropertiesRepository(CogmasterConfig cogmasterConfig) {
+    public TranslationsRepository(CogmasterConfig cogmasterConfig) {
         this.propertiesPath = cogmasterConfig.properties().path();
     }
 
     // We interface with the properties through Map because we want to utilize
     // inverting util
     @PostConstruct
-    private void PopulateProperties() {
-        logger.info("Populating properties repository...");
-        properties = propertiesToHashMap(loadAllProperties());
-        reverseProperties = invertHashMap(properties);
+    private void PopulateTranslations() {
+        logger.info("Populating translations repository...");
+        translations = propertiesToHashMap(loadAllProperties());
+        reverseTranslations = invertHashMap(translations);
         logger.info("Finished populating");
     }
 
@@ -52,8 +51,8 @@ public class PropertiesRepository {
             return properties;
 
         } catch (IOException e) {
-            logger.error("Failed to load properties from specified path: /{}/*", propertiesPath);
-            throw new RuntimeException("Failed to load properties", e);
+            logger.error("Failed to load translations from specified path: /{}/*", propertiesPath);
+            throw new RuntimeException("Failed to load translations", e);
         }
     }
 
@@ -63,13 +62,13 @@ public class PropertiesRepository {
         return newProperties;
     }
 
-    public Optional<String> searchProperty(String property) {
-        var result = properties.get(property);
+    public Optional<String> searchTranslation(String property) {
+        var result = translations.get(property);
         return Optional.ofNullable(result);
     }
 
-    public Optional<List<String>> reverseSearchProperty(String propertyValue) {
-        var results = reverseProperties.get(propertyValue);
+    public Optional<List<String>> reverseSearchTranslation(String propertyValue) {
+        var results = reverseTranslations.get(propertyValue);
         return Optional.ofNullable(results);
     }
 
