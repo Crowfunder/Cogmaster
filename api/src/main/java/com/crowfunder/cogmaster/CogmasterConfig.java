@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.List;
 
 @ConfigurationProperties(prefix = "cogmaster")
-public record CogmasterConfig(Translations translations, Routers routers, Parsers parsers) {
+public record CogmasterConfig(Translations translations, Routers routers, Parsers parsers, Assets assets) {
 
     public record Translations(String path) {
     }
@@ -14,5 +14,8 @@ public record CogmasterConfig(Translations translations, Routers routers, Parser
     }
 
     public record Parsers(String path, List<String> list) {
+    }
+
+    public record Assets(String path) {
     }
 }

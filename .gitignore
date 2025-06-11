@@ -37,3 +37,7 @@ build/
 
 ### Names ###
 **/main/resources/properties/
+
+
+### Served Assets ###
+**/main/resources/assets/
