@@ -22,3 +22,6 @@ cogmaster:
       - "attack"
       - "actor"
       - "accessory"
+
+  assets:
+    path: "assets"
