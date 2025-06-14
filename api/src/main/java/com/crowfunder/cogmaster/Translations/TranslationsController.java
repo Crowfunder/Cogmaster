@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crowfunder.cogmaster.Utils.StringResult;
 
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 @RestController
@@ -31,5 +33,11 @@ public class TranslationsController {
         var keys = translationsService.searchByValue(q);
         return keys.map(list -> ResponseEntity.ok(list.stream().map(str -> new StringResult(str))))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping(path = "info/keys")
+    public ResponseEntity<Set<String>> getAllTranslationKeys() {
+        Optional<Set<String>> keys = Optional.ofNullable(translationsService.getAllTranslationKeys());
+        return keys.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

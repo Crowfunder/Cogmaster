@@ -3,10 +3,7 @@ package com.crowfunder.cogmaster.Translations;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class TranslationsService {
@@ -66,6 +63,10 @@ public class TranslationsService {
         }
 
         return keyVal.map(x -> MessageFormat.format(x, argsValues.toArray()));
+    }
+
+    public Set<String> getAllTranslationKeys() {
+        return translationsRepository.getAllTranslationKeys();
     }
 
 }

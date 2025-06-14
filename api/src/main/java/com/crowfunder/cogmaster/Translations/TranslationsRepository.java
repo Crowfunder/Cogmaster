@@ -4,16 +4,14 @@ import com.crowfunder.cogmaster.CogmasterConfig;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 import static com.crowfunder.cogmaster.Utils.HashMapUtil.invertHashMap;
 import static com.crowfunder.cogmaster.Utils.HashMapUtil.propertiesToHashMap;
@@ -70,6 +68,11 @@ public class TranslationsRepository {
     public Optional<List<String>> reverseSearchTranslation(String propertyValue) {
         var results = reverseTranslations.get(propertyValue);
         return Optional.ofNullable(results);
+    }
+
+    @Cacheable("getAllTranslationKeys")
+    public Set<String> getAllTranslationKeys() {
+        return translations.keySet();
     }
 
 }
