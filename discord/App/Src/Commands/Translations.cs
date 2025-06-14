@@ -32,7 +32,7 @@ public class Translations(IMemoryCache cache, IEmbedHandler embedHandler, IApiFe
     {
         if (cache.TryGetValue(cacheKey, out string? match) && !string.IsNullOrEmpty(match)) return true;
 
-        var data = await apiFetcher.FetchAsync(url);
+        var data = await apiFetcher.FetchDocumentAsync(url);
         if (data is null) return false;
 
         var cached = data.RootElement.ValueKind == JsonValueKind.Array ?

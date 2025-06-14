@@ -26,10 +26,11 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
     {
         if (cache.TryGetValue(cacheKey, out List<Embed>? itemParameters) && itemParameters is not null) return true;
 
-        var data = await apiFetcher.FetchAsync(url);
+        var data = await apiFetcher.FetchDocumentAsync(url);
         if (data is null) return false;
 
-        var author = new EmbedAuthorBuilder().WithName(item);
+        var filePath = Path.Combine("Src", "Assets", GetIconUrl(data));
+        var author = new EmbedAuthorBuilder().WithName(item).WithIconUrl($"attachment://{Path.GetFileName(filePath)}");
         var pages = new List<EmbedBuilder>();
         var indexes = new Dictionary<string, ParameterIndexData>();
 
@@ -43,10 +44,20 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
             indexes.Add(param.Id, new ParameterIndexData(paramIndex, param.Id.ToTitleCase(), param.Id, Disabled: chunks.Count == 0));
             pages.AddRange(chunks.Select(page => embedHandler.GetEmbed(param.Title).WithAuthor(author).WithDescription($"{param.Info}\n\n{page}")));
         }
-        
+
         cache.Set($"{cacheKey}_index", indexes, CacheOptions);
-        paginator.AddPageCounterAndSaveToCache(CacheOptions, [.. pages], cacheKey, addTitle: true);
+        paginator.AddPageCounterAndSaveToCache(CacheOptions, [.. pages], cacheKey, filePath, addTitle: true);
         return true;
+    }
+
+    private static string GetIconUrl(JsonDocument data)
+    {
+        var fallbackIcon = "ui/icon/icon_128.png";
+        var paramData = data.RootElement.ValueKind == JsonValueKind.Array ? data.RootElement[0] : data.RootElement;
+        if (!paramData.GetProperty("routedParameters").TryGetProperty("hashMap", out JsonElement hashMap)) return fallbackIcon;
+        if (!hashMap.TryGetProperty("icon", out JsonElement icon)) return fallbackIcon;
+
+        return icon.GetProperty("value").ToString();
     }
 
     private static string GetExtraProperties(JsonDocument data, string id)
@@ -141,7 +152,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         {
             builder.AppendLine(parameters.GetString());
         }
-        
+
         return builder.ToString();
     }
 

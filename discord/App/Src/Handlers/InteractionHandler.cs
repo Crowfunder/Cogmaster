@@ -1,5 +1,4 @@
-﻿using Cogmaster.Src.Data.Classes;
-using Cogmaster.Src.Enums;
+﻿using Cogmaster.Src.Enums;
 using Cogmaster.Src.Helpers;
 using Cogmaster.Src.Logging;
 using Discord;
@@ -51,7 +50,7 @@ public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache,
 
         if (!cache.TryGetValue(cacheKey, out List<AutocompleteResult>? suggestions) || suggestions is null || suggestions.Count == 0)
         {
-            var data = await apiFetcher.FetchAsync($"{DotNetEnv.Env.GetString("api")}/index/info{path}");
+            var data = await apiFetcher.FetchDocumentAsync($"{DotNetEnv.Env.GetString("api")}/index/info{path}");
             var items = data?.RootElement.EnumerateArray().Select(x => x.GetString()).Where(x => !string.IsNullOrWhiteSpace(x) && x.Length < 101).ToList() ?? [];
             suggestions = [.. items.Select(x => new AutocompleteResult(x, x))];
             cache.Set(cacheKey, suggestions, new MemoryCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7) });

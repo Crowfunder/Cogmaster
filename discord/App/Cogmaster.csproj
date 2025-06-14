@@ -32,11 +32,8 @@
     <None Update="Src\Data\**\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EditorConfigFiles Remove=".editorconfig" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".editorconfig" />
+    <None Update="Src\Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
