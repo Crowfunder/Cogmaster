@@ -4,12 +4,10 @@ import com.crowfunder.cogmaster.Configs.ConfigEntry;
 import com.crowfunder.cogmaster.Configs.ConfigReference;
 import com.crowfunder.cogmaster.Configs.Path;
 import com.crowfunder.cogmaster.Translations.TranslationsService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.crowfunder.cogmaster.Utils.StringUtil.uppercaseFirstLetters;
 
@@ -87,5 +85,14 @@ public class IndexService {
 
     public Map<String, Set<String>> getConfigPathsMap() {
         return indexRepository.getAllConfigIndexKeysMapped();
+    }
+
+    @Cacheable("getIndexStats")
+    public Map<String, Integer> getIndexStats() {
+        Map<String, Integer> stats = new HashMap<>();
+        stats.put("Parsed Configs", indexRepository.getNumberIndexKeys());
+        stats.put("Config Entries", indexRepository.getNumberConfigIndexKeys());
+        stats.put("Named Config Entries", indexRepository.getNumberNameConfigKeys());
+        return stats;
     }
 }

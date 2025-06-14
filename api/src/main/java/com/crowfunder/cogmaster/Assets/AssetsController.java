@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -38,5 +39,11 @@ public class AssetsController {
     public ResponseEntity<Set<String>> getAvailableAssets() {
         Optional<Set<String>> availableConfigs = Optional.ofNullable(assetsService.getAvailableAssets());
         return availableConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("info/stats")
+    public ResponseEntity<Map<String, Integer>> getStats() {
+        Optional<Map<String, Integer>> stats = Optional.ofNullable(assetsService.getAssetsStats());
+        return stats.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

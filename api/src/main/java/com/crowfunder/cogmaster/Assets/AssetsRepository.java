@@ -67,6 +67,10 @@ public class AssetsRepository {
         }
     }
 
+    public int getNumberAssets() {
+        return assetsIndex.size();
+    }
+
     public record AssetInfo(Resource resource, String contentType) {}
 }
 

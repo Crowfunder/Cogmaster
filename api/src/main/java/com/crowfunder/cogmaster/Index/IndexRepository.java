@@ -102,7 +102,7 @@ class IndexRepository {
         }
     }
 
-    @Cacheable("indexRepository")
+    @Cacheable("getAllIndexKeys")
     public Set<String> getAllIndexKeys() {
         return index.getConfigIndex().keySet();
     }
@@ -142,4 +142,20 @@ class IndexRepository {
 
         return result;
     }
+
+    @Cacheable("getNumberIndexKeys")
+    public int getNumberIndexKeys() {
+        return index.getConfigIndex().size();
+    }
+
+    @Cacheable("getNumberConfigIndexKeys")
+    public int getNumberConfigIndexKeys() {
+        return getAllConfigIndexKeysJoint().size();
+    }
+
+    @Cacheable("getNumberNameConfigKeys")
+    public int getNumberNameConfigKeys() {
+        return getAllNameIndexKeys().size();
+    }
+
 }

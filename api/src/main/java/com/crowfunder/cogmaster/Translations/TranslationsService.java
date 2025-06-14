@@ -1,5 +1,6 @@
 package com.crowfunder.cogmaster.Translations;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -67,6 +68,13 @@ public class TranslationsService {
 
     public Set<String> getAllTranslationKeys() {
         return translationsRepository.getAllTranslationKeys();
+    }
+
+    @Cacheable("getTranslationStats")
+    public Map<String, Integer> getTranslationsStats() {
+        Map<String, Integer> stats = new HashMap<>();
+        stats.put("Loaded Translations", translationsRepository.getNumberTranslationKeys());
+        return stats;
     }
 
 }

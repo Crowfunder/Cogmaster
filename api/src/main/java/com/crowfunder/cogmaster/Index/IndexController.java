@@ -54,4 +54,11 @@ public class IndexController {
         Optional<Set<String>> resolvedConfigs = Optional.ofNullable(indexService.getAllEntryNames());
         return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("info/stats")
+    public ResponseEntity<Map<String, Integer>> getStats() {
+        Optional<Map<String, Integer>> resolvedConfigs = Optional.ofNullable(indexService.getIndexStats());
+        return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 }

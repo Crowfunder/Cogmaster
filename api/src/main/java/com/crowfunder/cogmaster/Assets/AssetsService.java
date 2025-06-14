@@ -1,10 +1,12 @@
 package com.crowfunder.cogmaster.Assets;
 
-import io.micrometer.observation.ObservationFilter;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -28,5 +30,12 @@ public class AssetsService {
 
     public Set<String> getAvailableAssets() {
         return assetsRepository.getAllAssetPaths();
+    }
+
+    @Cacheable("getAssetsStats")
+    public Map<String, Integer> getAssetsStats() {
+        Map<String, Integer> assetsStats = new HashMap<>();
+        assetsStats.put("Loaded Assets", assetsRepository.getNumberAssets());
+        return assetsStats;
     }
 }

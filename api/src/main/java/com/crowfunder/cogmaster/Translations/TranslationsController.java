@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crowfunder.cogmaster.Utils.StringResult;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -39,5 +40,11 @@ public class TranslationsController {
     public ResponseEntity<Set<String>> getAllTranslationKeys() {
         Optional<Set<String>> keys = Optional.ofNullable(translationsService.getAllTranslationKeys());
         return keys.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("info/stats")
+    public ResponseEntity<Map<String, Integer>> getStats() {
+        Optional<Map<String, Integer>> resolvedConfigs = Optional.ofNullable(translationsService.getTranslationsStats());
+        return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

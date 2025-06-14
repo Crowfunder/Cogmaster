@@ -75,4 +75,9 @@ public class TranslationsRepository {
         return translations.keySet();
     }
 
+    @Cacheable("getNumberTranslationKeys")
+    public int getNumberTranslationKeys() {
+        return getAllTranslationKeys().size();
+    }
+
 }
