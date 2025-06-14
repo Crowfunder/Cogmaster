@@ -41,16 +41,17 @@ public class InteractionHandler(IApp app, IAppLogger logger, IMemoryCache cache,
     {
         var path = interaction.Data.Current.Name switch
         {
-            "name" => "/search/names",
-            "config-entry-path" => "/config/paths",
-            "config-name" => "/config/names",
+            "name" => "/index/info/search/names",
+            "config-entry-path" => "/index/info/config/paths",
+            "config-name" => "/index/info/config/names",
+            "key" => "/translations/info/keys",
             _ => throw new InvalidOperationException($"Unknown autocomplete option: {interaction.Data.Current.Name}")
         };
         var cacheKey = $"Autocomplete_{path}";
 
         if (!cache.TryGetValue(cacheKey, out List<AutocompleteResult>? suggestions) || suggestions is null || suggestions.Count == 0)
         {
-            var data = await apiFetcher.FetchDocumentAsync($"{DotNetEnv.Env.GetString("api")}/index/info{path}");
+            var data = await apiFetcher.FetchDocumentAsync($"{DotNetEnv.Env.GetString("api")}{path}");
             var items = data?.RootElement.EnumerateArray().Select(x => x.GetString()).Where(x => !string.IsNullOrWhiteSpace(x) && x.Length < 101).ToList() ?? [];
             suggestions = [.. items.Select(x => new AutocompleteResult(x, x))];
             cache.Set(cacheKey, suggestions, new MemoryCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7) });

@@ -16,7 +16,7 @@ public class Translations(IMemoryCache cache, IEmbedHandler embedHandler, IApiFe
         await HandleCommandAsync($"{DotNetEnv.Env.GetString("api")}/translations/value?q={value}", value, "No translations matching the value.");
 
     [SlashCommand(CommandIds.TranslationsKey, "Translate the given key.")]
-    public async Task KeyCommand([Summary(description: "Resolve translation name, i.e \"m.brandish\"."), MinLength(3), MaxLength(69)] string key) =>
+    public async Task KeyCommand([Summary(description: "Resolve translation name, i.e \"m.brandish\"."), Autocomplete(), MinLength(3), MaxLength(69)] string key) =>
         await HandleCommandAsync($"{DotNetEnv.Env.GetString("api")}/translations/key?q={key}", key, "Failed to find translation.");
 
     private async Task HandleCommandAsync(string url, string searched, string error)
