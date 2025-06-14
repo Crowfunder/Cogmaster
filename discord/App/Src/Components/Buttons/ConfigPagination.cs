@@ -19,16 +19,18 @@ public class ConfigPagination(IMemoryCache cache, IDiscordPaginator paginator, I
         var oldEmbed = context.Message.Embeds.First();
         var pageCacheKey = $"{CommandIds.Configs}_{oldEmbed.Author!.Value.Name}";
         var userCacheKey = $"{pageCacheKey}_{Context.User.Id}";
-        var embed = _indexIds.Contains(action) ? GetPageWithIndex(pageCacheKey, userCacheKey, action) : paginator.GetPage(configHelper.CacheOptions, pageCacheKey, userCacheKey, action);
+        var (Page, Icon) = _indexIds.Contains(action) ? GetPageWithIndex(pageCacheKey, userCacheKey, action) : paginator.GetPage(configHelper.CacheOptions, pageCacheKey, userCacheKey, action);
+        var files = Icon == string.Empty ? new List<FileAttachment>() : [new(Icon)];
 
         await ModifyOriginalResponseAsync(msg =>
         {
-            msg.Embed = embed;
+            msg.Embed = Page;
             msg.Components = configHelper.GetComponents(pageCacheKey, userCacheKey, ComponentIds.ConfigBase);
+            msg.Attachments = files;
         });
     }
 
-    private Embed GetPageWithIndex(string pageCacheKey, string userCacheKey, string action)
+    private (Embed Page, string Icon) GetPageWithIndex(string pageCacheKey, string userCacheKey, string action)
     {
         if (!cache.TryGetValue($"{pageCacheKey}_index", out Dictionary<string, ParameterIndexData>? data) || data is null) return paginator.GetPage(configHelper.CacheOptions, pageCacheKey, userCacheKey, action);
 

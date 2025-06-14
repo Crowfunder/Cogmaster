@@ -27,11 +27,14 @@ public class Configs(IEmbedHandler embedHandler, IDiscordPaginator paginator, IC
         if (matchFound)
         {
             var userCacheKey = $"{cacheKey}_{Context.User.Id}";
+            var (Page, Icon) = paginator.GetPage(configHelper.CacheOptions, cacheKey, userCacheKey, string.Empty);
+            var files = Icon == string.Empty ? new List<FileAttachment>() : [new(Icon)];
 
             await ModifyOriginalResponseAsync(msg =>
             {
-                msg.Embed = paginator.GetPage(configHelper.CacheOptions, cacheKey, userCacheKey, string.Empty);
+                msg.Embed = Page;
                 msg.Components = configHelper.GetComponents(cacheKey, userCacheKey, ComponentIds.ConfigBase);
+                msg.Attachments = files;
             });
         }
         else

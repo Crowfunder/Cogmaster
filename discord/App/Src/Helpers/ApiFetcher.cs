@@ -4,7 +4,7 @@ namespace Cogmaster.Src.Helpers;
 
 public class ApiFetcher : IApiFetcher
 {
-    public async Task<JsonDocument?> FetchAsync(string url)
+    public async Task<JsonDocument?> FetchDocumentAsync(string url)
     {
         try
         {
