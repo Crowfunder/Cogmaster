@@ -90,8 +90,8 @@ public class IndexService {
     @Cacheable("getIndexStats")
     public Map<String, Integer> getIndexStats() {
         Map<String, Integer> stats = new HashMap<>();
-        stats.put("Parsed Configs", indexRepository.getNumberIndexKeys());
-        stats.put("Config Entries", indexRepository.getNumberConfigIndexKeys());
+        stats.put("Loaded Parsed Configs", indexRepository.getNumberIndexKeys());
+        stats.put("Loaded Config Entries", indexRepository.getNumberConfigIndexKeys());
         stats.put("Named Config Entries", indexRepository.getNumberNameConfigKeys());
         return stats;
     }
