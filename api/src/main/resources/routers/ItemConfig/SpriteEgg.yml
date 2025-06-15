@@ -4,6 +4,6 @@ routes:
   name: "Name"
   flavor: "Flavor"
   icon: "Icon/file"
-  itemProp: "itemProp"
+  itemProp: "Item Prop"
   sprite: "Sprite"
   variant: "Variant"
