@@ -6,5 +6,5 @@ routes:
   flavor: "Flavor"
   model: "Model/name"
   icon: "Icon/file"
-  accessoryBlockers: "accessoryBlockers"
-  itemProp: "itemProp/name"
+  accessoryBlockers: "Accessory Blockers/entry"
+  itemProp: "Item Prop/name"

@@ -4,6 +4,6 @@ routes:
   name: "Name"
   flavor: "Flavor"
   icon: "Icon/file"
-  expireEvent: "expireEvent"
+  expireEvent: "Expire Event"
 
   

@@ -5,4 +5,4 @@ routes:
   flavor: "Flavor"
   model: "Model/name"
   icon: "Icon/file"
-  accessoryBlockers: "Accessory Blockers"
+  accessoryBlockers: "Accessory Blockers/entry"

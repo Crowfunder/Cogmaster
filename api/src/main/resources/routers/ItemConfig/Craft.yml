@@ -5,5 +5,5 @@ routes:
   flavor: "Flavor"
   icon: "Icon/file"
   rarity: "Rarity"
-  itemProp: "itemProp/name"
+  itemProp: "Item Prop/name"
   locked: "Locked"

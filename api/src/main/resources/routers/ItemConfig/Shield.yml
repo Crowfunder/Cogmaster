@@ -6,4 +6,4 @@ routes:
   rarity: "Rarity"
   model: "Model/name"
   icon: "Icon/file"
-  itemProp: "itemProp/name"
+  itemProp: "Item Prop/name"

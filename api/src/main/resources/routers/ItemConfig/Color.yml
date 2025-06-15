@@ -5,5 +5,5 @@ routes:
   flavor: "Flavor"
   model: "Model/name"
   icon: "Icon/file"
-  itemProp: "itemProp/name"
+  itemProp: "Item Prop/name"
   color: "Color"

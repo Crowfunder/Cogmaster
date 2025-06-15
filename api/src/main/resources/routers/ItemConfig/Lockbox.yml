@@ -4,4 +4,4 @@ routes:
   icon: "Icon/file"
   name: "Name"
   flavor: "Flavor"
-  modelVariant: "modelVariant"
+  modelVariant: "Model Variant"
