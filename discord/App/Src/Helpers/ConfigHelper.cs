@@ -136,6 +136,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
                     {
                         var formatted = value.ValueKind switch
                         {
+                            JsonValueKind.String when key.Equals("rarity", StringComparison.InvariantCultureIgnoreCase) => ConvertRarity(value.GetString() ?? string.Empty),
                             JsonValueKind.String => value.GetString(),
                             JsonValueKind.Number => value.ToString(),
                             JsonValueKind.True => "true",
@@ -176,5 +177,19 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         }
 
         return chunks;
+    }
+
+    private static string ConvertRarity(string rarity)
+    {
+        if (!int.TryParse(rarity, out int parsed) || parsed < 0) return rarity;
+
+        var sb = new StringBuilder();
+
+        for (int i = 0; i < 5; i++)
+        {
+            sb.Append(i < parsed ? Emotes.StarFull : Emotes.StarEmpty);
+        }
+
+        return sb.ToString();
     }
 }
