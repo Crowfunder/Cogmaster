@@ -137,6 +137,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
                         var formatted = value.ValueKind switch
                         {
                             JsonValueKind.String when key.Equals("rarity", StringComparison.InvariantCultureIgnoreCase) => ConvertRarity(value.GetString() ?? string.Empty),
+                            JsonValueKind.String when key.Equals("itemprop", StringComparison.InvariantCultureIgnoreCase) => ConvertItemProp(value.GetString()?.ToUpperInvariant() ?? string.Empty) ,
                             JsonValueKind.String => value.GetString(),
                             JsonValueKind.Number => value.ToString(),
                             JsonValueKind.True => "true",
@@ -191,5 +192,21 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         }
 
         return sb.ToString();
+    }
+
+    private static string ConvertItemProp(string itemProp)
+    {
+        return (itemProp) switch
+        {
+            "ARMOR" => Emotes.IconArmor,
+            "DEPOT/SPRITE EGG" => Emotes.IconSprite,
+            "BOMB" => Emotes.IconBomb,
+            "HANDGUN" => Emotes.IconHandGun,
+            "HELMET" => Emotes.IconHelmet,
+            "SHIELD" => Emotes.IconShield,
+            "SWORD" => Emotes.IconSword,
+            "TRINKET" => Emotes.IconTrinket,
+            _ => itemProp
+        };
     }
 }
