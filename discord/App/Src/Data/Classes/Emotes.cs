@@ -21,4 +21,16 @@ public static class Emotes
     public const string IconShield = "<:Iconshield:1383896791765745744>";
     public const string IconSword = "<:Iconsword:1383896790046085212>";
     public const string IconTrinket = "<:Icontrinket:1383896785172562012>";
+
+    // Accessory slots
+    public const string HelmBack = "<:Iconaccessoryhelmet_back:1383896773134647487>";
+    public const string HelmFront = "<:Iconaccessoryhelmet_front:1383896774950785034>";
+    public const string HelmSide = "<:Iconaccessoryhelmet_side:1383896771813445825>";
+    public const string HelmTop = "<:Iconaccessoryhelmet_top:1383896776335036568>";
+
+    public const string ArmorBack = "<:Iconaccessoryarmor_back:1383896800498548867>";
+    public const string ArmorFront = "<:Iconaccessoryarmor_front:1383896852335952005>";
+    public const string ArmorRear = "<:Iconaccessoryarmor_rear:1384981159720521868>";
+    public const string ArmorAura = "<:Iconaccessoryarmor_aura:1384980890983338014>";
+    public const string ArmorAnkle = "<:Iconaccessoryarmor_ankle:1384981053629796372>";
 }
