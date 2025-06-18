@@ -136,6 +136,9 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
                     {
                         var formatted = value.ValueKind switch
                         {
+                            JsonValueKind.String when key.Equals("rarity", StringComparison.InvariantCultureIgnoreCase) => ConvertRarity(value.GetString() ?? string.Empty),
+                            JsonValueKind.String when key.Equals("itemprop", StringComparison.InvariantCultureIgnoreCase) => ConvertItemProp(value.GetString()?.ToUpperInvariant() ?? string.Empty),
+                            JsonValueKind.String when key.Equals("location", StringComparison.InvariantCultureIgnoreCase) => ConvertIfAccessorySlot(value.GetString()?.ToUpperInvariant() ?? string.Empty),
                             JsonValueKind.String => value.GetString(),
                             JsonValueKind.Number => value.ToString(),
                             JsonValueKind.True => "true",
@@ -150,7 +153,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         }
         else
         {
-            builder.AppendLine(parameters.GetString());
+            builder.AppendLine(ConvertIfAccessorySlot(parameters.GetString() ?? string.Empty));
         }
 
         return builder.ToString();
@@ -176,5 +179,52 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         }
 
         return chunks;
+    }
+
+    private static string ConvertRarity(string rarity)
+    {
+        if (!int.TryParse(rarity, out int parsed) || parsed < 0) return rarity;
+
+        var sb = new StringBuilder();
+
+        for (int i = 0; i < 5; i++)
+        {
+            sb.Append(i < parsed ? Emotes.StarFull : Emotes.StarEmpty);
+        }
+
+        return sb.ToString();
+    }
+
+    private static string ConvertItemProp(string itemProp)
+    {
+        return (itemProp) switch
+        {
+            "ARMOR" => Emotes.IconArmor,
+            "DEPOT/SPRITE EGG" => Emotes.IconSprite,
+            "BOMB" => Emotes.IconBomb,
+            "HANDGUN" => Emotes.IconHandGun,
+            "HELMET" => Emotes.IconHelmet,
+            "SHIELD" => Emotes.IconShield,
+            "SWORD" => Emotes.IconSword,
+            "TRINKET" => Emotes.IconTrinket,
+            _ => itemProp
+        };
+    }
+
+    private static string ConvertIfAccessorySlot(string value)
+    {
+        return value switch
+        {
+            "HELM_TOP" => Emotes.HelmTop,
+            "HELM_FRONT" => Emotes.HelmFront,
+            "HELM_BACK" => Emotes.HelmBack,
+            "HELM_SIDE" => Emotes.HelmSide,
+            "ARMOR_FRONT" => Emotes.ArmorFront,
+            "ARMOR_BACK" => Emotes.ArmorBack,
+            "ARMOR_ANKLE" => Emotes.ArmorAnkle,
+            "ARMOR_REAR" => Emotes.ArmorRear,
+            "ARMOR_AURA" => Emotes.ArmorAura,
+            _ => value
+        };
     }
 }
