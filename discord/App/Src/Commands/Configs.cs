@@ -48,7 +48,7 @@ public class Configs(IEmbedHandler embedHandler, IDiscordPaginator paginator, IC
         await ModifyOriginalResponseAsync(msg =>
         {
             msg.Embed = Page;
-            msg.Components = forMenu ? paginator.GetComponents(cacheKey, userCacheKey, $"{ComponentIds.Menu}{ComponentIds.ConfigBase}").Build() : configHelper.GetComponents(cacheKey, userCacheKey, ComponentIds.ConfigBase);
+            msg.Components = forMenu ? configHelper.GetMenuComponents(cacheKey, userCacheKey, $"{ComponentIds.Menu}{ComponentIds.ConfigBase}") : configHelper.GetComponents(cacheKey, userCacheKey, ComponentIds.ConfigBase);
             msg.Attachments = files;
         });
     }

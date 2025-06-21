@@ -35,6 +35,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
 
         switch (data.RootElement.ValueKind)
         {
+            case JsonValueKind.Array when data.RootElement.GetArrayLength() > 1 && index > -1: CreatePages(cacheKey, data.RootElement[index], filePath, author); return ConfigResult.Success;
             case JsonValueKind.Array when data.RootElement.GetArrayLength() > 1: CreateMenuPages(cacheKey, data.RootElement, filePath, author); return ConfigResult.Menu;
             case JsonValueKind.Array: CreatePages(cacheKey, data.RootElement[0], filePath, author); return ConfigResult.Success;
             default: CreatePages(cacheKey, data.RootElement, filePath, author); return ConfigResult.Success;
@@ -63,14 +64,14 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
 
     private void CreateMenuPages(string cacheKey, JsonElement data, string filePath, EmbedAuthorBuilder author)
     {
+        var param = _paramTypes.First();
         var pages = new List<EmbedBuilder>();
 
         foreach (var item in data.EnumerateArray())
         {
-            var param = _paramTypes.First();
             var page = $"{GetExtraProperties(item, param.Id)}{FormatParameters(item.GetProperty(param.Type))}";
 
-            pages.Add(embedHandler.GetEmbed(param.Title).WithAuthor(author).WithDescription($"{param.Info}\n\n{page}"));
+            pages.Add(embedHandler.GetEmbed("Found Multiple Entries").WithAuthor(author).WithDescription($"{param.Info}\n\n{page}"));
         }
 
         paginator.AddPageCounterAndSaveToCache(CacheOptions, [.. pages], $"{cacheKey}_{ComponentIds.Menu}", filePath, addTitle: true);
@@ -113,6 +114,14 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
             components.AddRow(row);
         }
 
+        return components.Build();
+    }
+
+    public MessageComponent GetMenuComponents(string pagesKey, string userKey, string baseId)
+    {
+        var components = paginator.GetComponents(pagesKey, userKey, baseId);
+
+        components.AddRow(new ActionRowBuilder().WithButton("More Info", $"{baseId}{ComponentIds.More}", ButtonStyle.Secondary));
         return components.Build();
     }
 
@@ -160,9 +169,9 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
                     {
                         var formatted = value.ValueKind switch
                         {
-                            JsonValueKind.String when key.Equals("rarity", StringComparison.InvariantCultureIgnoreCase) => ConvertRarity(value.GetString() ?? string.Empty),
-                            JsonValueKind.String when key.Equals("itemprop", StringComparison.InvariantCultureIgnoreCase) => ConvertItemProp(value.GetString()?.ToUpperInvariant() ?? string.Empty),
-                            JsonValueKind.String when key.Equals("location", StringComparison.InvariantCultureIgnoreCase) => ConvertIfAccessorySlot(value.GetString()?.ToUpperInvariant() ?? string.Empty),
+                            JsonValueKind.String when key.Equals("rarity", StringComparison.InvariantCultureIgnoreCase) => value.GetString()?.ConvertRarity() ?? string.Empty,
+                            JsonValueKind.String when key.Equals("itemprop", StringComparison.InvariantCultureIgnoreCase) => value.GetString()?.ToUpperInvariant().ConvertToIcon() ?? string.Empty,
+                            JsonValueKind.String when key.Equals("location", StringComparison.InvariantCultureIgnoreCase) => value.GetString()?.ToUpperInvariant().ConvertIfAccessorySlot() ?? string.Empty,
                             JsonValueKind.String => value.GetString(),
                             JsonValueKind.Number => value.ToString(),
                             JsonValueKind.True => "true",
@@ -177,7 +186,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         }
         else
         {
-            builder.AppendLine(ConvertIfAccessorySlot(parameters.GetString() ?? string.Empty));
+            builder.AppendLine(parameters.GetString()?.ConvertIfAccessorySlot() ?? string.Empty);
         }
 
         return builder.ToString();
@@ -203,52 +212,5 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         }
 
         return chunks;
-    }
-
-    private static string ConvertRarity(string rarity)
-    {
-        if (!int.TryParse(rarity, out int parsed) || parsed < 0) return rarity;
-
-        var sb = new StringBuilder();
-
-        for (int i = 0; i < 5; i++)
-        {
-            sb.Append(i < parsed ? Emotes.StarFull : Emotes.StarEmpty);
-        }
-
-        return sb.ToString();
-    }
-
-    private static string ConvertItemProp(string itemProp)
-    {
-        return (itemProp) switch
-        {
-            "ARMOR" => Emotes.IconArmor,
-            "DEPOT/SPRITE EGG" => Emotes.IconSprite,
-            "BOMB" => Emotes.IconBomb,
-            "HANDGUN" => Emotes.IconHandGun,
-            "HELMET" => Emotes.IconHelmet,
-            "SHIELD" => Emotes.IconShield,
-            "SWORD" => Emotes.IconSword,
-            "TRINKET" => Emotes.IconTrinket,
-            _ => itemProp
-        };
-    }
-
-    private static string ConvertIfAccessorySlot(string value)
-    {
-        return value switch
-        {
-            "HELM_TOP" => Emotes.HelmTop,
-            "HELM_FRONT" => Emotes.HelmFront,
-            "HELM_BACK" => Emotes.HelmBack,
-            "HELM_SIDE" => Emotes.HelmSide,
-            "ARMOR_FRONT" => Emotes.ArmorFront,
-            "ARMOR_BACK" => Emotes.ArmorBack,
-            "ARMOR_ANKLE" => Emotes.ArmorAnkle,
-            "ARMOR_REAR" => Emotes.ArmorRear,
-            "ARMOR_AURA" => Emotes.ArmorAura,
-            _ => value
-        };
     }
 }

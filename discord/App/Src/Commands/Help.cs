@@ -44,7 +44,7 @@ public class Help(IEmbedHandler embedHandler) : InteractionModuleBase<SocketInte
     {
         var info = "Command retrieving data from specific config entry. Contains things like entries in-game name, location of its .dat model, location of its inventory icon, damage values, particle preferences etc.\n" +
             Format.Bold($"Note: All file paths are relative to {Format.Code("Spiral Knights/rsrc")}, so if you see a path like {Format.Code("ui/icon/file.png")}\nit actually is {Format.Code("Spiral Knights/rsrc/ui/icon/file.png")}.");
-        var commands = $"{Format.Header("Commands"), 2}\n{Format.Header(Format.Code("/configs name"), 3)}\n{Format.Quote("Searches for config entry by its in-game name. " + Format.Bold("Not all entries support this search method."))}\n" +
+        var commands = $"{Format.Header("Commands"),2}\n{Format.Header(Format.Code("/configs name"), 3)}\n{Format.Quote("Searches for config entry by its in-game name. " + Format.Bold("Not all entries support this search method."))}\n" +
             $"{Format.Bold("Parameters:")}\n- name - In-game name of an item, i.e {Format.Code("Brandish")}\n{Format.Header(Format.Code("/configs path"), 3)}\n{Format.Quote("Searches for config entry by specifying the config it's located within, and the path within that config.")}\n" +
             $"{Format.Bold("Parameters:")}\n- config-name - Name of the config where the entry is located, i.e {Format.Code("item")}\n- config-entry-path - Path within the config specified in config-name, i.e {Format.Code("Weapon/Sword/Brandish")}";
         var views = $"{Format.Header("Views", 2)}\nThe returned config entries can be shown in four (or less) separate views. All of them provide different info about the retrieved entry.\n" +
