@@ -1,4 +1,5 @@
 ﻿using Cogmaster.Src.Data.Classes;
+using Cogmaster.Src.Enums;
 using Cogmaster.Src.Extensions;
 using Cogmaster.Src.Handlers;
 using Cogmaster.Src.Models;
@@ -22,22 +23,33 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         new ParamInfo("ownParameters", "Own Info", "This config's own parameters, without parameters derived from parents.", ComponentIds.Own)
     ];
 
-    public async Task<bool> CreateConfigPagesAsync(string url, string cacheKey, string item)
+    public async Task<ConfigResult> CreateConfigPagesAsync(string url, string cacheKey, string item, int index = -1)
     {
-        if (cache.TryGetValue(cacheKey, out List<Embed>? itemParameters) && itemParameters is not null) return true;
+        if (cache.TryGetValue(cacheKey, out PageData? itemParameters) && itemParameters is not null) return ConfigResult.Success;
 
         var data = await apiFetcher.FetchDocumentAsync(url);
-        if (data is null) return false;
+        if (data is null) return ConfigResult.Error;
 
         var filePath = Path.Combine("Src", "Assets", GetIconUrl(data));
         var author = new EmbedAuthorBuilder().WithName(item).WithIconUrl($"attachment://{Path.GetFileName(filePath)}");
+
+        switch (data.RootElement.ValueKind)
+        {
+            case JsonValueKind.Array when data.RootElement.GetArrayLength() > 1: CreateMenuPages(cacheKey, data.RootElement, filePath, author); return ConfigResult.Menu;
+            case JsonValueKind.Array: CreatePages(cacheKey, data.RootElement[0], filePath, author); return ConfigResult.Success;
+            default: CreatePages(cacheKey, data.RootElement, filePath, author); return ConfigResult.Success;
+        }
+    }
+
+    private void CreatePages(string cacheKey, JsonElement data, string filePath, EmbedAuthorBuilder author)
+    {
         var pages = new List<EmbedBuilder>();
         var indexes = new Dictionary<string, ParameterIndexData>();
 
         foreach (var param in _paramTypes)
         {
             var paramIndex = pages.Count;
-            var paramData = data.RootElement.ValueKind == JsonValueKind.Array ? data.RootElement[0].GetProperty(param.Type) : data.RootElement.GetProperty(param.Type);
+            var paramData = data.GetProperty(param.Type);
             var chunks = SplitIntoChunks(FormatParameters(paramData), chunkSize: ExtendedDiscordConfig.MaxEmbedDescChars - 1000);
 
             if (chunks.Count > 0) chunks[0] = $"{GetExtraProperties(data, param.Id)}{chunks[0]}";
@@ -47,7 +59,21 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
 
         cache.Set($"{cacheKey}_index", indexes, CacheOptions);
         paginator.AddPageCounterAndSaveToCache(CacheOptions, [.. pages], cacheKey, filePath, addTitle: true);
-        return true;
+    }
+
+    private void CreateMenuPages(string cacheKey, JsonElement data, string filePath, EmbedAuthorBuilder author)
+    {
+        var pages = new List<EmbedBuilder>();
+
+        foreach (var item in data.EnumerateArray())
+        {
+            var param = _paramTypes.First();
+            var page = $"{GetExtraProperties(item, param.Id)}{FormatParameters(item.GetProperty(param.Type))}";
+
+            pages.Add(embedHandler.GetEmbed(param.Title).WithAuthor(author).WithDescription($"{param.Info}\n\n{page}"));
+        }
+
+        paginator.AddPageCounterAndSaveToCache(CacheOptions, [.. pages], $"{cacheKey}_{ComponentIds.Menu}", filePath, addTitle: true);
     }
 
     private static string GetIconUrl(JsonDocument data)
@@ -60,14 +86,12 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         return icon.GetProperty("value").ToString();
     }
 
-    private static string GetExtraProperties(JsonDocument data, string id)
+    private static string GetExtraProperties(JsonElement data, string id)
     {
-        var element = data.RootElement.ValueKind == JsonValueKind.Array ? data.RootElement[0] : data.RootElement;
-
         return id switch
         {
-            ComponentIds.Basic => $"{Format.Bold("Config Path")}: {element.GetProperty("path").GetProperty("path").GetString()}\n{Format.Bold("SourceConfig")}: {element.GetProperty("sourceConfig").GetString()}\n\n",
-            ComponentIds.Parent => $"{Format.Bold("Derived Path")}: {element.GetProperty("derivedPath").GetProperty("path").GetString()}\n{Format.Bold("SourceConfig")}: {element.GetProperty("sourceConfig").GetString()}\n\n",
+            ComponentIds.Basic => $"{Format.Bold("Config Path")}: {data.GetProperty("path").GetProperty("path").GetString()}\n{Format.Bold("SourceConfig")}: {data.GetProperty("sourceConfig").GetString()}\n\n",
+            ComponentIds.Parent => $"{Format.Bold("Derived Path")}: {data.GetProperty("derivedPath").GetProperty("path").GetString()}\n{Format.Bold("SourceConfig")}: {data.GetProperty("sourceConfig").GetString()}\n\n",
             _ => string.Empty
         };
     }
