@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using Cogmaster.Src.Enums;
+using Discord;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Cogmaster.Src.Helpers;
@@ -6,6 +7,7 @@ namespace Cogmaster.Src.Helpers;
 public interface IConfigHelper
 {
     MemoryCacheEntryOptions CacheOptions { get; }
-    Task<bool> CreateConfigPagesAsync(string url, string cacheKey, string item);
+    Task<ConfigResult> CreateConfigPagesAsync(string url, string cacheKey, string item, int index = -1);
     MessageComponent GetComponents(string pagesKey, string userKey, string baseId);
+    MessageComponent GetMenuComponents(string pagesKey, string userKey, string baseId);
 }

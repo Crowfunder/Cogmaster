@@ -14,4 +14,6 @@ public static class ComponentIds
     public const string Full = "full";
     public const string Parent = "parent";
     public const string Own = "own";
+    public const string Menu = "menu-";
+    public const string More = "info";
 }

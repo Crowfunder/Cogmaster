@@ -1,5 +1,6 @@
 ﻿using Cogmaster.Src.Data.Classes;
 using Cogmaster.Src.Handlers;
+using Cogmaster.Src.Models;
 using Discord;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -7,8 +8,6 @@ namespace Cogmaster.Src.Helpers;
 
 class DiscordPaginator(IApp bot, IMemoryCache cache, IEmbedHandler embedHandler) : IDiscordPaginator
 {
-    private record PageData(List<Embed> Pages, string IconFilePath);
-
     public (Embed Page, string Icon) GetPage(MemoryCacheEntryOptions cacheOptions, string pagesKey, string userKey, string action, int index = 0)
     {
         if (!cache.TryGetValue(pagesKey, out PageData? pageData) || pageData is null) return (embedHandler.GetAndBuildEmbed("Pages don't exist anymore, rerun the command."), string.Empty);
