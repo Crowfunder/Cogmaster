@@ -55,7 +55,7 @@ public class Logger(IApp app, IEmbedHandler embedHandler) : IAppLogger
         var cmd = data.Options.Count > 0 ? data.Options.First() : null;
         var desc = cmd?.Options.Count > 0 ? ExtractOptions(cmd.Options) : string.Empty;
 
-        var embed = embedHandler.GetEmbed($"/{data.Name} {command}")
+        var embed = embedHandler.GetEmbed($"/{data.Name} {(data.Name == command ? string.Empty : command)}")
             .WithAuthor(new EmbedAuthorBuilder().WithName(interaction.User.Username).WithIconUrl(interaction.User.GetDisplayAvatarUrl()))
             .WithFooter(new EmbedFooterBuilder().WithText($"ID: {interaction.User.Id}"))
             .WithDescription(desc)

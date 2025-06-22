@@ -6,6 +6,7 @@ public static class CommandIds
     public const string Configs = "configs";
     public const string Translations = "translate";
     public const string Help = "help";
+    public const string Stats = "stats";
 
     // SubCommands
     public const string ConfigsName = "name";
