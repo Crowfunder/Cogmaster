@@ -7,6 +7,7 @@ namespace Cogmaster.Src;
 public class App : IApp, IDisposable
 {
     public DiscordSocketClient Client { get; private set; }
+    public long ReadyTimeStamp { get; private set; }
     private bool _disposed;
 
     public App()
@@ -17,6 +18,7 @@ public class App : IApp, IDisposable
         };
 
         Client = new DiscordSocketClient(intents);
+        ReadyTimeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
     }
 
     public async Task StartAsync()

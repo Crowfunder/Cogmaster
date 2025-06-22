@@ -1,16 +1,29 @@
 ﻿using Cogmaster.Src.Data.Classes;
 using Cogmaster.Src.Handlers;
+using Cogmaster.Src.Helpers;
 using Discord;
 using Discord.Interactions;
+using System.Text;
 
 namespace Cogmaster.Src.Commands;
 
 [Group(CommandIds.Help, "Information about the app & commands.")]
-public class Help(IEmbedHandler embedHandler) : InteractionModuleBase<SocketInteractionContext>
+public class Help(IEmbedHandler embedHandler, IApiFetcher apiFetcher) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand(CommandIds.HelpOverview, "Overview of the Cogmaster app.")]
     public async Task HelpOverviewCommand()
     {
+        var apiData = await apiFetcher.GetApiStatsAsync();
+        var sb = new StringBuilder();
+
+        foreach (var section in apiData)
+        {
+            foreach (var property in section.EnumerateObject())
+            {
+                if (property.Name.Contains("loaded", StringComparison.OrdinalIgnoreCase)) sb.AppendLine($"{Format.Bold(property.Name)}: {property.Value.GetInt32():N0}");
+            }
+        }
+
         var fields = new List<EmbedFieldBuilder>
         {
             new() {
@@ -20,9 +33,16 @@ public class Help(IEmbedHandler embedHandler) : InteractionModuleBase<SocketInte
                 $"- {Format.Code("/translate")} - Translate a string key into value (or other way round) extracted from projectx-config\n" +
                 $"Check out {Format.Code("/help configs")} and {Format.Code("/help translate")} respectively for more info!"
             },
+            new()
+            {
+                Name = "Info",
+                Value = sb.ToString(),
+                IsInline = true
+            },
             new() {
                 Name = "Links",
-                Value = Format.Bold(Format.Url("Official Github Repository", "https://github.com/Crowfunder/Cogmaster"))
+                Value = Format.Bold(Format.Url("Official Github Repository", "https://github.com/Crowfunder/Cogmaster")),
+                IsInline = true
             },
             new() {
                 Name = "Credits",

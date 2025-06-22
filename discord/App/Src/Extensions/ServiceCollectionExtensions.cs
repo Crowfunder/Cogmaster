@@ -30,7 +30,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection ConfigureHelpers(this IServiceCollection services)
     {
         return services
-            .AddSingleton<IFileReader, JsonFileReader>()
             .AddSingleton<IApiFetcher, ApiFetcher>()
             .AddSingleton<IDiscordPaginator, DiscordPaginator>()
             .AddSingleton<IConfigHelper, ConfigHelper>();
