@@ -50,8 +50,13 @@ public class IndexController {
     }
 
     @GetMapping("info/search/names")
-    public ResponseEntity<Set<String>> getAllEntryNames() {
-        Optional<Set<String>> resolvedConfigs = Optional.ofNullable(indexService.getAllEntryNames());
+    public ResponseEntity<Set<String>> getAllEntryNames(@RequestParam(name= "tradeable", required = false, defaultValue = "false") boolean tradeable) {
+        Optional<Set<String>> resolvedConfigs;
+        if (tradeable) {
+            resolvedConfigs = Optional.ofNullable(indexService.getTradeableEntryNames());
+        } else {
+            resolvedConfigs = Optional.ofNullable(indexService.getAllEntryNames());
+        }
         return resolvedConfigs.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

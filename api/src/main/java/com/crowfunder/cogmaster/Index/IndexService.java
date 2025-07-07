@@ -87,6 +87,84 @@ public class IndexService {
         return indexRepository.getAllConfigIndexKeysMapped();
     }
 
+
+    // Endpoint tailored for Kozma Bot, with love
+    // Return name index keys into a single list
+    // Attempts to only return items that are tradeable in game
+    // Using a few heurestics, namely filter by implementations
+    // and look for known parameters defining being tradeable
+    @Cacheable("getTradeableEntryNames")
+    public Set<String> getTradeableEntryNames() {
+        Set<String> implementationsWhitelist = new HashSet<>(Set.of(
+                "com.threerings.projectx.item.config.ItemConfig$SpawnActor",
+                "com.threerings.projectx.item.config.ItemConfig$AnimatedAction",
+                "com.threerings.projectx.item.config.ItemConfig$Armor",
+                "com.threerings.projectx.item.config.ItemConfig$ArmorCostume",
+                "com.threerings.projectx.item.config.ItemConfig$Bomb",
+                "com.threerings.projectx.item.config.ItemConfig$Color",
+                "com.threerings.projectx.item.config.ItemConfig$Craft",
+                "com.threerings.projectx.item.config.ItemConfig$GiftBox",
+                "com.threerings.projectx.item.config.ItemConfig$Handgun",
+                "com.threerings.projectx.item.config.ItemConfig$Height",
+                "com.threerings.projectx.item.config.ItemConfig$Helm",
+                "com.threerings.projectx.item.config.ItemConfig$HelmCostume",
+                "com.threerings.projectx.item.config.ItemConfig$Lockbox",
+                "com.threerings.projectx.item.config.ItemConfig$Shield",
+                "com.threerings.projectx.item.config.ItemConfig$ShieldCostume",
+                "com.threerings.projectx.item.config.ItemConfig$SpriteEgg",
+                "com.threerings.projectx.item.config.ItemConfig$SwingingHandgun",
+                "com.threerings.projectx.item.config.ItemConfig$Sword",
+                "com.threerings.projectx.item.config.ItemConfig$Ticket",
+                "com.threerings.projectx.item.config.ItemConfig$Upgrade",
+                "com.threerings.projectx.item.config.ItemConfig$WrappingPaper",
+                "com.threerings.projectx.design.config.FurniConfig$Prop",
+                "com.threerings.projectx.design.config.FurniConfig$SpecialProp",
+                "com.threerings.projectx.item.config.AccessoryConfig$Footstep",
+                "com.threerings.projectx.item.config.AccessoryConfig$Original"
+        ));
+        Set<String> namesBlacklist = new HashSet<>(Set.of(
+                "Prototype Rocket Hammer",
+                "Stable Rocket Hammer",
+                "Warmaster Rocket Hammer",
+                "Dark Reprisal",
+                "Dark Reprisal Mk II",
+                "Dark Retribution",
+                "Groundbreaker Armor",
+                "Groundbreaker Helm",
+                "Honor Blade",
+                "Tempered Honor Blade",
+                "Ascended Honor Blade",
+                "Lionheart Honor Blade",
+                "Honor Guard",
+                "Great Honor Guard",
+                "Mighty Honor Guard",
+                "Exalted Honor Guard"
+        ));
+
+        Set<String> result = new HashSet<>();
+
+        for (String name : indexRepository.getAllNameIndexKeys()) {
+            // Check if name is blacklisted
+            if (namesBlacklist.contains(name)) {
+                continue;
+            }
+
+            // Check if implementation is whitelisted
+            ConfigEntry configEntry = resolveConfigByName(name).get(0); // Get any entry, shouldn't matter for tradeable items
+            if (!implementationsWhitelist.contains(configEntry.getEffectiveImplementation())) {
+                continue;
+            }
+
+            // Check if known parameters marking items as untradeable exist
+            if (!(configEntry.getRoutedParameters().resolveParameterPath("locked") == null)) {
+                continue;
+            }
+
+            result.add(name);
+        }
+        return result;
+    }
+
     @Cacheable("getIndexStats")
     public Map<String, Integer> getIndexStats() {
         Map<String, Integer> stats = new HashMap<>();
