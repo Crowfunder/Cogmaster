@@ -1,0 +1,8 @@
+!!com.crowfunder.cogmaster.Routers.Router
+implementation: "com.threerings.projectx.item.config.ItemConfig$SpawnActor"
+routes:
+  name: "Name"
+  flavor: "Flavor"
+  icon: "Icon/file"
+  itemProp: "Item Prop/name"
+  actor: "Actor/name"

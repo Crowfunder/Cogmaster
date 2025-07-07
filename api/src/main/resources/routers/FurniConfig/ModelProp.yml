@@ -1,5 +1,5 @@
 !!com.crowfunder.cogmaster.Routers.Router
-implementation: "com.threerings.projectx.design.config.FurniConfig$SpecialProp"
+implementation: "com.threerings.projectx.design.config.FurniConfig$ModelProp"
 routes:
   name: "Name"
   flavor: "Flavor"

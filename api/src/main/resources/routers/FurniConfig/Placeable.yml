@@ -1,5 +1,5 @@
 !!com.crowfunder.cogmaster.Routers.Router
-implementation: "com.threerings.projectx.item.config.FurniConfig$Placeable"
+implementation: "com.threerings.projectx.design.config.FurniConfig$Placeable"
 routes:
   name: "Name"
   flavor: "Flavor"

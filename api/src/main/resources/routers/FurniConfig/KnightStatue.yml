@@ -1,5 +1,5 @@
 !!com.crowfunder.cogmaster.Routers.Router
-implementation: "com.threerings.projectx.item.config.FurniConfig$KnightStatue"
+implementation: "com.threerings.projectx.design.config.FurniConfig$KnightStatue"
 routes:
   name: "Name"
   flavor: "Flavor"
