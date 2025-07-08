@@ -11,6 +11,11 @@
 - Many more, and even more to come.
 
 # Getting Started
+## Deployment Scripts
+They may need some minor tweaks, but otherwise provide ready deployment. **Still requires extracting game assets, check out [Getting the App Ready](https://github.com/Crowfunder/Cogmaster/blob/main/api/README.md#getting-the-app-ready).**
+- [Deployment](https://github.com/Crowfunder/Cogmaster/blob/main/deploy.sh)
+- [Shutdown](https://github.com/Crowfunder/Cogmaster/blob/main/shutdown.sh)
+## Manual Deployment
 - For API Back-End, see [api/README.md](https://github.com/Crowfunder/Cogmaster/blob/main/api/README.md)
 - For Discord Bot Front-End, see [discord/README.md](https://github.com/Crowfunder/Cogmaster/blob/main/discord/README.md)
 - For WebUI Front-End, see [ui/README.md](https://github.com/Crowfunder/Cogmaster/blob/main/ui/README.md)
