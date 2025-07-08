@@ -1,3 +1,10 @@
+# Getting the app ready
+Before you can run the app, you have to extract some files from the game client.
+1. If you don't have a JDK v17 already, install one, for example [Zulu](https://www.azul.com/downloads/?version=java-17-lts&package=jdk#zulu)
+2. Get the game configs as xmls, from now on they will be called "parseable", to get the xml configs you may need to use a tool like [Datdec](https://github.com/lucasluqui/datdec), put them into folder named "parseable"
+3. Get the game translations .properties files, open "code/projectx-config.jar" in something like 7zip or WinRar, go into i18n folder, put them into a folder named "properties" 
+4. Put the extracted resources into `Cogmaster/api/src/main/resources`, so that "parseable" and "properties" are in the same folder as routers
+
 # Deployment
 There are two (three) supported ways to launch the api. There are two scripts (`deploy.sh` and `shutdown.sh`) for deployment of the entire app that use docker compose method.
 ## Standard, through Maven
@@ -5,11 +12,11 @@ There are two (three) supported ways to launch the api. There are two scripts (`
 ```sh
 $ git clone https://github.com/Crowfunder/Cogmaster.git
 ```
-3. If you don't have a JDK v17 already, install one, for example [Zulu](https://www.azul.com/downloads/?version=java-17-lts&package=jdk#zulu)
-4. Get the game configs as xmls, from now on they will be called "parseable", to get the xml configs you may need to use a tool like [Datdec](https://github.com/lucasluqui/datdec), put them into folder named "parseable"
-5. Get the game translations .properties files, open "code/projectx-config.jar" in something like 7zip or WinRar, go into i18n folder, put them into a folder named "properties" 
-6. Put the extracted resources into `Cogmaster/api/src/main/resources`, so that "parseable" and "properties" are in the same folder as routers
-7. Open terminal in the `Cogmaster/api` folder, run the following command
+2. Enter the directory with the api
+```sh
+$ cd Cogmaster/api
+```
+3. Launch the Maven app
 ```sh
 $ ./mvnw spring-boot:run
 ```
