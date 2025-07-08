@@ -10,6 +10,13 @@
 - Reverse-searching values for matching translation keys.
 - Many more, and even more to come.
 
+# Demo
+
+
+
+https://github.com/user-attachments/assets/dee12dd7-8dba-4b0e-ad02-4e0cac9285b4
+
+
 # Getting Started
 ## Deployment Scripts
 They may need some minor tweaks, but otherwise provide ready deployment. **Still requires extracting game assets, check out [Getting the App Ready](https://github.com/Crowfunder/Cogmaster/blob/main/api/README.md#getting-the-app-ready).**
