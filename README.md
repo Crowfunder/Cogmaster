@@ -18,6 +18,7 @@ https://github.com/user-attachments/assets/dee12dd7-8dba-4b0e-ad02-4e0cac9285b4
 
 
 # Getting Started
+To play around with the bot yourself, just join our [Discord Server](https://discord.gg/RAf499a).
 ## Deployment Scripts
 They may need some minor tweaks, but otherwise provide ready deployment. **Still requires extracting game assets, check out [Getting the App Ready](https://github.com/Crowfunder/Cogmaster/blob/main/api/README.md#getting-the-app-ready).**
 - [Deployment](https://github.com/Crowfunder/Cogmaster/blob/main/deploy.sh)
