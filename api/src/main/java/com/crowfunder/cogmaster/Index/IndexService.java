@@ -7,6 +7,7 @@ import com.crowfunder.cogmaster.Translations.TranslationsService;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.*;
 
 @Service
@@ -93,6 +94,67 @@ public class IndexService {
     // and look for known parameters defining being tradeable
     @Cacheable("getTradeableEntryNames")
     public Set<String> getTradeableEntryNames() {
+        class UniqueVariants {
+            private static final Set<String> variantsWeapon = new HashSet<>(Set.of(
+                "{0} Asi Very High",
+                "{0} Asi Very High Ctr Very High",
+                "{0} Asi Very High Ctr High",
+                "{0} Asi Very High Ctr Med",
+                "{0} Asi High",
+                "{0} Asi High Ctr Very High",
+                "{0} Asi High Ctr High",
+                "{0} Asi High Ctr Med",
+                "{0} Asi Med",
+                "{0} Asi Med Ctr Very High",
+                "{0} Asi Med Ctr High",
+                "{0} Asi Med Ctr Med",
+                "{0} Ctr Very High",
+                "{0} Ctr High",
+                "{0} Ctr Med"
+            ));
+            private static final Set<String> variantsBomb = new HashSet<>(Set.of(
+                "{0} Ctr Very High",
+                "{0} Ctr High",
+                "{0} Ctr Med"
+            ));
+            private static final Set<String> variantsArmor = new HashSet<>(Set.of(
+                "{0} Fire High",
+                "{0} Fire Max",
+                "{0} Shadow High",
+                "{0} Shadow Max",
+                "{0} Normal High",
+                "{0} Normal Max"
+            ));
+            private static final Set<String> implementationsBomb = new HashSet<>(Set.of(
+                    "com.threerings.projectx.item.config.ItemConfig$Bomb"
+            ));
+            private static final Set<String> implementationsWeapon = new HashSet<>(Set.of(
+                    "com.threerings.projectx.item.config.ItemConfig$Handgun",
+                    "com.threerings.projectx.item.config.ItemConfig$SwingingHandgun",
+                    "com.threerings.projectx.item.config.ItemConfig$Sword"
+            ));
+
+            private static final Set<String> implementationsArmor = new HashSet<>(Set.of(
+                    "com.threerings.projectx.item.config.ItemConfig$Armor",
+                    "com.threerings.projectx.item.config.ItemConfig$Helm",
+                    "com.threerings.projectx.item.config.ItemConfig$Shield"
+            ));
+
+            public static List<String> getItemVariants(String name, String implementation) {
+                List<String> result = new ArrayList<>();
+                result.add(name);
+                Set<String> variants;
+                if (implementationsBomb.contains(implementation)) { variants = variantsBomb; }
+                else if (implementationsWeapon.contains(implementation)) { variants = variantsWeapon; }
+                else if (implementationsArmor.contains(implementation)) { variants = variantsArmor; }
+                else { return result; }
+                for (String variant : variants) {
+                    result.add(MessageFormat.format(variant, name));
+                }
+                return result;
+            }
+        }
+
         Set<String> implementationsWhitelist = new HashSet<>(Set.of(
                 "com.threerings.projectx.item.config.ItemConfig$SpawnActor",
                 "com.threerings.projectx.item.config.ItemConfig$AnimatedAction",
@@ -142,8 +204,8 @@ public class IndexService {
         Set<String> result = new HashSet<>();
 
         for (String name : indexRepository.getAllNameIndexKeys()) {
-            // Check if name is blacklisted
-            if (namesBlacklist.contains(name)) {
+            // Check if name is blacklisted or null
+            if (name == null || namesBlacklist.contains(name)) {
                 continue;
             }
 
@@ -158,7 +220,7 @@ public class IndexService {
                 continue;
             }
 
-            result.add(name);
+            result.addAll(UniqueVariants.getItemVariants(name, configEntry.getEffectiveImplementation()));
         }
         return result;
     }
