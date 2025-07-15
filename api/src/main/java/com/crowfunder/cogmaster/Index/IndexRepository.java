@@ -53,7 +53,7 @@ class IndexRepository {
     }
 
     public List<Path> readNameIndex(String key) {
-        return index.getNameIndex().getOrDefault(key, new ArrayList<>());
+        return index.getNameIndex().getOrDefault(key.toLowerCase(), new ArrayList<>());
     }
 
     // Resolve the derivation of a config in-place
@@ -109,7 +109,7 @@ class IndexRepository {
 
     @Cacheable("getAllNameIndexKeys")
     public Set<String> getAllNameIndexKeys() {
-        return index.getNameIndex().keySet();
+        return index.getNameIndexKeysPretty();
     }
 
     // Returns all config index keys, joint into a single set

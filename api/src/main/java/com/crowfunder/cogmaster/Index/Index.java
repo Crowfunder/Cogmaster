@@ -13,13 +13,18 @@ public class Index {
     private final Map<Path, Map<String, List<Path>>> parameterIndex = new HashMap<>();
 
     // Name Index mapping properties keys found in <name> node to specific config paths
+    // names are stored in lowercase and looked up as lowercase
     private final Map<String, List<Path>> nameIndex = new HashMap<>();
+
+    // Name index keys preserving their original case
+    // for use in front-end autocomplete
+    private final Set<String> nameIndexKeysPretty = new HashSet<>();
 
     private void initializePathIndex(String configName) {
         this.configIndex.put(configName, new HashMap<>());
     }
 
-    private void initalizeNameIndex(String name) {
+    private void initializeNameIndex(String name) {
         this.nameIndex.put(name, new ArrayList<>());
     }
 
@@ -41,6 +46,8 @@ public class Index {
         return configIndex.get(configName);
     }
 
+    public Set<String> getNameIndexKeysPretty() { return this.nameIndexKeysPretty; }
+
     public void update(Index newIndex) {
         configIndex.putAll(newIndex.getConfigIndex());
         parameterIndex.putAll(newIndex.getParameterIndex());
@@ -59,9 +66,15 @@ public class Index {
     }
 
     public void addNameIndexEntry(String name, Path path) {
-        if (nameIndex.get(name) == null) {
-            initalizeNameIndex(name);
+        if (name == null) {
+            return;
         }
+        nameIndexKeysPretty.add(name);
+        name = name.toLowerCase();
+        if (nameIndex.get(name) == null) {
+            initializeNameIndex(name);
+        }
+
         nameIndex.get(name).add(path);
     }
 }

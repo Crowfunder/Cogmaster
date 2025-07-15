@@ -62,10 +62,8 @@ public class IndexService {
     // Resolve one or more ConfigEntry objects by
     // querying the propertiesService for name mappings
     // that can be used in nameIndex
-    // Ignores case (always searches by first character of word uppercase)
-    // Commented out case ignorance, because it is faulty and we use Autocomplete regardless
+    // Ignores case (always searches by lowercase)
     public List<ConfigEntry> resolveConfigByName(String name) {
-//        name = uppercaseFirstLetters(name.toLowerCase());
         return resolveConfigsFullPath(indexRepository.readNameIndex(name));
     }
 
@@ -94,7 +92,7 @@ public class IndexService {
     // and look for known parameters defining being tradeable
     @Cacheable("getTradeableEntryNames")
     public Set<String> getTradeableEntryNames() {
-        class UniqueVariants {
+        class EntryNameVariants {
             private static final Set<String> variantsWeapon = new HashSet<>(Set.of(
                 "{0} Asi Very High",
                 "{0} Asi Very High Ctr Very High",
@@ -110,12 +108,14 @@ public class IndexService {
                 "{0} Asi Med Ctr Med",
                 "{0} Ctr Very High",
                 "{0} Ctr High",
-                "{0} Ctr Med"
+                "{0} Ctr Med",
+                "{0} Recipe"
             ));
             private static final Set<String> variantsBomb = new HashSet<>(Set.of(
                 "{0} Ctr Very High",
                 "{0} Ctr High",
-                "{0} Ctr Med"
+                "{0} Ctr Med",
+                "{0} Recipe"
             ));
             private static final Set<String> variantsArmor = new HashSet<>(Set.of(
                 "{0} Fire High",
@@ -123,7 +123,8 @@ public class IndexService {
                 "{0} Shadow High",
                 "{0} Shadow Max",
                 "{0} Normal High",
-                "{0} Normal Max"
+                "{0} Normal Max",
+                "{0} Recipe"
             ));
             private static final Set<String> implementationsBomb = new HashSet<>(Set.of(
                     "com.threerings.projectx.item.config.ItemConfig$Bomb"
@@ -220,7 +221,7 @@ public class IndexService {
                 continue;
             }
 
-            result.addAll(UniqueVariants.getItemVariants(name, configEntry.getEffectiveImplementation()));
+            result.addAll(EntryNameVariants.getItemVariants(name, configEntry.getEffectiveImplementation()));
         }
         return result;
     }
