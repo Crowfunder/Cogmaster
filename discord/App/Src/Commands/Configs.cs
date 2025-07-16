@@ -12,7 +12,7 @@ public class Configs(IEmbedHandler embedHandler, IDiscordPaginator paginator, IC
 {
     [SlashCommand(CommandIds.ConfigsName, "Get the configs from any item by in-game name.")]
     public async Task NameCommand([Summary(description: "In-game name of the config entry, i.e \"Brandish\"."), Autocomplete(), MinLength(3), MaxLength(69)] string name) =>
-        await HandleCommandAsync($"{DotNetEnv.Env.GetString("api")}/index/search?q={name}", name);
+        await HandleCommandAsync($"{DotNetEnv.Env.GetString("api")}/index/search?q={name}", name.ToLower());
 
     [SlashCommand(CommandIds.ConfigsPath, "Get the configs from any item by path.")]
     public async Task PathCommand(
