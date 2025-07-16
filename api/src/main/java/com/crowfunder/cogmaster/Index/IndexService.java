@@ -228,17 +228,18 @@ public class IndexService {
             }
 
             // Do not add rooms tickets
-            if (configEntry.getRoutedParameters().resolveParameterPath("type") != null &&
-                configEntry.getRoutedParameters().resolveParameterPath("type").getValue().equals("DESIGN_ROOM")) {
+            if (configEntry.getRoutedParameters().parameterValueEquals("type", "DESIGN_ROOM") ||
+                configEntry.getRoutedParameters().parameterValueEquals("type", "GUILD_EXPANSION") ||
+                configEntry.getRoutedParameters().parameterValueEquals("type", "GUILD_UPGRADE") ||
+                configEntry.getRoutedParameters().parameterValueEquals("type", "DOOR_TYPE")
+            ) {
                 continue;
             }
 
             // Do not variant 0,1-star items
-            if (configEntry.getRoutedParameters().resolveParameterPath("rarity") == null || (
-                !(configEntry.getRoutedParameters().resolveParameterPath("rarity").getValue().equals("1")) &&
-                !(configEntry.getRoutedParameters().resolveParameterPath("rarity").getValue().equals("0")) )
-            )
-            {
+            if (!(configEntry.getRoutedParameters().parameterValueEquals("rarity","1")) &&
+                !(configEntry.getRoutedParameters().parameterValueEquals("rarity", "0"))
+            ) {
                 result.addAll(EntryNameVariants.getItemVariants(name, configEntry.getEffectiveImplementation()));
             } else {
                 result.add(name);

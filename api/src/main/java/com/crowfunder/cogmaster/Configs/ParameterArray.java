@@ -66,6 +66,21 @@ public class ParameterArray {
         return resolveParameterPath(path);
     }
 
+    // same as equals, but for parameter path value, null-safe
+    public boolean parameterValueEquals(Path path, Object val) {
+        ParameterValue param = resolveParameterPath(path);
+        if (param == null) {
+            return false;
+        }
+
+        return param.getValue().equals(val);
+    }
+
+    public boolean parameterValueEquals(String strPath, Object val) {
+        Path path = new Path(strPath);
+        return parameterValueEquals(path, val);
+    }
+
     public boolean isEmpty() {
         return hashmap.isEmpty();
     }
