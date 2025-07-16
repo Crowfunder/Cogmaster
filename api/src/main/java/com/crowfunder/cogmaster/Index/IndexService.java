@@ -108,14 +108,12 @@ public class IndexService {
                 "{0} Asi Med Ctr Med",
                 "{0} Ctr Very High",
                 "{0} Ctr High",
-                "{0} Ctr Med",
-                "{0} Recipe"
+                "{0} Ctr Med"
             ));
             private static final Set<String> variantsBomb = new HashSet<>(Set.of(
                 "{0} Ctr Very High",
                 "{0} Ctr High",
-                "{0} Ctr Med",
-                "{0} Recipe"
+                "{0} Ctr Med"
             ));
             private static final Set<String> variantsArmor = new HashSet<>(Set.of(
                 "{0} Fire High",
@@ -123,22 +121,29 @@ public class IndexService {
                 "{0} Shadow High",
                 "{0} Shadow Max",
                 "{0} Normal High",
-                "{0} Normal Max",
-                "{0} Recipe"
+                "{0} Normal Max"
+            ));
+            private static final Set<String> variantsShield = new HashSet<>(Set.of(
+                "{0} Fire High",
+                "{0} Fire Max"
             ));
             private static final Set<String> implementationsBomb = new HashSet<>(Set.of(
-                    "com.threerings.projectx.item.config.ItemConfig$Bomb"
+                "com.threerings.projectx.item.config.ItemConfig$Bomb"
             ));
             private static final Set<String> implementationsWeapon = new HashSet<>(Set.of(
-                    "com.threerings.projectx.item.config.ItemConfig$Handgun",
-                    "com.threerings.projectx.item.config.ItemConfig$SwingingHandgun",
-                    "com.threerings.projectx.item.config.ItemConfig$Sword"
+                "com.threerings.projectx.item.config.ItemConfig$Handgun",
+                "com.threerings.projectx.item.config.ItemConfig$SwingingHandgun",
+                "com.threerings.projectx.item.config.ItemConfig$Sword"
             ));
 
             private static final Set<String> implementationsArmor = new HashSet<>(Set.of(
-                    "com.threerings.projectx.item.config.ItemConfig$Armor",
-                    "com.threerings.projectx.item.config.ItemConfig$Helm",
-                    "com.threerings.projectx.item.config.ItemConfig$Shield"
+                "com.threerings.projectx.item.config.ItemConfig$Armor",
+                "com.threerings.projectx.item.config.ItemConfig$Helm",
+                "com.threerings.projectx.item.config.ItemConfig$Shield"
+            ));
+
+            private static final Set<String> implementationsShield = new HashSet<>(Set.of(
+                "com.threerings.projectx.item.config.ItemConfig$Shield"
             ));
 
             public static List<String> getItemVariants(String name, String implementation) {
@@ -148,6 +153,7 @@ public class IndexService {
                 if (implementationsBomb.contains(implementation)) { variants = variantsBomb; }
                 else if (implementationsWeapon.contains(implementation)) { variants = variantsWeapon; }
                 else if (implementationsArmor.contains(implementation)) { variants = variantsArmor; }
+                else if (implementationsShield.contains(implementation)) { variants = variantsShield; }
                 else { return result; }
                 for (String variant : variants) {
                     result.add(MessageFormat.format(variant, name));
@@ -205,8 +211,8 @@ public class IndexService {
         Set<String> result = new HashSet<>();
 
         for (String name : indexRepository.getAllNameIndexKeys()) {
-            // Check if name is blacklisted or null
-            if (name == null || namesBlacklist.contains(name)) {
+            // Check if name is blacklisted or null or incomplete
+            if (name == null || namesBlacklist.contains(name) || name.contains("{")) {
                 continue;
             }
 
@@ -221,7 +227,22 @@ public class IndexService {
                 continue;
             }
 
-            result.addAll(EntryNameVariants.getItemVariants(name, configEntry.getEffectiveImplementation()));
+            // Do not add rooms tickets
+            if (configEntry.getRoutedParameters().resolveParameterPath("type") != null &&
+                configEntry.getRoutedParameters().resolveParameterPath("type").getValue().equals("DESIGN_ROOM")) {
+                continue;
+            }
+
+            // Do not variant 0,1-star items
+            if (configEntry.getRoutedParameters().resolveParameterPath("rarity") == null || (
+                !(configEntry.getRoutedParameters().resolveParameterPath("rarity").getValue().equals("1")) &&
+                !(configEntry.getRoutedParameters().resolveParameterPath("rarity").getValue().equals("0")) )
+            )
+            {
+                result.addAll(EntryNameVariants.getItemVariants(name, configEntry.getEffectiveImplementation()));
+            } else {
+                result.add(name);
+            }
         }
         return result;
     }
