@@ -30,7 +30,7 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
         var data = await apiFetcher.FetchDocumentAsync(url);
         if (data is null) return ConfigResult.Error;
 
-        var filePath = Path.Combine("Src", "Assets", GetIconUrl(data));
+        var filePath = GetIconUrl(data);
         var author = new EmbedAuthorBuilder().WithName(item).WithIconUrl($"attachment://{Path.GetFileName(filePath)}");
 
         switch (data.RootElement.ValueKind)
@@ -79,12 +79,16 @@ public class ConfigHelper(IMemoryCache cache, IEmbedHandler embedHandler, IDisco
 
     private static string GetIconUrl(JsonDocument data)
     {
-        var fallbackIcon = "ui/icon/icon_128.png";
+        var fallbackIcon = Path.Combine("Src", "Assets", "ui/icon/icon_128.png");
         var paramData = data.RootElement.ValueKind == JsonValueKind.Array ? data.RootElement[0] : data.RootElement;
         if (!paramData.GetProperty("routedParameters").TryGetProperty("hashMap", out JsonElement hashMap)) return fallbackIcon;
         if (!hashMap.TryGetProperty("icon", out JsonElement icon)) return fallbackIcon;
 
-        return icon.GetProperty("value").ToString();
+        var path = Path.Combine("Src", "Assets", icon.GetProperty("value").ToString());
+
+        if (File.Exists(path)) return path;
+
+        return fallbackIcon;
     }
 
     private static string GetExtraProperties(JsonElement data, string id)
