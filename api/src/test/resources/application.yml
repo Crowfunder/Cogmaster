@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: "Cogmaster"
+
+server:
+  port: 2137
+
+cogmaster:
+  translations:
+    path: "properties"
+
+  routers:
+    path: "routers"
+
+  parsers:
+    path: "parseable"
+
+  assets:
+    path: "assets"
