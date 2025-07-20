@@ -14,7 +14,7 @@ public class ConfigEntry {
     // Own identifier config path
     private final Path path;
 
-    // If the config is a derived config, this path points to derivative (parent) config
+    // If the config is a derived config, this path points to the derived from (parent) config
     private final Path derivedPath;
 
     // Source config name

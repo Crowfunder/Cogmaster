@@ -50,13 +50,6 @@ public class Parser {
         this.configName = configName;
     }
 
-
-
-    public List<Path> getIndexableParameterPaths() {
-        return indexableParameterPaths;
-    }
-
-
     public Index populateConfigIndex() {
 
         // Restart the index for parsing
