@@ -22,7 +22,7 @@ class IndexRepository {
     private final RouterService routerService;
     private final TranslationsService translationsService;
     // The actual index
-    private final Index index = new Index();
+    private Index index;
 
     public IndexRepository(ParserService parserService, RouterService routerService,
             TranslationsService translationsService) {
@@ -34,7 +34,7 @@ class IndexRepository {
     @PostConstruct
     public void populateIndex() {
         logger.info("Parsing the configs, populating ConfigIndex...");
-        index.update(parserService.populateConfigIndex());
+        index = parserService.populateConfigIndex();
         logger.info("Finished parsing");
 
         logger.info("Resolving derivations...");
@@ -68,14 +68,13 @@ class IndexRepository {
         ParameterArray derivedParameters = new ParameterArray();
         ConfigEntry derivedConfig = readConfigIndex(configEntry.getSourceConfig(), configEntry.getDerivedPath());
         while (derivedConfig != null) {
-            derivedParameters.update(derivedConfig.getParameters());
+            derivedParameters.update(derivedConfig.getParameters()); // would this not mean the parent potentially overwriting the child parameters?
             if (!derivedConfig.isDerived()) {
                 configEntry.setDerivedImplementationType(derivedConfig.getImplementationType());
             }
             derivedConfig = readConfigIndex(configEntry.getSourceConfig(), derivedConfig.getDerivedPath());
         }
         configEntry.updateDerivedParameters(derivedParameters);
-        index.addConfigIndexEntry(configEntry.getSourceConfig(), configEntry.getPath(), configEntry);
     }
 
     // Resolve and cache ALL derivations from ConfigIndex
