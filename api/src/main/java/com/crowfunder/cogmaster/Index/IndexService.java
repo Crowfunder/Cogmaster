@@ -181,6 +181,7 @@ public class IndexService {
                 "com.threerings.projectx.item.config.ItemConfig$SpriteEgg",
                 "com.threerings.projectx.item.config.ItemConfig$SwingingHandgun",
                 "com.threerings.projectx.item.config.ItemConfig$Sword",
+                "com.threerings.projectx.item.config.ItemConfig$Trinket",
                 "com.threerings.projectx.item.config.ItemConfig$Ticket",
                 "com.threerings.projectx.item.config.ItemConfig$Upgrade",
                 "com.threerings.projectx.item.config.ItemConfig$WrappingPaper",
