@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 
 public class HashMapUtil {
 
-    // Inverts a hashmap into a hashmap mapping values to one or more keys (in case of duplicates)
+    /**
+     * Inverts a hashmap into a hashmap mapping values to one or more keys (in case of duplicates)
+     */
     public static <X, Y> Map<Y, List<X>> invertHashMap(Map<X, Y> hashMap) {
         return hashMap.entrySet()
                 .stream()
@@ -21,7 +23,9 @@ public class HashMapUtil {
                 ));
     }
 
-    // Converts Properties to HashMap
+    /**
+     * Converts Properties to HashMap
+     */
     public static Map<String, String> propertiesToHashMap(Properties prop) {
         return prop.entrySet().stream().collect(
                 Collectors.toMap(

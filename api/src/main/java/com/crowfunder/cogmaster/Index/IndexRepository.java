@@ -21,7 +21,9 @@ class IndexRepository {
     private final ParserService parserService;
     private final RouterService routerService;
     private final TranslationsService translationsService;
-    // The actual index
+    /**
+     * The actual index
+     */
     private Index index;
 
     public IndexRepository(ParserService parserService, RouterService routerService,
@@ -56,8 +58,10 @@ class IndexRepository {
         return index.getNameIndex().getOrDefault(key.toLowerCase(), new ArrayList<>());
     }
 
-    // Resolve the derivation of a config in-place
-    // We want to cache the resolved derivation in the index
+    /**
+     * Resolve the derivation of a config in-place
+     * We want to cache the resolved derivation in the index
+     */
     private void resolveDerivation(ConfigEntry configEntry) {
 
         // We only resolve derivations of derived configs
@@ -77,9 +81,11 @@ class IndexRepository {
         configEntry.updateDerivedParameters(derivedParameters);
     }
 
-    // Resolve and cache ALL derivations from ConfigIndex
-    // Populate name index
-    // Populate routed parameters
+    /**
+     * Resolve and cache ALL derivations from ConfigIndex
+     * Populate name index
+     * Populate routed parameters
+     */
     public void resolveConfigDependencies() {
         for (String configName : index.getConfigIndex().keySet()) {
             for (Path path : index.getConfigIndex().get(configName).keySet()) {
@@ -111,7 +117,9 @@ class IndexRepository {
         return index.getNameIndexKeysPretty();
     }
 
-    // Returns all config index keys, joint into a single set
+    /**
+     * Returns all config index keys, joint into a single set
+     */
     @Cacheable("getAllConfigIndexKeysJoint")
     public Set<String> getAllConfigIndexKeysJoint() {
         Set<String> result = new HashSet<>();
@@ -123,7 +131,9 @@ class IndexRepository {
         return result;
     }
 
-    // Returns all config index keys, except as a dictionary mapping ConfigIndex keys to Sets
+    /**
+     * Returns all config index keys, except as a dictionary mapping ConfigIndex keys to Sets
+     */
     @Cacheable("getAllConfigIndexKeysMapped")
     public Map<String, Set<String>> getAllConfigIndexKeysMapped() {
         Map<String, Set<String>> result = new HashMap<>();

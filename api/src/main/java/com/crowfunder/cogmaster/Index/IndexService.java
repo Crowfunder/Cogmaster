@@ -21,33 +21,45 @@ public class IndexService {
         this.translationsService = translationsService;
     }
 
-    // Get ConfigEntry object by its config path
+    /**
+     * Get ConfigEntry object by its config path
+     */
     public ConfigEntry resolveConfig(String configName, Path path) {
         return indexRepository.readConfigIndex(configName, path);
     }
 
-    // Get ConfigEntry object by its config path
+    /**
+     * Get ConfigEntry object by its config path
+     */
     public ConfigEntry resolveConfig(String configName, String path) {
         return resolveConfig(configName, new Path(path));
     }
 
-    // Get ConfigEntry by path that leads both to the correct index and entry within it
+    /**
+     * Get ConfigEntry by path that leads both to the correct index and entry within it
+     */
     public ConfigEntry resolveConfig(Path path) {
         return indexRepository.readConfigIndex(path.getNextPath(), path.rotatePath());
     }
 
-    // Get ConfigEntry by path that leads both to the correct index and entry within it
+    /**
+     * Get ConfigEntry by path that leads both to the correct index and entry within it
+     */
     public ConfigEntry resolveConfig(String path) {
         return resolveConfig(new Path(path));
     }
 
-    // Get ConfigEntry object by resolving a ConfigReference object
+    /**
+     * Get ConfigEntry object by resolving a ConfigReference object
+     */
     public ConfigEntry resolveConfig(ConfigReference configReference) {
         return indexRepository.readConfigIndex(configReference.getSourceConfig(), configReference.getPath());
     }
 
-    // Get multiple ConfigEntry objects by paths
-    // Works only for full paths (indicating the exact PathIndex entry)
+    /**
+     * Get multiple ConfigEntry objects by paths
+     * Works only for full paths (indicating the exact PathIndex entry)
+     */
     public List<ConfigEntry> resolveConfigsFullPath(List<Path> paths) {
         List<ConfigEntry> configs = new ArrayList<>();
         for (Path path : paths) {
@@ -59,15 +71,19 @@ public class IndexService {
         return configs;
     }
 
-    // Resolve one or more ConfigEntry objects by
-    // querying the propertiesService for name mappings
-    // that can be used in nameIndex
-    // Ignores case (always searches by lowercase)
+    /**
+     * Resolve one or more ConfigEntry objects by
+     * querying the propertiesService for name mappings
+     * that can be used in nameIndex
+     * Ignores case (always searches by lowercase)
+     */
     public List<ConfigEntry> resolveConfigByName(String name) {
         return resolveConfigsFullPath(indexRepository.readNameIndex(name));
     }
 
-    // Get a list of all available configs
+    /**
+     * Get a list of all available configs
+     */
     public Set<String> getAllConfigNames() {
         return indexRepository.getAllIndexKeys();
     }
@@ -85,11 +101,13 @@ public class IndexService {
     }
 
 
-    // Endpoint tailored for Kozma Bot, with love
-    // Return name index keys into a single list
-    // Attempts to only return items that are tradeable in game
-    // Using a few heurestics, namely filter by implementations
-    // and look for known parameters defining being tradeable
+    /**
+     * Endpoint tailored for Kozma Bot, with love
+     * Return name index keys into a single list
+     * Attempts to only return items that are tradeable in game
+     * Using a few heurestics, namely filter by implementations
+     * and look for known parameters defining being tradeable
+     */
     @Cacheable("getTradeableEntryNames")
     public Set<String> getTradeableEntryNames() {
         class EntryNameVariants {

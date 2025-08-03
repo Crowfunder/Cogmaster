@@ -28,8 +28,10 @@ public class TranslationsRepository {
         this.propertiesPath = cogmasterConfig.translations().path();
     }
 
-    // We interface with the properties through Map because we want to utilize
-    // inverting util
+    /**
+     * We interface with the properties through Map because we want to utilize
+     * inverting util
+     */
     @PostConstruct
     private void PopulateTranslations() {
         logger.info("Populating translations repository...");

@@ -7,7 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-// Generic path for all purposes
+/**
+ * Generic path for all purposes
+ */
 public class Path {
 
     private String path;
@@ -21,7 +23,9 @@ public class Path {
         this.path = path;
     }
 
-    // Returns a new object of a rotated path (remove 1st element)
+    /**
+     * Returns a new object of a rotated path (remove 1st element)
+     */
     public Path rotatePath() {
         String[] pathParts = path.split(delimiter);
         String[] newPathParts = Arrays.copyOfRange(pathParts, 1, pathParts.length);
@@ -53,7 +57,9 @@ public class Path {
         return path;
     }
 
-    // Get first element of the path
+    /**
+     * Get first element of the path
+     */
     @JsonIgnore
     public String getNextPath() {
         if (Objects.equals(path, "")) {

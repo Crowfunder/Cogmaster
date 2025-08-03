@@ -5,8 +5,10 @@ import java.util.List;
 
 public class StringUtil {
 
-    // Generates capitalization and spacing variants of string
-    // "Foo Bar" -> "Foo Bar", "FooBar", "foo Bar", "fooBar", "foobar"
+    /**
+     * Generates capitalization and spacing variants of string
+     * "Foo Bar" -> "Foo Bar", "FooBar", "foo Bar", "fooBar", "foobar"
+     */
     public static List<String> generateStringVariants(String s) {
         List<String> variants = new ArrayList<>();
         variants.add(s);
@@ -17,8 +19,10 @@ public class StringUtil {
         return variants;
     }
 
-    // Uppercase first letters
-    // "foo bar" -> Foo Bar
+    /**
+     * Uppercase first letters
+     * "foo bar" -> Foo Bar
+     */
     public static String uppercaseFirstLetters(String s) {
         StringBuilder capitalized = new StringBuilder();
         String[] words = s.split(" ");

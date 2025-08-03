@@ -3,11 +3,15 @@ package com.crowfunder.cogmaster.Configs;
 public class ConfigReference {
 
     private final String implementationType = "com.threerings.config.ConfigReference";
-    // Path to derived config
-    // References don't have their own path identifiers!
+    /**
+     * Path to derived config
+     * References don't have their own path identifiers!
+     */
     private final Path derivedPath;
     private final String sourceConfig;
-    // Overridden parameters
+    /**
+     * Overridden parameters
+     */
     private final ParameterArray parameters;
 
     public ConfigReference(String sourceConfig) {

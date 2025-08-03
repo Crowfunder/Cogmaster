@@ -8,24 +8,36 @@ public class ConfigEntry {
 
     private String implementationType;
 
-    // Derived implementation
+    /**
+     * Derived implementation
+     */
     private String derivedImplementationType;
 
-    // Own identifier config path
+    /**
+     * Own identifier config path
+     */
     private final Path path;
 
-    // If the config is a derived config, this path points to the derived from (parent) config
+    /**
+     * If the config is a derived config, this path points to the derived from (parent) config
+     */
     private final Path derivedPath;
 
-    // Source config name
+    /**
+     * Source config name
+     */
     private final String sourceConfig;
 
-    // Overriden/Own parameters
+    /**
+     * Overriden/Own parameters
+     */
     private final ParameterArray parameters;
 
     private final ParameterArray routedParameters;
 
-    // Non-overriden parameters pulled from all derivative (parent) configs
+    /**
+     * Non-overriden parameters pulled from all derivative (parent) configs
+     */
     private final ParameterArray derivedParameters;
 
     // Parameterless
@@ -48,8 +60,10 @@ public class ConfigEntry {
         return this.derivedPath;
     }
 
-    // This getter returns effective (derived) (not just parameters field)
-    // parameters as it's the default behavior
+    /**
+     * This getter returns effective (derived) (not just parameters field)
+     * parameters as it's the default behavior
+     */
     public ParameterArray getParameters() {
         return this.parameters.derive(derivedParameters);
     }
@@ -66,8 +80,10 @@ public class ConfigEntry {
         return this.routedParameters;
     }
 
-    // This getter returns effective (actual, in-depth)
-    // implementation, in case the config is derived
+    /**
+     * This getter returns effective (actual, in-depth)
+     * implementation, in case the config is derived
+     */
     public String getEffectiveImplementation() {
         if (this.derivedImplementationType.isEmpty()) {
             return this.implementationType;
@@ -97,7 +113,9 @@ public class ConfigEntry {
         return this.derivedPath.getPath() != null;
     }
 
-    // Return effective name using routes
+    /**
+     * Return effective name using routes
+     */
     public String getName() {
         ParameterValue name = routedParameters.resolveParameterPath("name");
         if (name != null) {
@@ -111,7 +129,9 @@ public class ConfigEntry {
         this.parameters.update(reference.getParameters());
     }
 
-    // Populate parameters array according to routes in Router
+    /**
+     * Populate parameters array according to routes in Router
+     */
     public void populateRoutedParameters(Router sourceRouter) {
         if (sourceRouter == null) {
             return;

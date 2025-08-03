@@ -24,17 +24,25 @@ import static com.crowfunder.cogmaster.Utils.DOMUtil.getNextNode;
 public class Parser {
 
     Logger logger = LoggerFactory.getLogger(Parser.class);
-    // Parsed xml config file resource
+    /**
+     * Path to parsed xml config file
+     */
     private final Resource xmlFileResource;
-    // Config name, should also correspond to root node of parameters in derived entries
-    private final String configName;
-    // List of paths leading to parameters to index into ParameterIndex
+    /**
+     * Config name, should also correspond to root node of parameters in derived entries
+     */    private final String configName;
+
+    /**
+     * List of paths leading to parameters to index into ParameterIndex
+     */
     private final List<Path> indexableParameterPaths;
 
-    // Returnable index
-    // I want the exported index to be accessible in other methods of this class, without constraints
-    // Is this the right way? No idea.
-    // Do I care? No idea.
+    /**
+     * Returnable index
+     * I want the exported index to be accessible in other methods of this class, without constraints
+     * Is this the right way? No idea.
+     * Do I care? No idea.
+     */
     Index index = new Index();
 
     public Parser(String configName, Resource xmlFileResource, List<Path> indexableParameterPaths) {
@@ -91,7 +99,9 @@ public class Parser {
     }
 
 
-    // Parses <entry> node into a ConfigEntry object
+    /**
+     * Parses <entry> node into a ConfigEntry object
+     */
     private ConfigEntry parseEntry(Node entry) {
         ConfigEntry configEntry = new ConfigEntry(configName);
 
@@ -162,12 +172,14 @@ public class Parser {
     }
 
 
-    // This method holds some heuristics for parsing parameters
-    // There are some cases when it's not a simple name and value of node read
-    // Notably:
-    // - key/value node pairs
-    // - repeated nodes of the same name (concealed lists)
-    // - values as config references
+    /**
+     * This method holds some heuristics for parsing parameters
+     * There are some cases when it's not a simple name and value of node read
+     * Notably:
+     * - key/value node pairs
+     * - repeated nodes of the same name (concealed lists)
+     * - values as config references
+     */
     private ParameterArray parseParameterArray(Node parametersRoot) {
         ParameterArray parameterArray = new ParameterArray();
 
@@ -252,4 +264,5 @@ public class Parser {
         }
         return parameterValue;
     }
+
 }

@@ -4,7 +4,9 @@ import org.w3c.dom.Node;
 
 public class DOMUtil {
 
-    // get the next node that actually is of ELEMENT_NODE type
+    /**
+     * get the next node that actually is of ELEMENT_NODE type
+     */
     public static Node getNextNode(Node node) {
         Node nextNode = node.getNextSibling();
         if (nextNode == null) {
@@ -19,7 +21,9 @@ public class DOMUtil {
         return nextNode;
     }
 
-    // get the first child that actually is the first child of ELEMENT_NODE type
+    /**
+     * get the first child that actually is the first child of ELEMENT_NODE type
+     */
     public static Node getFirstChild(Node node) {
         Node childNode = node.getFirstChild();
         if (childNode == null) {

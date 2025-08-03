@@ -6,18 +6,26 @@ import com.crowfunder.cogmaster.Configs.Path;
 import java.util.*;
 
 public class Index {
-    // The base ConfigIndex that maps config names to hashmaps containing mappings of paths to ConfigEntry objects
+    /**
+     * The base ConfigIndex that maps config names to hashmaps containing mappings of paths to ConfigEntry objects
+     */
     private final Map<String, Map<Path, ConfigEntry>> configIndex = new HashMap<>();
 
-    // Index mapping specific parameter values to ConfigEntry paths from configIndex
+    /**
+     * Index mapping specific parameter values to ConfigEntry paths from configIndex
+     */
     private final Map<Path, Map<String, List<Path>>> parameterIndex = new HashMap<>();
 
-    // Name Index mapping properties keys found in <name> node to specific config paths
-    // names are stored in lowercase and looked up as lowercase
+    /**
+     * Name Index mapping properties keys found in <name> node to specific config paths
+     * names are stored in lowercase and looked up as lowercase
+     */
     private final Map<String, List<Path>> nameIndex = new HashMap<>();
 
-    // Name index keys preserving their original case
-    // for use in front-end autocomplete
+    /**
+     * Name index keys preserving their original case
+     * for use in front-end autocomplete
+     */
     private final Set<String> nameIndexKeysPretty = new HashSet<>();
 
     private void initializePathIndex(String configName) {
@@ -28,7 +36,9 @@ public class Index {
         this.nameIndex.put(name, new ArrayList<>());
     }
 
-    // Return the entire ConfigIndex
+    /**
+     * Return the entire ConfigIndex
+     */
     public Map<String, Map<Path, ConfigEntry>> getConfigIndex() {
         return configIndex;
     }
@@ -41,7 +51,9 @@ public class Index {
         return nameIndex;
     }
 
-    // Return index for one config
+    /**
+     * Return index for one config
+     */
     public Map<Path, ConfigEntry> getPathIndex(String configName) {
         return configIndex.get(configName);
     }

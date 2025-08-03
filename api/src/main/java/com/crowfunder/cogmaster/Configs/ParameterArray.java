@@ -23,9 +23,11 @@ public class ParameterArray {
         return this;
     }
 
-    // Perform parameter derivation, return effective parameters (own parameters overwriting derived params)
-    // when deriving from inputted derivedParameterArray
-    // This does not modify any of the objects, it's done "on-the-fly"
+    /**
+     * Perform parameter derivation, return effective parameters (own parameters overwriting derived params)
+     * when deriving from inputted derivedParameterArray
+     * This does not modify any of the objects, it's done "on-the-fly"
+     */
     public ParameterArray derive(ParameterArray derivedParameterArray) {
         ParameterArray effectiveParameterArray = new ParameterArray();
         effectiveParameterArray.update(derivedParameterArray).update(this);
@@ -45,7 +47,9 @@ public class ParameterArray {
         return val;
     }
 
-    // Checks numerous variants of nextpath, i.e "Something Something", "SomethingSomething", "somethingSomething" etc.
+    /**
+     * Checks numerous variants of nextpath, i.e "Something Something", "SomethingSomething", "somethingSomething" etc.
+     */
     public ParameterValue resolveParameterPathFlex(Path path) {
         List<String> nextPaths = generateStringVariants(path.getNextPath());
         for (String nextPath : nextPaths) {
@@ -66,7 +70,9 @@ public class ParameterArray {
         return resolveParameterPath(path);
     }
 
-    // same as equals, but for parameter path value, null-safe
+    /**
+     * Same as equals, but for parameter path value, null-safe
+     */
     public boolean parameterValueEquals(Path path, Object val) {
         ParameterValue param = resolveParameterPath(path);
         if (param == null) {
