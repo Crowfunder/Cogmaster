@@ -13,7 +13,7 @@ public record CogmasterConfig(Translations translations, Routers routers, Parser
     public record Routers(String path) {
     }
 
-    public record Parsers(String path, List<String> list) {
+    public record Parsers(String path) {
     }
 
     public record Assets(String path) {
