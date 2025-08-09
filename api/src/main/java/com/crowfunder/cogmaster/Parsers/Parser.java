@@ -38,9 +38,9 @@ public class Parser {
     private final List<Path> indexableParameterPaths;
 
     /**
-     * Returnable index
-     * I want the exported index to be accessible in other methods of this class, without constraints
-     * Is this the right way? No idea.
+     * Returnable index<br>
+     * I want the exported index to be accessible in other methods of this class, without constraints<br>
+     * Is this the right way? No idea.<br>
      * Do I care? No idea.
      */
     Index index = new Index();
@@ -100,7 +100,7 @@ public class Parser {
 
 
     /**
-     * Parses <entry> node into a ConfigEntry object
+     * Parses "entry" xml node into a ConfigEntry object
      */
     private ConfigEntry parseEntry(Node entry) {
         ConfigEntry configEntry = new ConfigEntry(configName);
@@ -173,12 +173,12 @@ public class Parser {
 
 
     /**
-     * This method holds some heuristics for parsing parameters
-     * There are some cases when it's not a simple name and value of node read
-     * Notably:
-     * - key/value node pairs
-     * - repeated nodes of the same name (concealed lists)
-     * - values as config references
+     * This method holds some heuristics for parsing parameters.
+     * There are some cases when it's not a simple name and value of node read.<br>
+     * Notably:<br>
+     * - key/value node pairs<br>
+     * - repeated nodes of the same name (concealed lists)<br>
+     * - values as config references<br>
      */
     private ParameterArray parseParameterArray(Node parametersRoot) {
         ParameterArray parameterArray = new ParameterArray();

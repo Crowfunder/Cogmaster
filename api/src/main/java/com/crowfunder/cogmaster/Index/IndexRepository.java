@@ -59,8 +59,8 @@ class IndexRepository {
     }
 
     /**
-     * Resolve the derivation of a config in-place
-     * We want to cache the resolved derivation in the index
+     * Resolve the derivation of a config in-place<br>
+     * We want to cache the resolved derivation in the index<br>
      */
     private void resolveDerivation(ConfigEntry configEntry) {
 
@@ -82,9 +82,9 @@ class IndexRepository {
     }
 
     /**
-     * Resolve and cache ALL derivations from ConfigIndex
-     * Populate name index
-     * Populate routed parameters
+     * Resolve and cache ALL derivations from ConfigIndex<br>
+     * Populate name index<br>
+     * Populate routed parameters<br>
      */
     public void resolveConfigDependencies() {
         for (String configName : index.getConfigIndex().keySet()) {

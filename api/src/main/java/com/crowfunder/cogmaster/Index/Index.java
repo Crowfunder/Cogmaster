@@ -17,7 +17,7 @@ public class Index {
     private final Map<Path, Map<String, List<Path>>> parameterIndex = new HashMap<>();
 
     /**
-     * Name Index mapping properties keys found in <name> node to specific config paths
+     * Name Index mapping properties keys found in "name" xml node to specific config paths,
      * names are stored in lowercase and looked up as lowercase
      */
     private final Map<String, List<Path>> nameIndex = new HashMap<>();

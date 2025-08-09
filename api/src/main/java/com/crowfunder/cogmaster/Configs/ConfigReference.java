@@ -4,7 +4,7 @@ public class ConfigReference {
 
     private final String implementationType = "com.threerings.config.ConfigReference";
     /**
-     * Path to derived config
+     * Path to derived config<br>
      * References don't have their own path identifiers!
      */
     private final Path derivedPath;

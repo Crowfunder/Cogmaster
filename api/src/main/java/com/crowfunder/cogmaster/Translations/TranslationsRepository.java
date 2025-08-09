@@ -30,7 +30,7 @@ public class TranslationsRepository {
 
     /**
      * We interface with the properties through Map because we want to utilize
-     * inverting util
+     * inverting util.
      */
     @PostConstruct
     private void PopulateTranslations() {

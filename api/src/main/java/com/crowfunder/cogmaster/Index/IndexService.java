@@ -57,7 +57,7 @@ public class IndexService {
     }
 
     /**
-     * Get multiple ConfigEntry objects by paths
+     * Get multiple ConfigEntry objects by paths<br>
      * Works only for full paths (indicating the exact PathIndex entry)
      */
     public List<ConfigEntry> resolveConfigsFullPath(List<Path> paths) {
@@ -74,7 +74,7 @@ public class IndexService {
     /**
      * Resolve one or more ConfigEntry objects by
      * querying the propertiesService for name mappings
-     * that can be used in nameIndex
+     * that can be used in nameIndex<br>
      * Ignores case (always searches by lowercase)
      */
     public List<ConfigEntry> resolveConfigByName(String name) {
@@ -102,10 +102,10 @@ public class IndexService {
 
 
     /**
-     * Endpoint tailored for Kozma Bot, with love
-     * Return name index keys into a single list
+     * Endpoint tailored for Kozma Bot, with love<br>
+     * Return name index keys into a single list<br>
      * Attempts to only return items that are tradeable in game
-     * Using a few heurestics, namely filter by implementations
+     * using a few heuristics, namely filter by implementations
      * and look for known parameters defining being tradeable
      */
     @Cacheable("getTradeableEntryNames")

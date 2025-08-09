@@ -25,7 +25,7 @@ public class ParameterArray {
 
     /**
      * Perform parameter derivation, return effective parameters (own parameters overwriting derived params)
-     * when deriving from inputted derivedParameterArray
+     * when deriving from inputted derivedParameterArray<br>
      * This does not modify any of the objects, it's done "on-the-fly"
      */
     public ParameterArray derive(ParameterArray derivedParameterArray) {
