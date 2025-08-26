@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/parseable")
+@RequestMapping("api/v1/parseableGraph")
 public class ParseableGraphController {
     private final ParseableGraphRepository repository;
 
@@ -21,9 +21,9 @@ public class ParseableGraphController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<Collection<GraphNode>> resolveConfigByPath() {
-        var nodeMap = new HashMap<String, GraphNode>();
-        var rootMap = new HashMap<String, GraphNode>();
+    public ResponseEntity<Collection<GraphNode>> getAllconfigs() {
+        var allNodesMap = new HashMap<String, GraphNode>();
+        var nodeRootsMap = new HashMap<String, GraphNode>();
 
         var allRecords = repository.getAll();
         for (var configFileName : allRecords.keySet()) {
@@ -31,7 +31,7 @@ public class ParseableGraphController {
             for (var path : fileRecords.keySet()) {
                 var entry = fileRecords.get(path);
                 var currentPath = path.getPath();
-                var currentNode = nodeMap.computeIfAbsent(currentPath, p -> {
+                var currentNode = allNodesMap.computeIfAbsent(currentPath, p -> {
                     var n = new GraphNode();
                     n.path = p;
                     return n;
@@ -40,16 +40,16 @@ public class ParseableGraphController {
                 var depthCounter = 0;
                 while (entry.parentReference != null) {
                     if (depthCounter > 100)
-                        return ResponseEntity.internalServerError().build();
+                        return ResponseEntity.internalServerError().build(); // never happens
 
                     var parentPath = entry.parentReference.referencedEntry.path.getPath();
-                    var parentNode = nodeMap.computeIfAbsent(parentPath, p -> {
+                    var parentNode = allNodesMap.computeIfAbsent(parentPath, p -> {
                         var n = new GraphNode();
                         n.path = p;
                         return n;
                     });
 
-                    // this happens
+                    // this does happen
                     // if (parentNode.children.contains(currentNode)) 
                     //     return ResponseEntity.internalServerError().build();
 
@@ -60,10 +60,10 @@ public class ParseableGraphController {
                     depthCounter++;
                 }
                final var finalCurrentNode = currentNode;
-                rootMap.computeIfAbsent(currentNode.path, n -> finalCurrentNode);
+                nodeRootsMap.computeIfAbsent(currentNode.path, n -> finalCurrentNode);
             }
         }
 
-        return ResponseEntity.ok(rootMap.values());
+        return ResponseEntity.ok(nodeRootsMap.values());
     }
 }

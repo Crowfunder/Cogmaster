@@ -1,6 +1,5 @@
 package com.crowfunder.cogmaster.Assets;
 
-import com.crowfunder.cogmaster.Utils.StringResult;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

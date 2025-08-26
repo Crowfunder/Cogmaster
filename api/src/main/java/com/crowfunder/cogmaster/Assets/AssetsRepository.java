@@ -1,7 +1,6 @@
 package com.crowfunder.cogmaster.Assets;
 
 import com.crowfunder.cogmaster.CogmasterConfig;
-import com.crowfunder.cogmaster.Translations.TranslationsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;

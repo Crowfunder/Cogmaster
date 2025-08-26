@@ -1,13 +1,10 @@
 package com.crowfunder.cogmaster.Parseable;
 
 import com.crowfunder.cogmaster.CogmasterConfig;
-import com.crowfunder.cogmaster.Configs.ConfigEntry;
+import com.crowfunder.cogmaster.Configs.ConfigReference;
 import com.crowfunder.cogmaster.Configs.ParameterArray;
 import com.crowfunder.cogmaster.Configs.ParameterValue;
 import com.crowfunder.cogmaster.Configs.Path;
-import com.crowfunder.cogmaster.Index.Index;
-import com.crowfunder.cogmaster.Parsers.ParserService;
-import com.crowfunder.cogmaster.Translations.TranslationsService;
 import com.crowfunder.cogmaster.Routers.RouterService;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -31,92 +28,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import static com.crowfunder.cogmaster.Utils.DOMUtil.getFirstChild;
 import static com.crowfunder.cogmaster.Utils.DOMUtil.getNextNode;
 
-class ParseableResource {
-    public String name;
-    public Resource resource;
-
-    public ParseableResource(String name, Resource resource) {
-        this.name = name;
-        this.resource = resource;
-    }
-}
-
-class NewConfigEntry {
-    // Source config file name
-    public final String configFileName;
-    // comes from <name>
-    public final Path path;
-    public String implementationType;
-
-    public NewConfigEntryReference parentReference;
-    public final ArrayList<NewConfigEntry> childEntries;
-
-    // // If the config is a derived config, this path points to the derived from
-    // // (parent) config
-    // public final Path parentPath;
-
-    // does not contain parent parameters
-    public final ParameterArray entryParameters;
-    // public final ParameterArray routedParameters;
-    // // Non-overriden parameters pulled from all derivative (parent) configs
-    // public final ParameterArray derivedParameters;
-
-    // Parameterless
-    public NewConfigEntry(String configFileName) {
-        this.configFileName = configFileName;
-        this.path = new Path();
-        this.implementationType = "";
-        this.childEntries = new ArrayList<NewConfigEntry>();
-        // this.parentPath = new Path(); // Empty string for no derivation
-        this.entryParameters = new ParameterArray();
-        // this.derivedParameters = new ParameterArray();
-        // this.routedParameters = new ParameterArray();
-    }
-}
-
-class NewConfigEntryReference {
-
-    private final String implementationType = "com.threerings.config.ConfigReference";
-    // name of config file from where the reference was parsed
-    private final String sourceConfigFileName;
-    // comes from <name>
-    private final Path path;
-    // Overridden parameters
-    private final ParameterArray parameters;
-    // entry pointed to by this config. populated after creation
-    public NewConfigEntry referencedEntry;
-
-    public NewConfigEntryReference(String sourceConfig) {
-        this.path = new Path();
-        this.parameters = new ParameterArray();
-        this.sourceConfigFileName = sourceConfig;
-    }
-
-    public Path getPath() {
-        return this.path;
-    }
-
-    public ParameterArray getParameters() {
-        return this.parameters;
-    }
-
-    public String getSourceConfigFileName() {
-        return this.sourceConfigFileName;
-    }
-
-    public String getImplementationType() {
-        return this.implementationType;
-    }
-}
-
 @Repository
-class ParseableGraphRepository {
+public class ParseableGraphRepository {
 
     Logger logger = LoggerFactory.getLogger(ParseableGraphRepository.class);
+    private final RouterService routerService;
     private ArrayList<ParseableResource> parseableResources;
     private Map<String, Map<Path, NewConfigEntry>> parsedResources;
 
-    public ParseableGraphRepository(CogmasterConfig cogmasterConfig) {
+    public ParseableGraphRepository(CogmasterConfig cogmasterConfig, RouterService routerService) {
+        this.routerService = routerService;
         var parseablePath = cogmasterConfig.parsers().path();
         parsedResources = new HashMap<String, Map<Path, NewConfigEntry>>();
 
@@ -137,7 +58,7 @@ class ParseableGraphRepository {
     }
 
     @PostConstruct
-    public void populateIndex() {
+    public void populateRepo() {
         logger.info("Parsing the configs, populating ConfigIndex...");
         parseResources();
         logger.info("Finished parsing");
@@ -145,12 +66,21 @@ class ParseableGraphRepository {
         logger.info("Resolving derivations...");
         resolveEntryDependencies();
         logger.info("Finished resolving");
+
+        logger.info("Populating routed params...");
+        populateRoutedParameters();
+        logger.info("Finished resolving");
+
     }
 
     public void parseResources() {
+        var counter = 0;
         for (var parseableResource : parseableResources) {
+            logger.debug("File: " + parseableResource.name);
             var parsedEntries = parseResource(parseableResource);
             parsedResources.put(parseableResource.name, parsedEntries);
+            counter++;
+            logger.debug("Parsed " + counter + " entires.");
         }
     }
 
@@ -163,7 +93,7 @@ class ParseableGraphRepository {
             Document doc = builder.parse(parseableResource.resource.getInputStream());
             doc.getDocumentElement().normalize();
 
-            // All configs start at object node
+            // All config entires are contained within the object node
             Node rootNode = doc.getElementsByTagName("object").item(0);
 
             if (rootNode == null) {
@@ -248,6 +178,7 @@ class ParseableGraphRepository {
         return parsedEntry;
     }
 
+    // parses the parent reference info from an <implementation> node
     private NewConfigEntryReference parseReference(String configFileName, Node referenceRoot) {
         NewConfigEntryReference reference = new NewConfigEntryReference(configFileName);
         NodeList implementationNodes = referenceRoot.getChildNodes();
@@ -368,24 +299,35 @@ class ParseableGraphRepository {
     }
 
     public void resolveEntryDependencies() {
+        var counter = 0;
         for (String configFileName : parsedResources.keySet()) {
+            logger.debug("File: " + configFileName);
+            for (Path entryPath : parsedResources.get(configFileName).keySet()) {
+                var configEntry = parsedResources.get(configFileName).get(entryPath);
+                resolveParent(configEntry);
+                logger.debug("Resolved parent for entry " + counter + ":" + configEntry.path);
+                // name index and pretty name index now cached by {@link NameIndexService}
+            }
+        }
+    }
+
+    public void populateRoutedParameters() {
+        var counter = 0;
+        for (String configFileName : parsedResources.keySet()) {
+            logger.debug("File: " + configFileName);
             for (Path entryPath : parsedResources.get(configFileName).keySet()) {
                 var configEntry = parsedResources.get(configFileName).get(entryPath);
 
-                // Resolve derivations
-                resolveParent(configEntry);
+                var sourceRouter = routerService.getRouter(configEntry.getRootImplementationType());
 
-                // Populate routed parameters
-                // configEntry.populateRoutedParameters(routerService.getRouter(configEntry));
-
-                // Populate name index
-                // String name = configEntry.getName();
-                // if (name != null && !name.isEmpty()) {
-                // index.addNameIndexEntry(translationsService.parseTranslationString(name).orElseGet(()
-                // -> null),
-                // entryPath,
-                // configFileName);
-                // }
+                if (sourceRouter != null) {
+                    for (Map.Entry<String, Path> e : sourceRouter.getRoutes().entrySet()) {
+                        var effectiveParameterFlex = configEntry.getEffectiveParameters()
+                                .resolveParameterPathFlex(e.getValue());
+                        configEntry.routedParameters.addParameter(e.getKey(), effectiveParameterFlex);
+                    }
+                }
+                logger.debug("Resolved rooted params for entry " + counter + ":" + configEntry.path);
             }
         }
     }
@@ -405,21 +347,50 @@ class ParseableGraphRepository {
             configEntry.parentReference.referencedEntry = parentConfigEntry;
             parentConfigEntry.childEntries.add(configEntry);
         }
-        // ParameterArray derivedParameters = new ParameterArray();
-        // while (parentConfigEntry != null) {
-        // derivedParameters.update(parentConfigEntry.getParameters()); // would this
-        // not mean the parent potentially
-        // // overwriting the child parameters?
-        // if (!parentConfigEntry.isDerived()) {
-        // configEntry.setDerivedImplementationType(parentConfigEntry.getImplementationType());
-        // }
-        // parentConfigEntry = readConfigIndex(configEntry.getSourceConfig(),
-        // parentConfigEntry.getDerivedPath());
-        // }
-        // configEntry.updateDerivedParameters(derivedParameters);
     }
 
     public Map<String, Map<Path, NewConfigEntry>> getAll() {
         return parsedResources;
     }
+
+    // Get ConfigEntry object by its config path
+    public Optional<NewConfigEntry> resolveConfig(String configFileName, String entryPath) {
+        return resolveConfig(configFileName, new Path(entryPath));
+    }
+
+    // Get ConfigEntry object by its config path
+    public Optional<NewConfigEntry> resolveConfig(String configFileName, Path entryPath) {
+        return readConfigIndex(configFileName, entryPath);
+    }
+
+    public Optional<NewConfigEntry> readConfigIndex(String configFileName, Path entryPath) {
+        return Optional.ofNullable(parsedResources.get(configFileName))
+                .map(entryMap -> entryMap.get(entryPath));
+    }
+
+    // Get ConfigEntry by path that leads both to the correct index and entry
+    public Optional<NewConfigEntry> resolveConfigFullPath(Path fileAndEntryPath) {
+        return readConfigIndex(fileAndEntryPath.getNextPath(), fileAndEntryPath.rotatePath());
+    }
+
+    // Get ConfigEntry by path that leads both to the correct index and entry within
+    public Optional<NewConfigEntry> resolveConfigFullPath(String fileAndEntryPath) {
+        return resolveConfigFullPath(new Path(fileAndEntryPath));
+    }
+
+    // Get ConfigEntry object by resolving a ConfigReference object
+    public Optional<NewConfigEntry> resolveConfig(ConfigReference configReference) {
+        return readConfigIndex(configReference.getSourceConfig(), configReference.getPath());
+    }
+
+    // Get multiple ConfigEntry objects by paths
+    // Works only for full paths (indicating the exact PathIndex entry)
+    public List<NewConfigEntry> resolveConfigsFullPath(List<Path> paths) {
+        List<NewConfigEntry> configs = new ArrayList<>();
+        for (Path path : paths) {
+            resolveConfigFullPath(path).ifPresent(entry -> configs.add(entry));
+        }
+        return configs;
+    }
+
 }
