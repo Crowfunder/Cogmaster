@@ -14,7 +14,7 @@ public class NewConfigEntry {
     public String implementationType;
 
     public NewConfigEntryReference parentReference;
-    public final ArrayList<NewConfigEntry> childEntries;
+    // public final ArrayList<NewConfigEntry> childEntries; // temporarily disable populating parent to child paths
 
     // does not contain parent parameters
     public final ParameterArray entryParameters;
@@ -27,7 +27,7 @@ public class NewConfigEntry {
         this.configFileName = configFileName;
         this.path = new Path();
         this.implementationType = "";
-        this.childEntries = new ArrayList<NewConfigEntry>();
+        // this.childEntries = new ArrayList<NewConfigEntry>();
         this.entryParameters = new ParameterArray();
         this.routedParameters = new ParameterArray();
         // this.derivedParameters = new ParameterArray();

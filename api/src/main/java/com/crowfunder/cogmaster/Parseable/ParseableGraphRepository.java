@@ -345,7 +345,7 @@ public class ParseableGraphRepository {
                     configEntry.configFileName, configEntry.parentReference.getPath(), configEntry.configFileName);
         } else {
             configEntry.parentReference.referencedEntry = parentConfigEntry;
-            parentConfigEntry.childEntries.add(configEntry);
+            // parentConfigEntry.childEntries.add(configEntry);
         }
     }
 
