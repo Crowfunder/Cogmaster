@@ -46,9 +46,11 @@ public class NewConfigEntry {
         if (parentReference == null)
             return entryParameters;
 
-        // accumulate params, entryParams take priority over the parentReference's
-        // params
-        return entryParameters.derive(parentReference.referencedEntry.getEffectiveParameters());
+        // accumulate params:
+        // parent's effective parameters get overwritten by any parameters included in the child reference
+        // resulting parameters get overwritten by any parameters directly contained in the child
+        // Note: as of now, most of the time the parameters are defined in the reference 
+        return entryParameters.derive(parentReference.getParameters()).derive(parentReference.referencedEntry.getEffectiveParameters());
     }
 
     // Return effective name using routes
