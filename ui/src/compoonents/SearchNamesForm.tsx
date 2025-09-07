@@ -8,6 +8,11 @@ import {
 } from "solid-js";
 import { IndexApiVersion } from "../util/constants.jsx";
 
+interface SearchResult {
+  names: string[];
+  wasTradeableOnly: boolean;
+}
+
 const SearchNamesForm: Component<{
   class?: string;
   version: IndexApiVersion;
@@ -18,10 +23,14 @@ const SearchNamesForm: Component<{
   const url = () =>
     `api/${props.version}/index/info/search/names?tradeable=${tradeable()}`;
 
-  async function fetchSearchNames(): Promise<string[]> {
+  async function fetchSearchNames(): Promise<SearchResult> {
+    const tradeableAtFetchTime = tradeable(); // Capture the value at fetch time
     const response = await fetch(url());
     const data = await response.json();
-    return data;
+    return {
+      names: data,
+      wasTradeableOnly: tradeableAtFetchTime
+    };
   }
 
   const [searchNamesResource, { refetch }] = createResource(
@@ -92,11 +101,11 @@ const SearchNamesForm: Component<{
           <Match when={searchNamesResource()}>
             <div class="border border-gray-400 rounded bg-gray-800 p-4">
               <div class="text-sm text-gray-300 mb-2">
-                Found {searchNamesResource()!.length}{" "}
-                {tradeable() ? "tradeable" : ""} search names:
+                Found {searchNamesResource()!.names.length}{" "}
+                {searchNamesResource()!.wasTradeableOnly ? "tradeable" : ""} search names:
               </div>
               <div class="max-h-[600px] overflow-y-auto border border-gray-600 rounded bg-gray-900 p-2">
-                <For each={searchNamesResource()}>
+                <For each={searchNamesResource()!.names}>
                   {(name) => (
                     <div class="py-1 px-2 text-sm text-gray-100 hover:bg-gray-700 rounded break-all">
                       {name}

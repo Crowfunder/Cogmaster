@@ -12,8 +12,8 @@ const Main: Component = () => {
   return (
     <div class="px-52 py-2">
       <div class="w-full grid grid-cols-2 border gap-8 py-4 px-2 ">
-        <h3 class="text-2xl mx-auto">V1</h3>
-        <h3 class="text-2xl mx-auto">V2</h3>
+        <h3 class="text-gray-100 text-2xl mx-auto">V1</h3>
+        <h3 class="text-gray-100 text-2xl mx-auto">V2</h3>
         <hr class="col-span-full" />
         <h3 class="text-2xl mx-auto col-span-full">index/info/config/names</h3>
         <Toggleable label={`Config Names `}>

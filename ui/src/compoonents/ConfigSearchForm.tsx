@@ -39,10 +39,10 @@ const ConfigSearchForm: Component<{
   const isLoading = () => searchResource.loading;
 
   return (
-    <div class={`flex-col gap-10 p-4 text-white ${props.class || ""}`}>
+    <div class={`flex-col gap-10 w-full p-4 text-white ${props.class || ""}`}>
       <div class="flex flex-col gap-6 items-center">
         <input
-          class="border border-black bg-white text-black size-fit p-1"
+          class="border border-black bg-white text-black w-full p-1"
           type="text"
           placeholder="Config filename"
           value={configFileName()}
@@ -51,7 +51,7 @@ const ConfigSearchForm: Component<{
           }}
         />
         <input
-          class="border border-black bg-white text-black size-fit p-1"
+          class="border border-black bg-white text-black w-full p-1"
           type="text"
           placeholder="Query path"
           value={queryPath()}
