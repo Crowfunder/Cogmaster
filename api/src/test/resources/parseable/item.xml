@@ -32,6 +32,31 @@
       </item>
     </implementation>
   </entry>
+  <!-- Parent of the entry above -->
+    <entry>
+    <name>Accessory/Parts/Base, Custom Colors</name>
+    <parameters>
+      <entry class="com.threerings.config.Parameter$Direct">
+        <name>Icon</name>
+        <paths>implementation.icon.file</paths>
+      </entry>
+      <entry class="com.threerings.config.Parameter$Direct">
+        <name>Accessory</name>
+        <paths>implementation.accessory</paths>
+      </entry>
+      <entry class="com.threerings.config.Parameter$Direct">
+        <name>Colorizations</name>
+        <paths>implementation.icon.colorizations</paths>
+      </entry>
+    </parameters>
+    <implementation class="com.threerings.projectx.item.config.ItemConfig$AccessoryTicket">
+      <icon>
+        <file>ui/icon/inventory/icon_accessory-afront.png</file>
+      </icon>
+      <stackable>true</stackable>
+      <rarity>-1</rarity>
+    </implementation>
+  </entry>
    <entry>
     <name>Weapon/Sword/Brandish</name>
     <creatable>true</creatable>
