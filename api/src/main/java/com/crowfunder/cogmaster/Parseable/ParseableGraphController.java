@@ -20,6 +20,7 @@ public class ParseableGraphController {
         public ArrayList<GraphNode> children = new ArrayList<>();
     }
 
+    // endpoint used to draw a graph of all our entries on local UI
     @GetMapping("all")
     public ResponseEntity<Collection<GraphNode>> getAllconfigs() {
         var allNodesMap = new HashMap<String, GraphNode>();
