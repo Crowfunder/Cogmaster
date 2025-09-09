@@ -14,6 +14,7 @@ export interface GraphNode {
 
 export interface HoverableGraphNode extends GraphNode {
   isHovered: boolean;
+  isClicked: boolean;
   children: HoverableGraphNode[];
 }
 
@@ -68,12 +69,15 @@ const TreeViewer: Component<{
   const [hoveredNode, setHoveredNode] = createSignal<
     HoverableGraphNode | undefined
   >(undefined);
+  const [clickedNode, setClickedNode] = createSignal<
+    HoverableGraphNode | undefined
+  >(undefined);
 
   // Pan and zoom event handlers
   const handleMouseDown = (e: MouseEvent) => {
     setIsDragging(true);
     setLastMousePos({ x: e.clientX, y: e.clientY });
-    if (canvasRef) {
+    if (canvasRef && !hoveredNode()) {
       canvasRef.style.cursor = "grabbing";
     }
   };
@@ -114,6 +118,16 @@ const TreeViewer: Component<{
     }
   };
 
+  // Add click handler
+  const handleClick = (e: MouseEvent) => {
+    if (isDragging()) return; // Don't handle clicks during drag
+
+    if (hoveredNode()) {
+      hoveredNode()!.isClicked = true;
+      setClickedNode(hoveredNode())!.isClicked = true;
+    }
+  };
+
   const handleWheel = (e: WheelEvent) => {
     e.preventDefault();
 
@@ -146,7 +160,7 @@ const TreeViewer: Component<{
 
   // draw frame
   createEffect(() => {
-    console.log("draw frame");
+    if (showDebug) console.log("draw frame");
     if (canvasRef && tree()) {
       const ctx = canvasRef.getContext("2d");
       if (ctx) {
@@ -174,7 +188,6 @@ const TreeViewer: Component<{
         });
 
         const mousePos = currentMousePos();
-        let newHoveredNode: HoverableGraphNode | undefined = undefined;
         // Calculate canvas coordinates once if we have mouse position
         let canvasX: number, canvasY: number, radiusSquared: number;
         if (mousePos) {
@@ -182,15 +195,16 @@ const TreeViewer: Component<{
           canvasY = (mousePos.y - currentTransform.y) / currentTransform.scale;
           radiusSquared = Math.pow(8 / currentTransform.scale, 2);
         }
+
+        let newHoveredNode: HoverableGraphNode | undefined = undefined;
         // Draw nodes and hover detect
-        ctx.fillStyle = "#69b3a2";
         treeData.each((node) => {
-          ctx.fillStyle = "#69b3a2";
           ctx.beginPath();
-          const nodeRadius = 5 / currentTransform.scale; // Adjust node size for zoom
+          const nodeRadius = 6 / currentTransform.scale; // Adjust node size for zoom
           ctx.arc(node.x!, node.y!, nodeRadius, 0, 2 * Math.PI);
 
           node.data.isHovered = false;
+          if (clickedNode() != node.data) node.data.isClicked = false;
           // Hit test during drawing
           if (mousePos) {
             const dx = canvasX - node.x!;
@@ -198,12 +212,21 @@ const TreeViewer: Component<{
             if (dx * dx + dy * dy <= radiusSquared) {
               node.data.isHovered = true;
               newHoveredNode = node.data;
-              ctx.fillStyle = "#ffffff";
             }
           }
 
+          // Determine fill color based on state
+          let fillColor = "#69b3a2"; // Default color
+          if (node.data.isClicked) {
+            fillColor = "#ff8c00"; // Orange for clicked
+          } else if (node.data.isHovered) {
+            fillColor = "#ffffff"; // White for hovered
+          }
+
+          ctx.fillStyle = fillColor;
           ctx.fill();
         });
+        setHoveredNode(newHoveredNode);
 
         // Restore context
         ctx.restore();
@@ -221,6 +244,7 @@ const TreeViewer: Component<{
       canvasRef.addEventListener("mousemove", handleMouseMove);
       canvasRef.addEventListener("mouseup", handleMouseUp);
       canvasRef.addEventListener("mouseleave", handleMouseLeave);
+      canvasRef.addEventListener("click", handleClick);
 
       // Wheel event for zooming
       canvasRef.addEventListener("wheel", handleWheel);
@@ -233,6 +257,7 @@ const TreeViewer: Component<{
         canvasRef?.removeEventListener("mousedown", handleMouseDown);
         window.removeEventListener("mousemove", handleMouseMove);
         window.removeEventListener("mouseup", handleMouseUp);
+        canvasRef?.removeEventListener("click", handleClick);
         canvasRef?.removeEventListener("wheel", handleWheel);
       };
     }
@@ -241,25 +266,27 @@ const TreeViewer: Component<{
   const showDebug = false;
 
   return (
-    <div class="flex flex-row justify-center">
-      <div class="flex flex-col gap-2">
-        <button
-          class="hover:cursor-pointer p-2 border border-black bg-green-500 hover:bg-green-600 active:bg-green-900 rounded-xs text-sm"
-          onClick={resetView}
-        >
-          Reset View
-        </button>
-      </div>
-      <div class="ml-4">
-        <canvas
-          ref={canvasRef}
-          width={400}
-          height={400}
-          class="border border-black"
-        />
-        <div class="text-xs mt-2 text-gray-300">
-          Pan: Click and drag | Zoom: Mouse wheel | Scale:{" "}
-          {transform().scale.toFixed(2)}x
+    <div>
+      <div class="flex flex-row justify-center">
+        <div class="flex flex-col gap-2">
+          <button
+            class="hover:cursor-pointer p-2 border border-black bg-green-500 hover:bg-green-600 active:bg-green-900 rounded-xs text-sm"
+            onClick={resetView}
+          >
+            Reset View
+          </button>
+        </div>
+        <div class="ml-4">
+          <canvas
+            ref={canvasRef}
+            width={400}
+            height={400}
+            class="border border-black"
+          />
+          <div class="text-xs mt-2 text-gray-300">
+            Pan: Click and drag | Zoom: Mouse wheel | Click: Select node |
+            Scale: {transform().scale.toFixed(2)}x
+          </div>
         </div>
       </div>
       <Show when={showDebug}>
@@ -276,12 +303,25 @@ const TreeViewer: Component<{
           <For each={getAllNodes()}>
             {(node) => (
               <div class={node.data.isHovered ? "font-bold" : ""}>
-                Path: {node.data.path} - x: {node.x}, y: {node.y}
+                Path: {node.data.path} - x: {node.x}, y: {node.y} - Clicked:{" "}
+                {node.data.isClicked ? "Yes" : "No"}
               </div>
             )}
           </For>
         </div>
       </Show>
+      <div>
+        <b>Hovered:</b>
+        <Show when={hoveredNode()}>
+          {(node) => <span>Path: {node().path}</span>}
+        </Show>
+      </div>
+      <div>
+        <b>Clicked:</b>
+        <Show when={clickedNode()}>
+          {(node) => <span>Path: {node().path}</span>}
+        </Show>
+      </div>
     </div>
   );
 };
