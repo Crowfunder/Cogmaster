@@ -207,6 +207,7 @@ public class IndexService {
                 "com.threerings.projectx.design.config.FurniConfig$SpecialProp",
                 "com.threerings.projectx.item.config.AccessoryConfig$Footstep",
                 "com.threerings.projectx.item.config.AccessoryConfig$Original",
+                "com.threerings.projectx.item.config.AccessoryConfig$MultiSlot",
                 "com.threerings.projectx.item.config.ItemConfig$Eye"
         ));
         Set<String> namesBlacklist = new HashSet<>(Set.of(
