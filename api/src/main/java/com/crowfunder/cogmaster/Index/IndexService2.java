@@ -168,7 +168,8 @@ public class IndexService2 {
                 "com.threerings.projectx.design.config.FurniConfig$Prop",
                 "com.threerings.projectx.design.config.FurniConfig$SpecialProp",
                 "com.threerings.projectx.item.config.AccessoryConfig$Footstep",
-                "com.threerings.projectx.item.config.AccessoryConfig$Original"));
+                "com.threerings.projectx.item.config.AccessoryConfig$Original",
+                "com.threerings.projectx.item.config.AccessoryConfig$MultiSlot"));
         Set<String> namesBlacklist = new HashSet<>(Set.of(
                 "Prototype Rocket Hammer",
                 "Stable Rocket Hammer",
