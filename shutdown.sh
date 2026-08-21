@@ -5,10 +5,10 @@
 ####################################################
 
 # Stop running containers
-cd /root/Cogmaster/api
+cd "$(dirname "$0")/api"
 docker compose down
 docker image rm cogmaster-api
 
-cd /root/Cogmaster/discord/App
+cd "$(dirname "$0")/discord/App"
 docker compose down
 docker image rm cogmaster-app
