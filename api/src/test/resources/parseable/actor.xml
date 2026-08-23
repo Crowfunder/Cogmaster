@@ -12,5 +12,137 @@
       </actor>
     </implementation>
   </entry>
+  <!-- Parent of the entry above -->
+    <entry depth="1">
+    <name>Block/Parts/Barbed Hedgehog Base</name>
+    <parameters>
+      <entry class="com.threerings.config.Parameter$Choice" depth="3">
+        <outer rdepth="1"/>
+        <name>Variant</name>
+        <directs>
+          <entry>
+            <name>Damage Type</name>
+            <paths>implementation.handlers[0].action.damage.type</paths>
+          </entry>
+          <entry>
+            <name>Varient</name>
+            <paths>implementation.sprite.model["File"], implementation.sprite.destruction_transient["Model"]["File"]</paths>
+          </entry>
+        </directs>
+        <options>
+          <entry>
+            <outer rdepth="3"/>
+            <name>Normal</name>
+            <arguments>
+              <key class="java.lang.String">Damage Type</key>
+              <value class="com.threerings.projectx.dungeon.util.DamageSummary$DamageType">NORMAL</value>
+              <key class="java.lang.String">Varient</key>
+              <value class="java.lang.String">world/dynamic/barbed_hedgehog/barbwire.png</value>
+            </arguments>
+          </entry>
+          <entry>
+            <outer rdepth="3"/>
+            <name>Elemental</name>
+            <arguments>
+              <key class="java.lang.String">Damage Type</key>
+              <value class="com.threerings.projectx.dungeon.util.DamageSummary$DamageType">ELEMENTAL</value>
+              <key class="java.lang.String">Varient</key>
+              <value class="java.lang.String">world/dynamic/barbed_hedgehog/barbwire_elemental.png</value>
+            </arguments>
+          </entry>
+          <entry>
+            <outer rdepth="3"/>
+            <name>Piercing</name>
+            <arguments>
+              <key class="java.lang.String">Damage Type</key>
+              <value class="com.threerings.projectx.dungeon.util.DamageSummary$DamageType">PIERCING</value>
+              <key class="java.lang.String">Varient</key>
+              <value class="java.lang.String">world/dynamic/barbed_hedgehog/barbwire_piercing.png</value>
+            </arguments>
+          </entry>
+          <entry>
+            <outer rdepth="3"/>
+            <name>Shadow</name>
+            <arguments>
+              <key class="java.lang.String">Damage Type</key>
+              <value class="com.threerings.projectx.dungeon.util.DamageSummary$DamageType">SHADOW</value>
+              <key class="java.lang.String">Varient</key>
+              <value class="java.lang.String">world/dynamic/barbed_hedgehog/barbwire_shadow.png</value>
+            </arguments>
+          </entry>
+        </options>
+        <choice>Normal</choice>
+      </entry>
+    </parameters>
+    <implementation class="com.threerings.projectx.dungeon.config.DungeonActorConfig$Block">
+      <sprite class="com.threerings.projectx.dungeon.config.DungeonActorSpriteConfig$Block">
+        <floorMask>3</floorMask>
+        <model>
+          <name>world/dynamic/barbed_hedgehog/model.dat</name>
+          <arguments>
+            <key class="java.lang.String">File</key>
+            <value class="java.lang.String">world/dynamic/barbed_hedgehog/barbwire.png</value>
+          </arguments>
+        </model>
+        <destructionTransient>
+          <name>particle/fx_generic_destruct.dat</name>
+          <arguments>
+            <key class="java.lang.String">Model</key>
+            <value class="com.threerings.config.ConfigReference">
+              <name>world/dynamic/barbed_hedgehog/model.dat</name>
+              <arguments>
+                <key class="java.lang.String">File</key>
+                <value class="java.lang.String">world/dynamic/barbed_hedgehog/barbwire.png</value>
+              </arguments>
+            </value>
+            <key class="java.lang.String">Model Transform</key>
+            <value class="com.threerings.math.Transform3D">
+            </value>
+          </arguments>
+        </destructionTransient>
+        <hitTransient>
+          <name>model/scripted/transient_sound.dat</name>
+          <arguments>
+            <key class="java.lang.String">Loop Duration</key>
+            <value class="java.lang.Float">0.0</value>
+            <key class="java.lang.String">Move with Origin</key>
+            <value class="java.lang.Boolean">false</value>
+            <key class="java.lang.String">Sounder</key>
+            <value class="com.threerings.config.ConfigReference">
+              <name>Custom/on_Hit/Metal</name>
+              <arguments>
+                <key class="java.lang.String">Pitch shift</key>
+                <value class="java.lang.String">Default</value>
+              </arguments>
+            </value>
+            <key class="java.lang.String">Transform</key>
+            <value class="com.threerings.math.Transform3D">
+            </value>
+            <key class="java.lang.String">Transient</key>
+            <value class="com.threerings.config.ConfigReference">
+              <name>particle/fx_gethit_block.dat</name>
+            </value>
+          </arguments>
+        </hitTransient>
+      </sprite>
+      <shape class="com.threerings.tudey.shape.config.ShapeConfig$Circle">
+        <radius>0.5</radius>
+      </shape>
+      <handlers>
+        <entry class="com.threerings.tudey.config.HandlerConfig$Intersection">
+          <action class="com.threerings.projectx.dungeon.config.DungeonActionConfig$DamageRegion">
+            <damage class="com.threerings.projectx.dungeon.config.DamageConfig$DepthScale">
+              <depthScale>
+                <name>Monster/Damage/Attack Base -05</name>
+              </depthScale>
+              <flags>8</flags>
+            </damage>
+          </action>
+        </entry>
+      </handlers>
+      <collisionMask>0</collisionMask>
+      <damageMask>2</damageMask>
+    </implementation>
+  </entry>
 </object>
 </java>
